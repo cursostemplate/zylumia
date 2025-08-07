@@ -1,7 +1,13 @@
+'use client'
+
 import { Menu, Search, User, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
+import { useCart } from '@/contexts/cart-context'
 
 export default function SiteHeader() {
+  const { getCartTotalItems } = useCart();
+  const totalItems = getCartTotalItems();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
@@ -29,13 +35,15 @@ export default function SiteHeader() {
             <User className="h-6 w-6" />
             <span className="sr-only">Conta de usuário</span>
           </button>
-          <button className="relative p-2">
+          <Link href="/cart" className="relative p-2">
             <ShoppingBag className="h-6 w-6" />
-            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-              0
-            </span>
+            {totalItems > 0 && (
+              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                {totalItems}
+              </span>
+            )}
             <span className="sr-only">Carrinho de compras</span>
-          </button>
+          </Link>
         </div>
       </div>
     </header>

@@ -1,4 +1,8 @@
-import Link from "next/link"
+import { PolicyModal } from "@/components/policy-modal"
+import { PrivacyPolicyContent } from "@/components/policies/privacy-policy"
+import { ShippingPolicyContent } from "@/components/policies/shipping-policy"
+import { RefundPolicyContent } from "@/components/policies/refund-policy"
+import { TermsConditionsContent } from "@/components/policies/terms-conditions"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
@@ -16,10 +20,10 @@ export function SiteFooter() {
           <div className="md:col-span-1">
             <h3 className="font-lora text-xl font-bold">Quick links</h3>
             <ul className="mt-4 space-y-2">
-              <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy policy</Link></li>
-              <li><Link href="/shipping-policy" className="text-muted-foreground hover:text-primary">Shipping & delivery policy</Link></li>
-              <li><Link href="/refund-policy" className="text-muted-foreground hover:text-primary">Refunds & Payments</Link></li>
-              <li><Link href="/terms-and-conditions" className="text-muted-foreground hover:text-primary">Terms and Conditions</Link></li>
+              <li><PolicyModal triggerText="Privacy policy" title="Privacy Policy"><PrivacyPolicyContent /></PolicyModal></li>
+              <li><PolicyModal triggerText="Shipping & delivery policy" title="Shipping & Delivery Policy"><ShippingPolicyContent /></PolicyModal></li>
+              <li><PolicyModal triggerText="Refunds & Payments" title="Refunds & Payments Policy"><RefundPolicyContent /></PolicyModal></li>
+              <li><PolicyModal triggerText="Terms and Conditions" title="Terms and Conditions"><TermsConditionsContent /></PolicyModal></li>
             </ul>
           </div>
           <div className="md:col-span-1">

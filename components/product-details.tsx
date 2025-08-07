@@ -1,5 +1,12 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Star, CheckCircle2 } from 'lucide-react'
+import NextImage from 'next/image'
 import { cn } from "@/lib/utils"
+import { Button } from '@/components/ui/button'
+import { useCart } from '@/contexts/cart-context'
 
 const benefits = [
     "Collagen Boost for your skin",
@@ -11,44 +18,75 @@ const benefits = [
 
 const offers = [
     {
-        quantity: "4 Masks",
-        supply: "1 Month Supply",
-        save: "SAVE 28%",
+        id: 1,
+        quantity: "4 Máscaras",
+        supply: "Suprimento para 1 mês",
+        save: "ECONOMIZE 28%",
         price: "£21.95",
         originalPrice: "£34.95",
+        image: "/placeholder.svg?height=48&width=48",
         isPopular: false,
         freeGift: false,
     },
     {
-        quantity: "8 Masks",
-        supply: "2 Month Supply",
-        save: "SAVE 56%",
+        id: 2,
+        quantity: "8 Máscaras",
+        supply: "Suprimento para 2 meses",
+        save: "ECONOMIZE 56%",
         price: "£30.95",
         originalPrice: "£69.90",
+        image: "/placeholder.svg?height=48&width=48",
         isPopular: false,
         freeGift: false,
     },
     {
-        quantity: "12 Masks",
-        supply: "3 Month Supply",
-        save: "SAVE 62%",
+        id: 3,
+        quantity: "12 Máscaras",
+        supply: "Suprimento para 3 meses",
+        save: "ECONOMIZE 62%",
         price: "£38.95",
         originalPrice: "£104.85",
+        image: "/placeholder.svg?height=48&width=48",
         isPopular: true,
         freeGift: false,
     },
     {
-        quantity: "16 Masks",
-        supply: "4 Month Supply",
-        save: "SAVE 66%",
+        id: 4,
+        quantity: "16 Máscaras",
+        supply: "Suprimento para 4 meses",
+        save: "ECONOMIZE 66%",
         price: "£48.95",
         originalPrice: "£139.80",
+        image: "/placeholder.svg?height=48&width=48",
         isPopular: false,
         freeGift: true,
+    },
+    {
+        id: 5,
+        quantity: "24 Máscaras",
+        supply: "Suprimento para 6 meses",
+        save: "ECONOMIZE 70%",
+        price: "£65.95",
+        originalPrice: "£209.70",
+        image: "/placeholder.svg?height=48&width=48",
+        isPopular: false,
+        freeGift: false,
     }
 ]
 
 export function ProductDetails() {
+  const [selectedOfferId, setSelectedOfferId] = useState(3); // Default to most popular
+  const { addToCart } = useCart();
+  const router = useRouter();
+
+  const handleAddToCart = () => {
+    const selectedOffer = offers.find(offer => offer.id === selectedOfferId);
+    if (selectedOffer) {
+      addToCart(selectedOffer);
+      router.push('/cart');
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
         <div>
@@ -75,30 +113,45 @@ export function ProductDetails() {
         </div>
 
         <div className="text-center my-2">
-            <p className="font-semibold text-muted-foreground tracking-widest text-sm">LIMITED TIME OFFER</p>
+            <p className="font-semibold text-muted-foreground tracking-widest text-sm uppercase">OFERTA POR TEMPO LIMITADO</p>
         </div>
 
         <div className="space-y-3">
-            {offers.map((offer, i) => (
-                <div key={i} className={cn("border-2 rounded-lg p-4 relative cursor-pointer transition-all hover:border-brand", offer.isPopular ? "border-brand" : "border-gray-200")}>
-                    {offer.isPopular && <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-black text-white text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</div>}
+            {offers.map((offer) => (
+                <div 
+                    key={offer.id} 
+                    className={cn(
+                        "border rounded-lg p-3 relative cursor-pointer transition-all flex items-center gap-4", 
+                        selectedOfferId === offer.id ? "border-brand border-2 bg-brand/5" : "border-gray-200 bg-gray-50 hover:border-gray-400"
+                    )}
+                    onClick={() => setSelectedOfferId(offer.id)}
+                >
+                    {offer.isPopular && <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-black text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Mais Populares</div>}
                     {offer.freeGift && <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand text-white text-xs font-bold px-3 py-1 rounded-full">+1 FREE GIFT</div>}
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <p className="font-bold text-lg">{offer.quantity}</p>
-                            <p className="text-sm text-muted-foreground">{offer.supply}</p>
-                        </div>
-                        <div className="text-center">
-                            <span className="bg-brand text-brand-foreground text-xs font-bold px-2 py-1 rounded-md">{offer.save}</span>
-                        </div>
-                        <div className="text-right">
-                            <p className="font-bold text-lg">{offer.price}</p>
-                            <p className="text-sm text-muted-foreground line-through">{offer.originalPrice}</p>
-                        </div>
+                    
+                    <NextImage src={offer.image} alt={offer.quantity} width={48} height={48} />
+
+                    <div className="flex-1">
+                        <p className="font-bold text-base">{offer.quantity}</p>
+                        <p className="text-sm text-muted-foreground">{offer.supply}</p>
+                    </div>
+                    <div className="text-center mx-4">
+                        <span className="bg-brand text-brand-foreground text-xs font-bold px-2 py-1 rounded-md">{offer.save}</span>
+                    </div>
+                    <div className="text-right">
+                        <p className="font-bold text-lg">{offer.price}</p>
+                        <p className="text-sm text-muted-foreground line-through">{offer.originalPrice}</p>
                     </div>
                 </div>
             ))}
         </div>
+        <Button 
+            onClick={handleAddToCart}
+            className="w-full h-[49px] bg-black hover:bg-gray-800 text-white text-lg font-bold mt-4"
+            style={{ maxWidth: '370px', margin: '1rem auto 0' }}
+        >
+            ADICIONAR AO CARRINHO
+        </Button>
     </div>
   )
 }
