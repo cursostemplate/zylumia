@@ -3,6 +3,7 @@ import { FaqSection } from '@/components/faq-section'
 import { SiteFooter } from '@/components/site-footer'
 import { ImageSwiper } from '@/components/ui/image-swiper'
 import { ProductDetails } from '@/components/product-details'
+import { TestimonialsCarousel } from '@/components/testimonials-carousel'
 
 const productImages = [
   'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screenshot-20250806171418-0rNvoVp8bOsL3utXlRnIPTwTjepJoO.png',
@@ -26,6 +27,7 @@ export default function HomePage() {
                 </div>
             </div>
         </div>
+        <TestimonialsCarousel />
         <FaqSection />
       </main>
       <SiteFooter />
