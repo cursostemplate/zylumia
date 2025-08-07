@@ -58,7 +58,8 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        // Atualizado para usar 'Mona Sans' diretamente
+        sans: ['Mona Sans', 'system-ui', 'sans-serif'],
         lora: ['Lora', 'serif'],
         'libre-baskerville': ['"Libre Baskerville"', 'serif'],
       },

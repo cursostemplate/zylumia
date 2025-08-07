@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-// Alterado de next/font/google para next/font/local
-import localFont from 'next/font/local'
+// Importando o novo arquivo CSS com as definições @font-face
+import "./fonts.css"; 
 import { cn } from "@/lib/utils"
-
-// Carregando a fonte Mona Sans localmente
-const fontSans = localFont({
-  src: '../public/fonts/Mona-Sans.ttf',
-  variable: "--font-sans",
-})
 
 export const metadata: Metadata = {
   title: "Zylumia",
@@ -23,10 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      {/* A classe 'font-sans' do Tailwind agora aplicará 'Mona Sans' diretamente */}
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          "min-h-screen bg-background font-sans antialiased"
         )}
       >
         {children}
