@@ -1,3 +1,6 @@
+'use client'
+
+import { useRef } from 'react'
 import SiteHeader from '@/components/site-header'
 import { FaqSection } from '@/components/faq-section'
 import { SiteFooter } from '@/components/site-footer'
@@ -5,7 +8,7 @@ import { ImageSwiper } from '@/components/ui/image-swiper'
 import { ProductDetails } from '@/components/product-details'
 import { TestimonialsCarousel } from '@/components/testimonials-carousel'
 import { CustomerReviews } from '@/components/customer-reviews'
-import { ProductFeatures } from '@/components/product-features'
+import { ProductAccordionFeatures } from '@/components/product-accordion-features'
 
 const productImages = [
   'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screenshot-20250806171418-0rNvoVp8bOsL3utXlRnIPTwTjepJoO.png',
@@ -15,6 +18,8 @@ const productImages = [
 ]
 
 export default function HomePage() {
+  const testimonialsRef = useRef(null);
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <SiteHeader />
@@ -25,12 +30,14 @@ export default function HomePage() {
                     <ImageSwiper images={productImages} />
                 </div>
                 <div>
-                    <ProductDetails />
+                    <ProductDetails testimonialsRef={testimonialsRef} />
                 </div>
             </div>
         </div>
-        <TestimonialsCarousel />
-        <ProductFeatures />
+        <div ref={testimonialsRef}>
+          <TestimonialsCarousel />
+        </div>
+        <ProductAccordionFeatures />
         <CustomerReviews />
         <FaqSection />
       </main>
