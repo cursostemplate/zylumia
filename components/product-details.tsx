@@ -23,7 +23,7 @@ const offers = [
         id: 1,
         quantity: "4 Masks",
         supply: "1 Month Supply",
-        save: "SAVE 28%",
+        save: "28%",
         price: "£21.95",
         originalPrice: "£34.95",
         image: "/placeholder.svg?height=48&width=48",
@@ -34,7 +34,7 @@ const offers = [
         id: 2,
         quantity: "8 Masks",
         supply: "2 Month Supply",
-        save: "SAVE 56%",
+        save: "56%",
         price: "£30.95",
         originalPrice: "£69.90",
         image: "/placeholder.svg?height=48&width=48",
@@ -45,7 +45,7 @@ const offers = [
         id: 3,
         quantity: "12 Masks",
         supply: "3 Month Supply",
-        save: "SAVE 62%",
+        save: "62%",
         price: "£38.95",
         originalPrice: "£104.85",
         image: "/placeholder.svg?height=48&width=48",
@@ -56,7 +56,7 @@ const offers = [
         id: 4,
         quantity: "16 Masks",
         supply: "4 Month Supply",
-        save: "SAVE 66%",
+        save: "66%",
         price: "£48.95",
         originalPrice: "£139.80",
         image: "/placeholder.svg?height=48&width=48",
@@ -67,7 +67,7 @@ const offers = [
         id: 5,
         quantity: "24 Masks",
         supply: "6 Month Supply",
-        save: "SAVE 70%",
+        save: "70%",
         price: "£65.95",
         originalPrice: "£209.70",
         image: "/placeholder.svg?height=48&width=48",
@@ -107,7 +107,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
 
   return (
     <>
-      <div className="flex flex-col gap-4">
+      <div id="product-details" className="flex flex-col gap-4">
           <div>
               <h1 className="text-3xl lg:text-4xl font-bold">Bio-Collagen Mask</h1>
               <div className="flex items-center gap-2 mt-2">
@@ -154,8 +154,11 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
                           <p className="font-bold text-base">{offer.quantity}</p>
                           <p className="text-sm text-muted-foreground">{offer.supply}</p>
                       </div>
-                      <div className="text-center mx-4">
-                          <span className="bg-brand text-brand-foreground text-xs font-bold px-2 py-1 rounded-md">{offer.save}</span>
+                      <div className="text-center mx-2 flex-shrink-0">
+                          <div className="bg-brand text-brand-foreground text-xs font-bold px-2 py-1 rounded-md flex flex-col items-center">
+                            <span>SAVE</span>
+                            <span>{offer.save}</span>
+                          </div>
                       </div>
                       <div className="text-right">
                           <p className="font-bold text-lg">{offer.price}</p>
@@ -184,16 +187,16 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
             className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm p-4 border-t z-50"
           >
             <div className="container mx-auto flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <NextImage src={offers.find(o => o.id === selectedOfferId)?.image || ''} alt="Selected offer" width={40} height={40} />
-                    <div>
-                        <p className="font-bold text-sm">{offers.find(o => o.id === selectedOfferId)?.quantity}</p>
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <NextImage src={offers.find(o => o.id === selectedOfferId)?.image || ''} alt="Selected offer" width={40} height={40} className="rounded-md" />
+                    <div className="truncate">
+                        <p className="font-bold text-sm truncate">{offers.find(o => o.id === selectedOfferId)?.quantity}</p>
                         <p className="font-bold text-base">{offers.find(o => o.id === selectedOfferId)?.price}</p>
                     </div>
                 </div>
                 <Button 
                     onClick={handleAddToCart}
-                    className="w-full max-w-xs h-12 bg-black hover:bg-gray-800 text-white text-lg font-bold"
+                    className="w-auto flex-shrink-0 h-12 bg-black hover:bg-gray-800 text-white text-lg font-bold px-6"
                 >
                     ADD TO CART
                 </Button>

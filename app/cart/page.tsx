@@ -14,16 +14,16 @@ export default function CartPage() {
     return acc + price * item.quantityInCart;
   }, 0);
 
-  const shipping = 5.00; // Example shipping cost
+  const shipping = 0; // Frete grátis
   const total = subtotal + shipping;
 
   return (
     <div className="flex flex-col min-h-screen">
       <SiteHeader />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold font-lora mb-8">Seu Carrinho</h1>
+        <h1 className="text-3xl font-bold font-lora mb-8">Your Cart</h1>
         {cartItems.length === 0 ? (
-          <p>Seu carrinho está vazio.</p>
+          <p>Your cart is empty.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-2 space-y-4">
@@ -40,20 +40,20 @@ export default function CartPage() {
             </div>
             <div className="md:col-span-1">
               <div className="border p-4 rounded-lg space-y-4">
-                <h2 className="text-xl font-bold">Resumo do Pedido</h2>
+                <h2 className="text-xl font-bold">Order Summary</h2>
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>£{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Frete</span>
-                  <span>£{shipping.toFixed(2)}</span>
+                  <span>Shipping</span>
+                  <span className="font-semibold text-green-600">FREE</span>
                 </div>
                 <div className="flex justify-between font-bold text-lg border-t pt-4">
                   <span>Total</span>
                   <span>£{total.toFixed(2)}</span>
                 </div>
-                <Button className="w-full bg-brand hover:bg-brand/90 text-brand-foreground">Finalizar Compra</Button>
+                <Button className="w-full bg-brand hover:bg-brand/90 text-brand-foreground">Proceed to Checkout</Button>
               </div>
             </div>
           </div>

@@ -34,12 +34,18 @@ export default function HomePage() {
                 </div>
             </div>
         </div>
-        <div ref={testimonialsRef}>
+        <div id="reviews" ref={testimonialsRef}>
           <TestimonialsCarousel />
         </div>
-        <ProductAccordionFeatures />
-        <CustomerReviews />
-        <FaqSection />
+        <div id="features">
+         <ProductAccordionFeatures />
+        </div>
+        <div id="customer-reviews">
+          <CustomerReviews />
+        </div>
+        <div id="faq">
+          <FaqSection />
+        </div>
       </main>
       <SiteFooter />
     </div>
