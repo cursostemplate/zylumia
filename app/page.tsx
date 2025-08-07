@@ -5,6 +5,7 @@ import { ImageSwiper } from '@/components/ui/image-swiper'
 import { ProductDetails } from '@/components/product-details'
 import { TestimonialsCarousel } from '@/components/testimonials-carousel'
 import { CustomerReviews } from '@/components/customer-reviews'
+import { ProductFeatures } from '@/components/product-features'
 
 const productImages = [
   'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screenshot-20250806171418-0rNvoVp8bOsL3utXlRnIPTwTjepJoO.png',
@@ -29,6 +30,7 @@ export default function HomePage() {
             </div>
         </div>
         <TestimonialsCarousel />
+        <ProductFeatures />
         <CustomerReviews />
         <FaqSection />
       </main>
