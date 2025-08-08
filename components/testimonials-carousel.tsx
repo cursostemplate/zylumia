@@ -9,7 +9,9 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel"
+import { cn } from "@/lib/utils"
 
 const testimonials = [
   {
@@ -40,6 +42,27 @@ const testimonials = [
 ]
 
 export function TestimonialsCarousel() {
+  const [api, setApi] = React.useState<CarouselApi>()
+  const [current, setCurrent] = React.useState(0)
+
+  React.useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    setCurrent(api.selectedScrollSnap())
+
+    const onSelect = () => {
+      setCurrent(api.selectedScrollSnap())
+    }
+
+    api.on("select", onSelect)
+
+    return () => {
+      api.off("select", onSelect)
+    }
+  }, [api])
+
   return (
     <section className="w-full py-12 md:py-24 bg-background">
       <div className="container px-4 md:px-6">
@@ -55,6 +78,7 @@ export function TestimonialsCarousel() {
         </div>
         <div className="py-10">
           <Carousel
+            setApi={setApi}
             opts={{
               align: "start",
               loop: true,
@@ -92,6 +116,18 @@ export function TestimonialsCarousel() {
             <CarouselPrevious className="hidden sm:flex" />
             <CarouselNext className="hidden sm:flex" />
           </Carousel>
+          <div className="flex justify-center gap-2 mt-4">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => api?.scrollTo(index)}
+                className={cn(
+                  "h-2 w-2 rounded-full bg-gray-300 transition-all",
+                  current === index ? "w-4 bg-brand" : "hover:bg-gray-400"
+                )}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

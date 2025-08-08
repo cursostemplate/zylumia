@@ -9,6 +9,7 @@ import { ProductDetails } from '@/components/product-details'
 import { TestimonialsCarousel } from '@/components/testimonials-carousel'
 import { CustomerReviews } from '@/components/customer-reviews'
 import { ProductAccordionFeatures } from '@/components/product-accordion-features'
+import { ProductFeatures } from '@/components/product-features'
 
 const productImages = [
   'https://i.postimg.cc/8PdPm2Bq/screenshot-20250713232114.jpg',
@@ -37,6 +38,7 @@ export default function HomePage() {
         <div id="reviews" ref={testimonialsRef}>
           <TestimonialsCarousel />
         </div>
+        <ProductFeatures />
         <div id="features">
          <ProductAccordionFeatures />
         </div>

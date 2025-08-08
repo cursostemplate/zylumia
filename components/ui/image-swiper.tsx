@@ -32,7 +32,7 @@ export function ImageSwiper({ images, className, ...props }: ImageSwiperProps) {
     >
       <div className="pointer-events-none absolute inset-0 z-10">
         {imgIndex > 0 && (
-          <div className="absolute left-5 top-1/2 -translate-y-1/2">
+          <div className="absolute left-2 top-1/2 -translate-y-1/2 md:left-5">
             <Button
               variant="ghost"
               size="icon"
@@ -45,7 +45,7 @@ export function ImageSwiper({ images, className, ...props }: ImageSwiperProps) {
         )}
 
         {imgIndex < images.length - 1 && (
-          <div className="absolute right-5 top-1/2 -translate-y-1/2">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 md:right-5">
             <Button
               variant="ghost"
               size="icon"
@@ -56,10 +56,17 @@ export function ImageSwiper({ images, className, ...props }: ImageSwiperProps) {
             </Button>
           </div>
         )}
-        <div className="absolute bottom-2 w-full flex justify-center">
-          <div className="flex min-w-9 items-center justify-center rounded-md bg-black/80 px-2 py-0.5 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-            {imgIndex + 1}/{images.length}
-          </div>
+        <div className="absolute bottom-4 w-full flex justify-center gap-2">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setImgIndex(i)}
+              className={cn(
+                "h-2 w-2 rounded-full bg-white/50 transition-all pointer-events-auto",
+                i === imgIndex ? "w-4 bg-white" : "hover:bg-white/75"
+              )}
+            />
+          ))}
         </div>
       </div>
       <motion.div

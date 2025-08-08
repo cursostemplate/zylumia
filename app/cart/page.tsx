@@ -54,6 +54,15 @@ export default function CartPage() {
                   <span>£{total.toFixed(2)}</span>
                 </div>
                 <Button className="w-full bg-brand hover:bg-brand/90 text-brand-foreground">Proceed to Checkout</Button>
+                <div className="flex justify-center pt-2">
+                  <NextImage 
+                    src="https://i.postimg.cc/0QjNK0gz/a6e71fce-61c4-4021-97a0-1b79cdcfc845-removebg-preview.webp"
+                    alt="Payment methods"
+                    width={250}
+                    height={40}
+                    className="object-contain"
+                  />
+                </div>
               </div>
             </div>
           </div>
