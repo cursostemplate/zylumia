@@ -11,35 +11,35 @@ const reviews = [
     date: "07/25/2025",
     title: "Incredible Glow-Up!",
     comment: "I've never used a face mask that worked this fast. Within minutes, my skin looked dewy, plump, and refreshed—like I just walked out of a spa. My husband even noticed the difference!",
-    image: "/placeholder.svg?height=94&width=94",
+    image: "https://i.postimg.cc/R0xDk6DD/screenshot-20250807162004.webp",
   },
   {
     name: "Madison",
     date: "07/25/2025",
     title: "Better Than Expensive Facials",
     comment: "This mask gave me results that rival high-end facials. My pores looked smaller, my skin was noticeably softer, and the hydration lasted all day. Definitely a must-have in my skincare routine!",
-    image: "/placeholder.svg?height=94&width=94",
+    image: "https://i.postimg.cc/Gh4CxDY0/screenshot-20250807165906.webp",
   },
   {
     name: "Chloe",
     date: "07/25/2025",
     title: "Holy Grail for Dry Skin!",
     comment: "If you struggle with dryness like me, this is a game-changer. My skin felt instantly quenched, and I woke up with a glow I’ve never seen before. Can’t recommend it enough!",
-    image: "/placeholder.svg?height=94&width=94",
+    image: "https://i.postimg.cc/DfjhG6Sd/screenshot-20250807165913.webp",
   },
   {
     name: "Olivia",
     date: "07/25/2025",
     title: "Instant Spa Experience at Home",
     comment: "This mask makes self-care feel luxurious. The texture, scent, and results make it feel like a full spa treatment. My skin was smoother and more radiant right away!",
-    image: "/placeholder.svg?height=94&width=94",
+    image: "https://i.postimg.cc/MHF886Cr/screenshot-20250807165917.webp",
   },
   {
     name: "Avery",
     date: "07/25/2025",
     title: "Visible Results After One Use",
     comment: "I was skeptical at first, but wow! One application and my skin looked brighter, more even, and super hydrated. It’s officially part of my weekly skincare lineup.",
-    image: "/placeholder.svg?height=94&width=94",
+    image: "https://i.postimg.cc/4ydTM7S9/screenshot-20250807165919.webp",
   },
 ];
 
@@ -91,7 +91,7 @@ export function CustomerReviews() {
               <div key={index} className="p-4 border rounded-lg">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
-                    <NextImage src={review.image} alt={review.name} width={94} height={94} className="rounded-md" />
+                    <NextImage src={review.image} alt={review.name} width={94} height={94} className="rounded-md object-cover" />
                     <div>
                       <div className="flex text-yellow-400">
                         {[...Array(5)].map((_, i) => <Star key={i} fill="currentColor" className="w-5 h-5" />)}

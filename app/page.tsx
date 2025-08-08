@@ -11,10 +11,10 @@ import { CustomerReviews } from '@/components/customer-reviews'
 import { ProductAccordionFeatures } from '@/components/product-accordion-features'
 
 const productImages = [
-  'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/screenshot-20250806171418-0rNvoVp8bOsL3utXlRnIPTwTjepJoO.png',
-  'https://ui.lukacho.com/_next/static/media/2.6a8dd51d.webp',
-  'https://ui.lukacho.com/_next/static/media/3.d95288b3.webp',
-  'https://ui.lukacho.com/_next/static/media/4.0de1e023.webp'
+  'https://i.postimg.cc/8PdPm2Bq/screenshot-20250713232114.jpg',
+  'https://i.postimg.cc/qMVPyFkK/screenshot-20250807170341.jpg',
+  'https://i.postimg.cc/QNTLBDrs/screenshot-20250807170346.jpg',
+  'https://i.postimg.cc/BbDRRTCt/screenshot-20250807170513.jpg'
 ]
 
 export default function HomePage() {

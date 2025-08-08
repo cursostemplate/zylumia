@@ -26,7 +26,7 @@ const offers = [
         save: "28%",
         price: "£21.95",
         originalPrice: "£34.95",
-        image: "/placeholder.svg?height=48&width=48",
+        image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
         isPopular: false,
         freeGift: false,
     },
@@ -37,7 +37,7 @@ const offers = [
         save: "56%",
         price: "£30.95",
         originalPrice: "£69.90",
-        image: "/placeholder.svg?height=48&width=48",
+        image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
         isPopular: false,
         freeGift: false,
     },
@@ -48,7 +48,7 @@ const offers = [
         save: "62%",
         price: "£38.95",
         originalPrice: "£104.85",
-        image: "/placeholder.svg?height=48&width=48",
+        image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
         isPopular: true,
         freeGift: false,
     },
@@ -59,7 +59,7 @@ const offers = [
         save: "66%",
         price: "£48.95",
         originalPrice: "£139.80",
-        image: "/placeholder.svg?height=48&width=48",
+        image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
         isPopular: false,
         freeGift: true,
     },
@@ -70,7 +70,7 @@ const offers = [
         save: "70%",
         price: "£65.95",
         originalPrice: "£209.70",
-        image: "/placeholder.svg?height=48&width=48",
+        image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
         isPopular: false,
         freeGift: false,
     }
@@ -148,7 +148,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
                       {offer.isPopular && <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-black text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Most Popular</div>}
                       {offer.freeGift && <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand text-white text-xs font-bold px-3 py-1 rounded-full">+1 FREE GIFT</div>}
                       
-                      <NextImage src={offer.image} alt={offer.quantity} width={48} height={48} />
+                      <NextImage src={offer.image} alt={offer.quantity} width={48} height={48} className="rounded-md" />
 
                       <div className="flex-1">
                           <p className="font-bold text-base">{offer.quantity}</p>
@@ -174,6 +174,15 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
           >
               ADD TO CART
           </Button>
+          <div className="flex justify-center mt-4">
+            <NextImage 
+              src="https://i.postimg.cc/0QjNK0gz/a6e71fce-61c4-4021-97a0-1b79cdcfc845-removebg-preview.webp"
+              alt="Payment methods"
+              width={300}
+              height={50}
+              className="object-contain"
+            />
+          </div>
           <DermatologistTestimonial />
       </div>
 

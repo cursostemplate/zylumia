@@ -15,27 +15,27 @@ const testimonials = [
   {
     name: "ESMALTE SYMONE",
     quote: "“I used to avoid anything with collagen because I have acne-prone skin, but this mask completely changed my mind. It really helped reduce redness and made my breakouts heal much faster. I’m honestly impressed with the results.”",
-    image: "/placeholder.svg?height=190&width=190",
+    image: "https://i.postimg.cc/KvQybN2g/screenshot-20250807171508.webp",
   },
   {
     name: "ELIF S.",
     quote: "“My skin looked tired and dull from work stress. After using this mask a few times, I noticed it felt firmer, smoother, and more refreshed. It’s like a full reset for my face — I feel confident without makeup again!”",
-    image: "/placeholder.svg?height=190&width=190",
+    image: "https://i.postimg.cc/VvDZxKCf/screenshot-20250807171513.webp",
   },
   {
     name: "KIRSTEN C.",
     quote: "“I started noticing smile lines and wanted something gentle to smooth them out. This collagen mask really helped — my skin feels firmer and more elastic. It’s not an overnight miracle, but with regular use, the difference is undeniable.”",
-    image: "/placeholder.svg?height=190&width=190",
+    image: "https://i.postimg.cc/nLBRFFDw/screenshot-20250807171515.webp",
   },
   {
     name: "VANESSA JOHNSON",
     quote: "“I barely have time for skincare, but this collagen mask became my go-to before bed. It leaves my skin looking refreshed and radiant — even after sleepless nights. I honestly look more awake than I feel!”",
-    image: "/placeholder.svg?height=190&width=190",
+    image: "https://i.postimg.cc/d3t4jGSz/screenshot-20250807171517.webp",
   },
   {
     name: "MARIANA T.",
     quote: "“My skin felt dry and lacked that healthy glow. After a few uses of this mask, I noticed smoother texture, tighter pores, and an overall brighter complexion. It quickly became a must-have in my routine.”",
-    image: "/placeholder.svg?height=190&width=190",
+    image: "https://i.postimg.cc/9QQjJFM9/screenshot-20250807200913.webp",
   },
 ]
 
