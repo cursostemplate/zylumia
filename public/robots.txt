@@ -1,0 +1,31 @@
+# Allow all friendly web crawlers
+User-agent: *
+Allow: /
+Allow: /_next/static/
+Allow: /fonts/
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
+Allow: /*.svg$
+
+# Disallow crawling of the cart page
+Disallow: /cart
+Disallow: /checkout
+Disallow: /admin
+
+# Disallow URLs with query parameters to avoid duplicate content
+Disallow: /*?*
+
+# Point crawlers to the sitemap
+Sitemap: https://zylumia.com/sitemap.xml
+
+# Rules for Google's Image Crawler
+User-agent: Googlebot-Image
+Allow: /
+
+# Rules for Google's AdBot
+User-agent: AdsBot-Google
+Disallow: /
