@@ -2,10 +2,12 @@
 
 import { useCart } from "@/contexts/cart-context"
 import NextImage from "next/image"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import SiteHeader from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { SalesNotification } from "@/components/sales-notification"
+import Link from "next/link"
+import { cn } from "@/lib/utils"
 
 export default function CartPage() {
   const { cartItems } = useCart()
@@ -17,6 +19,8 @@ export default function CartPage() {
 
   const shipping = 0 // Frete grátis
   const total = subtotal + shipping
+
+  const paypalCheckoutUrl = "https://www.paypal.com/ncp/payment/7EK7736AV56Q6"
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -54,7 +58,16 @@ export default function CartPage() {
                   <span>Total</span>
                   <span>£{total.toFixed(2)}</span>
                 </div>
-                <Button className="w-full bg-brand hover:bg-brand/90 text-brand-foreground">Proceed to Checkout</Button>
+                <Link
+                  href={paypalCheckoutUrl}
+                  className={cn(
+                    buttonVariants({ className: "w-full bg-brand hover:bg-brand/90 text-brand-foreground" }),
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Proceed to Checkout
+                </Link>
                 <div className="flex justify-center pt-2">
                   <NextImage
                     src="https://i.postimg.cc/0QjNK0gz/a6e71fce-61c4-4021-97a0-1b79cdcfc845-removebg-preview.webp"

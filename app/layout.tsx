@@ -26,12 +26,6 @@ export default function RootLayout({
           {children}
         </CartProvider>
 
-        {/* PayPal SDK Script */}
-        <Script
-          src={`https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}&components=hosted-buttons&disable-funding=venmo&currency=GBP`}
-          strategy="afterInteractive"
-        />
-
         {/* Google Analytics Script */}
         <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-JHLXY58DJ0" />
         <Script
