@@ -32,7 +32,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: false,
     freeGift: false,
-    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx1", // Substitua pelo Price ID de prod_Sq3bCmq93dWV7c
+    priceId: "price_1RuNUi7NJwNT4LyHobs3baD6",
   },
   {
     id: 2,
@@ -44,7 +44,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: false,
     freeGift: false,
-    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx2", // Substitua pelo Price ID de prod_Sq3cAzMvdpOJGk
+    priceId: "price_1RuNVc7NJwNT4LyHIzKpUcL1",
   },
   {
     id: 3,
@@ -56,7 +56,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: true,
     freeGift: false,
-    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx3", // Substitua pelo Price ID de prod_Sq3dq8hLmsGaPY
+    priceId: "price_1RuNWg7NJwNT4LyHmKMp8wKv",
   },
   {
     id: 4,
@@ -68,7 +68,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: false,
     freeGift: true,
-    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx4", // Substitua pelo Price ID de prod_Sq3eUp1jbXQ2Y5
+    priceId: "price_1RuNXf7NJwNT4LyHDmObIlXF",
   },
   {
     id: 5,
@@ -80,7 +80,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: false,
     freeGift: false,
-    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx5", // Substitua pelo Price ID de prod_Sq3gUDVm1pnESr
+    priceId: "price_1RuNYq7NJwNT4LyHC4QegQ7N",
   },
 ]
 
