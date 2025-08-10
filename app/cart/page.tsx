@@ -1,16 +1,18 @@
 "use client"
 
+import { useTransition } from "react"
 import { useCart } from "@/contexts/cart-context"
 import NextImage from "next/image"
-import { buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import SiteHeader from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { SalesNotification } from "@/components/sales-notification"
-import Link from "next/link"
-import { cn } from "@/lib/utils"
+import { createCheckoutSession } from "@/app/actions/stripe"
+import { Loader2 } from "lucide-react"
 
 export default function CartPage() {
   const { cartItems } = useCart()
+  const [isPending, startTransition] = useTransition()
 
   const subtotal = cartItems.reduce((acc, item) => {
     const price = Number.parseFloat(item.price.replace("£", ""))
@@ -20,7 +22,11 @@ export default function CartPage() {
   const shipping = 0 // Frete grátis
   const total = subtotal + shipping
 
-  const paypalCheckoutUrl = "https://www.paypal.com/ncp/payment/7EK7736AV56Q6"
+  const handleCheckout = () => {
+    startTransition(async () => {
+      await createCheckoutSession(cartItems)
+    })
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -58,16 +64,15 @@ export default function CartPage() {
                   <span>Total</span>
                   <span>£{total.toFixed(2)}</span>
                 </div>
-                <Link
-                  href={paypalCheckoutUrl}
-                  className={cn(
-                    buttonVariants({ className: "w-full bg-brand hover:bg-brand/90 text-brand-foreground" }),
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Proceed to Checkout
-                </Link>
+                <form action={handleCheckout} className="w-full">
+                  <Button
+                    type="submit"
+                    className="w-full bg-brand hover:bg-brand/90 text-brand-foreground"
+                    disabled={isPending}
+                  >
+                    {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Proceed to Checkout"}
+                  </Button>
+                </form>
                 <div className="flex justify-center pt-2">
                   <NextImage
                     src="https://i.postimg.cc/0QjNK0gz/a6e71fce-61c4-4021-97a0-1b79cdcfc845-removebg-preview.webp"

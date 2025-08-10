@@ -20,6 +20,7 @@ const benefits = [
   "Trusted Korean Beauty Formula",
 ]
 
+// ATENÇÃO: Substitua os valores de 'priceId' pelos IDs de Preço corretos do seu painel Stripe.
 const offers = [
   {
     id: 1,
@@ -31,6 +32,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: false,
     freeGift: false,
+    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx1", // Substitua pelo Price ID de prod_Sq3bCmq93dWV7c
   },
   {
     id: 2,
@@ -42,6 +44,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: false,
     freeGift: false,
+    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx2", // Substitua pelo Price ID de prod_Sq3cAzMvdpOJGk
   },
   {
     id: 3,
@@ -53,6 +56,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: true,
     freeGift: false,
+    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx3", // Substitua pelo Price ID de prod_Sq3dq8hLmsGaPY
   },
   {
     id: 4,
@@ -64,6 +68,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: false,
     freeGift: true,
+    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx4", // Substitua pelo Price ID de prod_Sq3eUp1jbXQ2Y5
   },
   {
     id: 5,
@@ -75,6 +80,7 @@ const offers = [
     image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
     isPopular: false,
     freeGift: false,
+    priceId: "price_1PjA4pAxxxxxxxxxxxxxxx5", // Substitua pelo Price ID de prod_Sq3gUDVm1pnESr
   },
 ]
 

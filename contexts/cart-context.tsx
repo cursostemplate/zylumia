@@ -2,7 +2,7 @@
 
 import { createContext, useState, useContext, type ReactNode } from "react"
 
-interface Offer {
+export interface Offer {
   id: number
   quantity: string
   supply: string
@@ -12,9 +12,10 @@ interface Offer {
   image: string
   isPopular: boolean
   freeGift: boolean
+  priceId: string // ID do Preço da Stripe
 }
 
-interface CartItem extends Offer {
+export interface CartItem extends Offer {
   quantityInCart: number
 }
 
@@ -33,8 +34,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((cartItem) => cartItem.id === item.id)
       if (existingItem) {
-        return prevItems
+        // Se o item já existe, aumenta a quantidade
+        return prevItems.map((cartItem) =>
+          cartItem.id === item.id ? { ...cartItem, quantityInCart: cartItem.quantityInCart + 1 } : cartItem,
+        )
       }
+      // Adiciona o novo item
       return [...prevItems, { ...item, quantityInCart: 1 }]
     })
   }
