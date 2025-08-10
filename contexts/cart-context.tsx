@@ -31,17 +31,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
 
   const addToCart = (item: Offer) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((cartItem) => cartItem.id === item.id)
-      if (existingItem) {
-        // Se o item já existe, aumenta a quantidade
-        return prevItems.map((cartItem) =>
-          cartItem.id === item.id ? { ...cartItem, quantityInCart: cartItem.quantityInCart + 1 } : cartItem,
-        )
-      }
-      // Adiciona o novo item
-      return [...prevItems, { ...item, quantityInCart: 1 }]
-    })
+    // Garante que o carrinho tenha apenas um item: a oferta mais recente selecionada.
+    setCartItems([{ ...item, quantityInCart: 1 }])
   }
 
   const getCartTotalItems = () => {

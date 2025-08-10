@@ -1,7 +1,7 @@
 "use server"
 
 import { redirect } from "next/navigation"
-import { headers } from "next/headers" // Importar a função 'headers'
+import { headers } from "next/headers"
 import Stripe from "stripe"
 import type { CartItem } from "@/contexts/cart-context"
 
@@ -15,8 +15,8 @@ export async function createCheckoutSession(cartItems: CartItem[]) {
   })
 
   const lineItems = cartItems.map((item) => {
-    if (!item.priceId) {
-      throw new Error(`Product "${item.quantity}" is missing a Stripe Price ID.`)
+    if (!item.priceId || item.priceId.includes("COLE_SEU_PRICE_ID_AQUI")) {
+      throw new Error(`Product "${item.quantity}" is missing a valid Stripe Price ID.`)
     }
     return {
       price: item.priceId,
@@ -24,11 +24,13 @@ export async function createCheckoutSession(cartItems: CartItem[]) {
     }
   })
 
-  // Constrói a URL de origem dinamicamente a partir dos cabeçalhos da requisição
+  // Solução definitiva para a criação da URL
   const headersList = headers()
-  const host = headersList.get("host")
-  const protocol = headersList.get("x-forwarded-proto") || "http"
-  const origin = `${protocol}://${host}`
+  const origin = headersList.get("origin")
+
+  if (!origin) {
+    throw new Error("Could not determine the request origin.")
+  }
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
