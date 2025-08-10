@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { SalesNotification } from "@/components/sales-notification"
 import { createCheckoutSession } from "@/app/actions/stripe"
 import { Loader2 } from "lucide-react"
+import Link from "next/link"
 
 export default function CartPage() {
   const { cartItems } = useCart()
@@ -28,13 +29,22 @@ export default function CartPage() {
     })
   }
 
+  // Verifica se a oferta específica de "4 Masks" (ID 1) está no carrinho
+  const isFourMasksOffer = cartItems.length === 1 && cartItems[0]?.id === 1
+  const fourMasksPaymentLink = "https://buy.stripe.com/7sYdR39I40oj7gf8Xde3e00"
+
   return (
     <div className="flex flex-col min-h-screen">
       <SiteHeader />
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold font-lora mb-8">Your Cart</h1>
         {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
+          <div className="text-center py-12">
+            <p className="text-muted-foreground mb-4">Your cart is empty.</p>
+            <Button asChild>
+              <Link href="/">Continue Shopping</Link>
+            </Button>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-2 space-y-4">
@@ -64,15 +74,25 @@ export default function CartPage() {
                   <span>Total</span>
                   <span>£{total.toFixed(2)}</span>
                 </div>
-                <form action={handleCheckout} className="w-full">
-                  <Button
-                    type="submit"
-                    className="w-full bg-brand hover:bg-brand/90 text-brand-foreground"
-                    disabled={isPending}
-                  >
-                    {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Proceed to Checkout"}
+
+                {isFourMasksOffer ? (
+                  // Se for a oferta de 4 máscaras, usa o link de pagamento direto
+                  <Button asChild className="w-full bg-brand hover:bg-brand/90 text-brand-foreground">
+                    <a href={fourMasksPaymentLink}>Proceed to Checkout</a>
                   </Button>
-                </form>
+                ) : (
+                  // Para todas as outras ofertas, usa o checkout dinâmico
+                  <form action={handleCheckout} className="w-full">
+                    <Button
+                      type="submit"
+                      className="w-full bg-brand hover:bg-brand/90 text-brand-foreground"
+                      disabled={isPending}
+                    >
+                      {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Proceed to Checkout"}
+                    </Button>
+                  </form>
+                )}
+
                 <div className="flex justify-center pt-2">
                   <NextImage
                     src="https://i.postimg.cc/0QjNK0gz/a6e71fce-61c4-4021-97a0-1b79cdcfc845-removebg-preview.webp"
