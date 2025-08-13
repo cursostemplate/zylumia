@@ -8,11 +8,11 @@ import SiteHeader from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { SalesNotification } from "@/components/sales-notification"
 import { createCheckoutSession } from "@/app/actions/stripe"
-import { Loader2 } from "lucide-react"
+import { Loader2, Minus, Plus, Trash2 } from "lucide-react"
 import Link from "next/link"
 
 export default function CartPage() {
-  const { cartItems } = useCart()
+  const { cartItems, removeFromCart, updateQuantity } = useCart()
   const [isPending, startTransition] = useTransition()
 
   const subtotal = cartItems.reduce((acc, item) => {
@@ -27,6 +27,14 @@ export default function CartPage() {
     startTransition(async () => {
       await createCheckoutSession(cartItems)
     })
+  }
+
+  const handleQuantityChange = (itemId: number, newQuantity: number) => {
+    updateQuantity(itemId, newQuantity)
+  }
+
+  const handleRemoveItem = (itemId: number) => {
+    removeFromCart(itemId)
   }
 
   // Verifica se a oferta específica de "4 Masks" (ID 1) está no carrinho
@@ -54,8 +62,39 @@ export default function CartPage() {
                   <div className="flex-grow">
                     <h2 className="font-bold">{item.quantity}</h2>
                     <p className="text-sm text-muted-foreground">{item.supply}</p>
+                    <p className="font-bold text-lg">{item.price}</p>
                   </div>
-                  <p className="font-bold text-lg">{item.price}</p>
+
+                  {/* Controles de Quantidade */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 bg-transparent"
+                      onClick={() => handleQuantityChange(item.id, item.quantityInCart - 1)}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-8 text-center font-semibold">{item.quantityInCart}</span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 bg-transparent"
+                      onClick={() => handleQuantityChange(item.id, item.quantityInCart + 1)}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Botão de Remover */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive hover:text-destructive"
+                    onClick={() => handleRemoveItem(item.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               ))}
             </div>
@@ -76,12 +115,10 @@ export default function CartPage() {
                 </div>
 
                 {isFourMasksOffer ? (
-                  // Se for a oferta de 4 máscaras, usa o link de pagamento direto
                   <Button asChild className="w-full bg-brand hover:bg-brand/90 text-brand-foreground">
                     <a href={fourMasksPaymentLink}>Proceed to Checkout</a>
                   </Button>
                 ) : (
-                  // Para todas as outras ofertas, usa o checkout dinâmico
                   <form action={handleCheckout} className="w-full">
                     <Button
                       type="submit"
@@ -95,8 +132,8 @@ export default function CartPage() {
 
                 <div className="flex justify-center pt-2">
                   <NextImage
-                    src="https://i.postimg.cc/0QjNK0gz/a6e71fce-61c4-4021-97a0-1b79cdcfc845-removebg-preview.webp"
-                    alt="Payment methods"
+                    src="https://i.postimg.cc/rsXXQ6fr/Chat-GPT-Image-11-de-ago-de-2025-00-22-50.webp"
+                    alt="Secure payment methods"
                     width={250}
                     height={40}
                     className="object-contain"

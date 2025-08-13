@@ -1,35 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
   <!-- Homepage -->
   <url>
     <loc>https://zylumia.com/</loc>
-    <lastmod>2025-08-08</lastmod>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://i.postimg.cc/ZqG8zTrc/Chat-GPT-Image-13-de-ago-de-2025-00-05-30.webp</image:loc>
+      <image:title>Bio-Collagen Mask - Premium Skincare</image:title>
+      <image:caption>Professional collagen mask for radiant skin transformation</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://i.postimg.cc/XqdspnSj/Chat-GPT-Image-13-de-ago-de-2025-00-39-00.webp</image:loc>
+      <image:title>Collagen Mask Application</image:title>
+      <image:caption>How to apply Bio-Collagen mask for best results</image:caption>
+    </image:image>
   </url>
 
-  <!-- 
-    Cart Page: Página do carrinho de compras.
-    Menor prioridade, pois não é conteúdo de destino para busca orgânica.
-  -->
+  <!-- Cart Page -->
   <url>
     <loc>https://zylumia.com/cart</loc>
-    <lastmod>2025-08-08</lastmod>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.7</priority>
   </url>
 
-  <!-- 
-    MODELO PARA FUTURAS PÁGINAS:
-    Quando você criar novas páginas, basta copiar e colar este bloco
-    e atualizar a URL em <loc>.
-
+  <!-- Payment Success Page -->
   <url>
-    <loc>https://zylumia.com/sua-nova-pagina</loc>
-    <lastmod>2025-08-08</lastmod>
+    <loc>https://zylumia.com/payment/success</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.3</priority>
   </url>
-  -->
+
+  <!-- Payment Cancel Page -->
+  <url>
+    <loc>https://zylumia.com/payment/cancel</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
 
 </urlset>

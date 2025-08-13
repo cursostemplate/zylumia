@@ -128,7 +128,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
   const handleAddToCart = () => {
     if (selectedOffer) {
       addToCart(selectedOffer)
-      trackAddToCart(selectedOffer) // Enviar evento para Google Analytics
+      trackAddToCart(selectedOffer)
       router.push("/cart")
     }
   }
@@ -218,8 +218,8 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
         </Button>
         <div className="flex justify-center mt-4">
           <NextImage
-            src="https://i.postimg.cc/0QjNK0gz/a6e71fce-61c4-4021-97a0-1b79cdcfc845-removebg-preview.webp"
-            alt="Payment methods"
+            src="https://i.postimg.cc/rsXXQ6fr/Chat-GPT-Image-11-de-ago-de-2025-00-22-50.webp"
+            alt="Secure payment methods"
             width={300}
             height={50}
             className="object-contain"

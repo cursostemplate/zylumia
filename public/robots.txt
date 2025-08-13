@@ -1,6 +1,8 @@
-# Allow all friendly web crawlers
+# Robots.txt otimizado para Zylumia
 User-agent: *
 Allow: /
+
+# Allow important static resources
 Allow: /_next/static/
 Allow: /fonts/
 Allow: /*.css$
@@ -11,24 +13,51 @@ Allow: /*.jpeg$
 Allow: /*.webp$
 Allow: /*.svg$
 
-# Allow cart page for indexing (removed the Disallow rule)
+# Allow all main pages
 Allow: /cart
+Allow: /payment/success
+Allow: /payment/cancel
 
-# Disallow only sensitive areas
+# Disallow sensitive areas
 Disallow: /checkout
 Disallow: /admin
 Disallow: /api/
+Disallow: /_next/
+Disallow: /node_modules/
 
 # Disallow URLs with query parameters to avoid duplicate content
 Disallow: /*?*
+Disallow: /*&*
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
 
 # Point crawlers to the sitemap
 Sitemap: https://zylumia.com/sitemap.xml
 
-# Rules for Google's Image Crawler
+# Specific rules for different bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
 User-agent: Googlebot-Image
 Allow: /
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+Allow: /*.svg$
 
-# Rules for Google's AdBot
-User-agent: AdsBot-Google
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block unwanted bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
 Disallow: /

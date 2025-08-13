@@ -12,10 +12,10 @@ import { ProductAccordionFeatures } from "@/components/product-accordion-feature
 import { ProductFeatures } from "@/components/product-features"
 
 const productImages = [
-  "https://i.postimg.cc/8PdPm2Bq/screenshot-20250713232114.jpg",
-  "https://i.postimg.cc/qMVPyFkK/screenshot-20250807170341.jpg",
-  "https://i.postimg.cc/QNTLBDrs/screenshot-20250807170346.jpg",
-  "https://i.postimg.cc/BbDRRTCt/screenshot-20250807170513.jpg",
+  "https://i.postimg.cc/ZqG8zTrc/Chat-GPT-Image-13-de-ago-de-2025-00-05-30.webp",
+  "https://i.postimg.cc/XqdspnSj/Chat-GPT-Image-13-de-ago-de-2025-00-39-00.webp",
+  "https://i.postimg.cc/c1zKJfXL/Transforma-o-de-Pele-com-M-scara.webp",
+  "https://i.postimg.cc/wjVbXxt3/Chat-GPT-Image-13-de-ago-de-2025-00-39-12.webp",
 ]
 
 export default function HomePage() {

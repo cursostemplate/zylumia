@@ -8,9 +8,60 @@ import Script from "next/script"
 import { CountdownBanner } from "@/components/countdown-banner"
 
 export const metadata: Metadata = {
-  title: "Zylumia",
-  description: "Seu site de moda e estilo.",
-  generator: "v0.dev",
+  title: "Zylumia - Premium Bio-Collagen Face Masks | Korean Skincare",
+  description:
+    "Transform your skin with Zylumia's premium bio-collagen face masks. Korean skincare formula for radiant, youthful skin. Visible results after just one use. Free shipping worldwide.",
+  keywords:
+    "collagen mask, face mask, korean skincare, anti-aging, skincare, beauty, collagen, hydrating mask, premium skincare",
+  authors: [{ name: "Zylumia" }],
+  creator: "Zylumia",
+  publisher: "Zylumia",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://zylumia.com"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Zylumia - Premium Bio-Collagen Face Masks",
+    description: "Transform your skin with premium Korean bio-collagen masks. Visible results after just one use.",
+    url: "https://zylumia.com",
+    siteName: "Zylumia",
+    images: [
+      {
+        url: "https://i.postimg.cc/ZqG8zTrc/Chat-GPT-Image-13-de-ago-de-2025-00-05-30.webp",
+        width: 1200,
+        height: 630,
+        alt: "Zylumia Bio-Collagen Face Mask",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Zylumia - Premium Bio-Collagen Face Masks",
+    description: "Transform your skin with premium Korean bio-collagen masks. Visible results after just one use.",
+    images: ["https://i.postimg.cc/ZqG8zTrc/Chat-GPT-Image-13-de-ago-de-2025-00-05-30.webp"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "your-google-verification-code", // Adicione seu código de verificação do Google
+  },
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
@@ -19,7 +70,56 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Structured Data for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Zylumia",
+              url: "https://zylumia.com",
+              logo: "https://zylumia.com/placeholder-logo.png",
+              description: "Premium bio-collagen face masks for radiant, youthful skin",
+              contactPoint: {
+                "@type": "ContactPoint",
+                email: "zylumiaa@gmail.com",
+                contactType: "Customer Service",
+              },
+              sameAs: [],
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Product",
+              name: "Bio-Collagen Face Mask",
+              description: "Premium Korean bio-collagen face mask for anti-aging and skin hydration",
+              brand: {
+                "@type": "Brand",
+                name: "Zylumia",
+              },
+              offers: {
+                "@type": "AggregateOffer",
+                lowPrice: "21.95",
+                highPrice: "65.95",
+                priceCurrency: "GBP",
+                availability: "https://schema.org/InStock",
+              },
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.6",
+                reviewCount: "5000",
+              },
+            }),
+          }}
+        />
+      </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased")}>
         <CartProvider>
           <CountdownBanner />

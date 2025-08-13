@@ -12,7 +12,7 @@ export interface Offer {
   image: string
   isPopular: boolean
   freeGift: boolean
-  priceId: string // ID do Preço da Stripe
+  priceId: string
 }
 
 export interface CartItem extends Offer {
@@ -22,6 +22,9 @@ export interface CartItem extends Offer {
 interface CartContextType {
   cartItems: CartItem[]
   addToCart: (item: Offer) => void
+  removeFromCart: (itemId: number) => void
+  updateQuantity: (itemId: number, quantity: number) => void
+  clearCart: () => void
   getCartTotalItems: () => number
 }
 
@@ -31,15 +34,46 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
 
   const addToCart = (item: Offer) => {
-    // Garante que o carrinho tenha apenas um item: a oferta mais recente selecionada.
     setCartItems([{ ...item, quantityInCart: 1 }])
+  }
+
+  const removeFromCart = (itemId: number) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId))
+  }
+
+  const updateQuantity = (itemId: number, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(itemId)
+      return
+    }
+
+    setCartItems((prevItems) =>
+      prevItems.map((item) => (item.id === itemId ? { ...item, quantityInCart: quantity } : item)),
+    )
+  }
+
+  const clearCart = () => {
+    setCartItems([])
   }
 
   const getCartTotalItems = () => {
     return cartItems.reduce((total, item) => total + item.quantityInCart, 0)
   }
 
-  return <CartContext.Provider value={{ cartItems, addToCart, getCartTotalItems }}>{children}</CartContext.Provider>
+  return (
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        getCartTotalItems,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  )
 }
 
 export const useCart = () => {
