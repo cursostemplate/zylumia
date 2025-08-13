@@ -1,55 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   
   <!-- Homepage -->
   <url>
     <loc>https://zylumia.com/</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://i.postimg.cc/ZqG8zTrc/Chat-GPT-Image-13-de-ago-de-2025-00-05-30.webp</image:loc>
       <image:title>Bio-Collagen Mask - Premium Skincare</image:title>
       <image:caption>Professional collagen mask for radiant skin transformation</image:caption>
     </image:image>
+    <image:image>
+      <image:loc>https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp</image:loc>
+      <image:title>Bio-Collagen Face Mask Product</image:title>
+      <image:caption>Premium Korean bio-collagen face mask</image:caption>
+    </image:image>
   </url>
 
   <!-- Skincare Page -->
   <url>
     <loc>https://zylumia.com/skincare</loc>
-    <lastmod>2025-08-13</lastmod>
+    <lastmod>2025-01-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Yt0sMSBJwOWNVdZNC2zVNnZ7lnoGey.png</image:loc>
-      <image:title>Bio-Collagen Mask Product</image:title>
-      <image:caption>Premium bio-collagen face mask for anti-aging skincare</image:caption>
+      <image:loc>https://i.postimg.cc/ZqG8zTrc/Chat-GPT-Image-13-de-ago-de-2025-00-05-30.webp</image:loc>
+      <image:title>Premium Skincare Results</image:title>
+      <image:caption>Before and after results with bio-collagen masks</image:caption>
     </image:image>
   </url>
 
   <!-- Cart Page -->
   <url>
     <loc>https://zylumia.com/cart</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
   </url>
 
   <!-- Payment Success Page -->
   <url>
     <loc>https://zylumia.com/payment/success</loc>
-    <lastmod>2025-08-13</lastmod>
+    <lastmod>2025-01-13</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.5</priority>
   </url>
 
   <!-- Payment Cancel Page -->
   <url>
     <loc>https://zylumia.com/payment/cancel</loc>
-    <lastmod>2025-08-13</lastmod>
+    <lastmod>2025-01-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
+  </url>
+
+  <!-- Product URLs (Virtual product pages for SEO) -->
+  <url>
+    <loc>https://zylumia.com/#product-4-masks</loc>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://zylumia.com/#product-8-masks</loc>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://zylumia.com/#product-12-masks</loc>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://zylumia.com/#product-16-masks</loc>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://zylumia.com/#product-24-masks</loc>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Section URLs -->
+  <url>
+    <loc>https://zylumia.com/#reviews</loc>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://zylumia.com/#features</loc>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://zylumia.com/#faq</loc>
+    <lastmod>2025-01-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
 </urlset>

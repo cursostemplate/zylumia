@@ -1,4 +1,4 @@
-# Robots.txt otimizado para Zylumia
+# Robots.txt otimizado para Zylumia - SEO Completo
 User-agent: *
 Allow: /
 
@@ -12,11 +12,23 @@ Allow: /*.jpg$
 Allow: /*.jpeg$
 Allow: /*.webp$
 Allow: /*.svg$
+Allow: /*.ico$
 
 # Allow all main pages
 Allow: /cart
+Allow: /skincare
 Allow: /payment/success
 Allow: /payment/cancel
+
+# Allow product sections
+Allow: /#product-4-masks
+Allow: /#product-8-masks
+Allow: /#product-12-masks
+Allow: /#product-16-masks
+Allow: /#product-24-masks
+Allow: /#reviews
+Allow: /#features
+Allow: /#faq
 
 # Disallow sensitive areas
 Disallow: /checkout
@@ -25,9 +37,14 @@ Disallow: /api/
 Disallow: /_next/
 Disallow: /node_modules/
 
-# Disallow URLs with query parameters to avoid duplicate content
-Disallow: /*?*
-Disallow: /*&*
+# Allow URLs with important query parameters for products
+Allow: /*?product=*
+Allow: /*?utm_*
+
+# Disallow other query parameters to avoid duplicate content
+Disallow: /*?*&*
+Disallow: /*?session*
+Disallow: /*?token*
 
 # Crawl delay for respectful crawling
 Crawl-delay: 1
@@ -47,6 +64,7 @@ Allow: /*.jpeg$
 Allow: /*.png$
 Allow: /*.webp$
 Allow: /*.svg$
+Allow: /*.ico$
 
 User-agent: Bingbot
 Allow: /
@@ -60,4 +78,7 @@ User-agent: MJ12bot
 Disallow: /
 
 User-agent: DotBot
+Disallow: /
+
+User-agent: SemrushBot
 Disallow: /
