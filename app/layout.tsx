@@ -25,6 +25,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: "https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp",
+    shortcut: "https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp",
+    apple: "https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp",
+  },
   openGraph: {
     title: "Zylumia - Premium Bio-Collagen Face Masks",
     description: "Transform your skin with premium Korean bio-collagen masks. Visible results after just one use.",
@@ -58,9 +63,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "your-google-verification-code", // Adicione seu código de verificação do Google
-  },
     generator: 'v0.app'
 }
 
@@ -72,6 +74,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Favicon */}
+        <link rel="icon" href="https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp" />
+        <link rel="shortcut icon" href="https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp" />
+        <link rel="apple-touch-icon" href="https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp" />
+
         {/* Structured Data for SEO */}
         <script
           type="application/ld+json"
@@ -81,7 +88,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "Zylumia",
               url: "https://zylumia.com",
-              logo: "https://zylumia.com/placeholder-logo.png",
+              logo: "https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp",
               description: "Premium bio-collagen face masks for radiant, youthful skin",
               contactPoint: {
                 "@type": "ContactPoint",
