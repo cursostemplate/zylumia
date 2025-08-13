@@ -62,6 +62,14 @@ export function ProductAccordionFeatures() {
   return (
     <section className="py-12 md:py-16">
       <div className="container mx-auto">
+        <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+          <h2 className="text-3xl font-bold font-lora tracking-tighter sm:text-4xl text-brand">
+            Everything You Need to Know About Our Collagen Face Mask
+          </h2>
+          <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+            Get all the details about ingredients, usage, and benefits
+          </p>
+        </div>
         <div className="flex w-full flex-col md:flex-row items-start justify-between gap-12">
           <div className="w-full md:w-1/2">
             <Accordion type="single" className="w-full" defaultValue="item-1" collapsible>

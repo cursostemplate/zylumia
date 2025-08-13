@@ -46,13 +46,24 @@ export function CountdownBanner() {
           transition={{ duration: 0.3 }}
           className="bg-black text-white overflow-hidden"
         >
-          <div className="container mx-auto px-4 h-12 flex items-center justify-center relative">
+          <div className="container mx-auto px-4 h-16 flex items-center justify-center relative">
             <div className="flex items-center gap-2 md:gap-4 text-center">
               <p className="font-semibold text-sm uppercase tracking-wider">Summer Sale Ends In</p>
-              <div className="flex items-center gap-2 font-mono text-lg">
-                <span>{String(timeLeft.hours).padStart(2, "0")}</span>:
-                <span>{String(timeLeft.minutes).padStart(2, "0")}</span>:
-                <span>{String(timeLeft.seconds).padStart(2, "0")}</span>
+              <div className="flex items-center gap-2">
+                <div className="flex flex-col items-center">
+                  <span className="font-mono text-lg font-bold">{String(timeLeft.hours).padStart(2, "0")}</span>
+                  <span className="text-xs text-gray-400">hour</span>
+                </div>
+                <span className="font-mono text-lg">:</span>
+                <div className="flex flex-col items-center">
+                  <span className="font-mono text-lg font-bold">{String(timeLeft.minutes).padStart(2, "0")}</span>
+                  <span className="text-xs text-gray-400">minute</span>
+                </div>
+                <span className="font-mono text-lg">:</span>
+                <div className="flex flex-col items-center">
+                  <span className="font-mono text-lg font-bold">{String(timeLeft.seconds).padStart(2, "0")}</span>
+                  <span className="text-xs text-gray-400">second</span>
+                </div>
               </div>
             </div>
             <button

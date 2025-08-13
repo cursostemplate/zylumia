@@ -20,7 +20,6 @@ const benefits = [
   "Trusted Korean Beauty Formula",
 ]
 
-// ATENÇÃO: Substitua os valores de 'priceId' pelos IDs de Preço corretos do seu painel Stripe.
 const offers = [
   {
     id: 1,
@@ -84,6 +83,26 @@ const offers = [
   },
 ]
 
+// Função para enviar evento para Google Analytics
+const trackAddToCart = (item: any) => {
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "add_to_cart", {
+      currency: "GBP",
+      value: Number.parseFloat(item.price.replace("£", "")),
+      items: [
+        {
+          item_id: item.id.toString(),
+          item_name: `Bio-Collagen ${item.quantity}`,
+          item_category: "Skincare",
+          item_variant: item.supply,
+          quantity: 1,
+          price: Number.parseFloat(item.price.replace("£", "")),
+        },
+      ],
+    })
+  }
+}
+
 export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.RefObject<HTMLDivElement> }) {
   const [selectedOfferId, setSelectedOfferId] = useState(3)
   const { addToCart } = useCart()
@@ -109,6 +128,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
   const handleAddToCart = () => {
     if (selectedOffer) {
       addToCart(selectedOffer)
+      trackAddToCart(selectedOffer) // Enviar evento para Google Analytics
       router.push("/cart")
     }
   }
