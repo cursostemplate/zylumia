@@ -4,7 +4,6 @@ import { useRef } from "react"
 import SiteHeader from "@/components/site-header"
 import { FaqSection } from "@/components/faq-section"
 import { SiteFooter } from "@/components/site-footer"
-import { ProductDetails } from "@/components/product-details"
 import { TestimonialsCarousel } from "@/components/testimonials-carousel"
 import { CustomerReviews } from "@/components/customer-reviews"
 import { ProductAccordionFeatures } from "@/components/product-accordion-features"
@@ -18,15 +17,8 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen bg-background">
       <SiteHeader />
       <main className="flex-grow">
-        {/* Banner Principal */}
+        {/* Banner Principal com Layout Otimizado */}
         <HeroBanner />
-
-        {/* Informações do Produto - Movidas para cima */}
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-md mx-auto">
-            <ProductDetails testimonialsRef={testimonialsRef} />
-          </div>
-        </div>
 
         <div id="reviews" ref={testimonialsRef}>
           <TestimonialsCarousel />
