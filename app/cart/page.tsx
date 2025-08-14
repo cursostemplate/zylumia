@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { SalesNotification } from "@/components/sales-notification"
 import { CartTestimonials } from "@/components/cart-testimonials"
 import { createCheckoutSession } from "@/app/actions/stripe"
-import { Loader2, Trash2 } from "lucide-react"
+import { Loader2, Shield, Truck, RotateCcw, Lock, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import Head from "next/head"
 
@@ -29,10 +29,6 @@ export default function CartPage() {
     startTransition(async () => {
       await createCheckoutSession(cartItems)
     })
-  }
-
-  const handleRemoveItem = (itemId: number) => {
-    removeFromCart(itemId)
   }
 
   // Verifica se a oferta específica de "4 Masks" (ID 1) está no carrinho
@@ -113,35 +109,78 @@ export default function CartPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="md:col-span-2 space-y-4">
                   {cartItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-4 border p-4 rounded-lg">
+                    <div key={item.id} className="flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm">
                       <NextImage src={item.image} alt={item.quantity} width={80} height={80} className="rounded-md" />
                       <div className="flex-grow">
                         <h2 className="font-bold">{item.quantity}</h2>
                         <p className="text-sm text-muted-foreground">{item.supply}</p>
                         <p className="font-bold text-lg">{item.price}</p>
-                      </div>
 
-                      {/* Botão de Remover */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive hover:text-destructive"
-                        onClick={() => handleRemoveItem(item.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                        {/* Badges de Garantia */}
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                            <CheckCircle className="h-3 w-3" />
+                            <span>60-Day Guarantee</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                            <Truck className="h-3 w-3" />
+                            <span>Free Shipping</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   ))}
+
+                  {/* Seção de Garantias e Segurança */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                      <Shield className="h-5 w-5 text-green-600" />
+                      Your Purchase is Protected
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-green-100 p-2 rounded-full">
+                          <RotateCcw className="h-5 w-5 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm">60-Day Money Back</p>
+                          <p className="text-xs text-muted-foreground">100% Satisfaction Guarantee</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-blue-100 p-2 rounded-full">
+                          <Truck className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm">Free Worldwide Shipping</p>
+                          <p className="text-xs text-muted-foreground">3-5 Business Days Delivery</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-purple-100 p-2 rounded-full">
+                          <Shield className="h-5 w-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm">Quality Guaranteed</p>
+                          <p className="text-xs text-muted-foreground">Premium Korean Formula</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
                 <div className="md:col-span-1">
-                  <div className="border p-4 rounded-lg space-y-4">
+                  <div className="border p-4 rounded-lg space-y-4 bg-white shadow-sm">
                     <h2 className="text-xl font-bold">Order Summary</h2>
                     <div className="flex justify-between">
                       <span>Subtotal</span>
                       <span>£{subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Shipping</span>
+                      <span className="flex items-center gap-1">
+                        <Truck className="h-4 w-4 text-green-600" />
+                        Shipping
+                      </span>
                       <span className="font-semibold text-green-600">FREE</span>
                     </div>
                     <div className="flex justify-between font-bold text-lg border-t pt-4">
@@ -149,13 +188,22 @@ export default function CartPage() {
                       <span>£{total.toFixed(2)}</span>
                     </div>
 
+                    {/* SSL Security Information */}
+                    <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Lock className="h-4 w-4 text-green-600" />
+                        <span className="font-bold text-sm text-green-800">SSL SECURE PAYMENT</span>
+                      </div>
+                      <p className="text-xs text-green-700">
+                        Your Personal Details Are Securely Encrypted With 256-Bit-SSL
+                      </p>
+                    </div>
+
                     {isFourMasksOffer ? (
                       <Button asChild className="w-full bg-[#0070ba] hover:bg-[#005ea6] text-white border-0">
                         <a href={fourMasksPaymentLink} className="flex items-center justify-center gap-2">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a9.124 9.124 0 0 1-.077.437c-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287z" />
-                          </svg>
-                          Proceed to Checkout
+                          <Lock className="h-4 w-4" />
+                          Secure Checkout
                         </a>
                       </Button>
                     ) : (
@@ -169,10 +217,8 @@ export default function CartPage() {
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           ) : (
                             <>
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a9.124 9.124 0 0 1-.077.437c-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287z" />
-                              </svg>
-                              Proceed to Checkout
+                              <Lock className="h-4 w-4" />
+                              Secure Checkout
                             </>
                           )}
                         </Button>
@@ -187,6 +233,22 @@ export default function CartPage() {
                         height={40}
                         className="object-contain"
                       />
+                    </div>
+
+                    {/* Trust Badges */}
+                    <div className="grid grid-cols-2 gap-2 pt-4 border-t">
+                      <div className="text-center">
+                        <div className="bg-green-100 p-2 rounded-full w-fit mx-auto mb-1">
+                          <Shield className="h-4 w-4 text-green-600" />
+                        </div>
+                        <p className="text-xs font-semibold">Secure Payment</p>
+                      </div>
+                      <div className="text-center">
+                        <div className="bg-blue-100 p-2 rounded-full w-fit mx-auto mb-1">
+                          <RotateCcw className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <p className="text-xs font-semibold">Money Back</p>
+                      </div>
                     </div>
                   </div>
                 </div>
