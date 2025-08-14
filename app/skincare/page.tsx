@@ -15,7 +15,7 @@ const product = {
   discount: "37%",
   rating: 5,
   reviewCount: 5000,
-  image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Yt0sMSBJwOWNVdZNC2zVNnZ7lnoGey.png",
+  image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
   description:
     "Premium Korean bio-collagen face mask for anti-aging and deep hydration. Visible results after just one use.",
   quantity: "4 Masks",
