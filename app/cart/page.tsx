@@ -118,11 +118,11 @@ export default function CartPage() {
 
                         {/* Badges de Garantia */}
                         <div className="flex items-center gap-2 mt-2">
-                          <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                          <div className="flex items-center gap-1 text-xs text-black bg-gray-100 px-2 py-1 rounded-full">
                             <CheckCircle className="h-3 w-3" />
                             <span>60-Day Guarantee</span>
                           </div>
-                          <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                          <div className="flex items-center gap-1 text-xs text-black bg-gray-100 px-2 py-1 rounded-full">
                             <Truck className="h-3 w-3" />
                             <span>Free Shipping</span>
                           </div>
@@ -134,13 +134,13 @@ export default function CartPage() {
                   {/* Seção de Garantias e Segurança */}
                   <div className="bg-gray-50 p-6 rounded-lg">
                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                      <Shield className="h-5 w-5 text-green-600" />
+                      <Shield className="h-5 w-5 text-black" />
                       Your Purchase is Protected
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="flex items-center gap-3">
-                        <div className="bg-green-100 p-2 rounded-full">
-                          <RotateCcw className="h-5 w-5 text-green-600" />
+                        <div className="bg-gray-100 p-2 rounded-full">
+                          <RotateCcw className="h-5 w-5 text-black" />
                         </div>
                         <div>
                           <p className="font-semibold text-sm">60-Day Money Back</p>
@@ -148,8 +148,8 @@ export default function CartPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="bg-blue-100 p-2 rounded-full">
-                          <Truck className="h-5 w-5 text-blue-600" />
+                        <div className="bg-gray-100 p-2 rounded-full">
+                          <Truck className="h-5 w-5 text-black" />
                         </div>
                         <div>
                           <p className="font-semibold text-sm">Free Worldwide Shipping</p>
@@ -157,8 +157,8 @@ export default function CartPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="bg-purple-100 p-2 rounded-full">
-                          <Shield className="h-5 w-5 text-purple-600" />
+                        <div className="bg-gray-100 p-2 rounded-full">
+                          <Shield className="h-5 w-5 text-black" />
                         </div>
                         <div>
                           <p className="font-semibold text-sm">Quality Guaranteed</p>
@@ -178,10 +178,10 @@ export default function CartPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="flex items-center gap-1">
-                        <Truck className="h-4 w-4 text-green-600" />
+                        <Truck className="h-4 w-4 text-black" />
                         Shipping
                       </span>
-                      <span className="font-semibold text-green-600">FREE</span>
+                      <span className="font-semibold text-black">FREE</span>
                     </div>
                     <div className="flex justify-between font-bold text-lg border-t pt-4">
                       <span>Total</span>
@@ -189,12 +189,12 @@ export default function CartPage() {
                     </div>
 
                     {/* SSL Security Information */}
-                    <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
                       <div className="flex items-center gap-2 mb-2">
-                        <Lock className="h-4 w-4 text-green-600" />
-                        <span className="font-bold text-sm text-green-800">SSL SECURE PAYMENT</span>
+                        <Lock className="h-4 w-4 text-black" />
+                        <span className="font-bold text-sm text-black">SSL SECURE PAYMENT</span>
                       </div>
-                      <p className="text-xs text-green-700">
+                      <p className="text-xs text-black">
                         Your Personal Details Are Securely Encrypted With 256-Bit-SSL
                       </p>
                     </div>
@@ -202,7 +202,7 @@ export default function CartPage() {
                     {isFourMasksOffer ? (
                       <Button asChild className="w-full bg-[#0070ba] hover:bg-[#005ea6] text-white border-0">
                         <a href={fourMasksPaymentLink} className="flex items-center justify-center gap-2">
-                          <Lock className="h-4 w-4" />
+                          <Lock className="h-4 w-4 text-black" />
                           Secure Checkout
                         </a>
                       </Button>
@@ -217,7 +217,7 @@ export default function CartPage() {
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           ) : (
                             <>
-                              <Lock className="h-4 w-4" />
+                              <Lock className="h-4 w-4 text-black" />
                               Secure Checkout
                             </>
                           )}
@@ -238,16 +238,16 @@ export default function CartPage() {
                     {/* Trust Badges */}
                     <div className="grid grid-cols-2 gap-2 pt-4 border-t">
                       <div className="text-center">
-                        <div className="bg-green-100 p-2 rounded-full w-fit mx-auto mb-1">
-                          <Shield className="h-4 w-4 text-green-600" />
+                        <div className="bg-gray-100 p-2 rounded-full w-fit mx-auto mb-1">
+                          <Shield className="h-4 w-4 text-black" />
                         </div>
-                        <p className="text-xs font-semibold">Secure Payment</p>
+                        <p className="text-xs font-semibold text-black">Secure Payment</p>
                       </div>
                       <div className="text-center">
-                        <div className="bg-blue-100 p-2 rounded-full w-fit mx-auto mb-1">
-                          <RotateCcw className="h-4 w-4 text-blue-600" />
+                        <div className="bg-gray-100 p-2 rounded-full w-fit mx-auto mb-1">
+                          <RotateCcw className="h-4 w-4 text-black" />
                         </div>
-                        <p className="text-xs font-semibold">Money Back</p>
+                        <p className="text-xs font-semibold text-black">Money Back</p>
                       </div>
                     </div>
                   </div>

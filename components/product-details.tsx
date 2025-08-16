@@ -103,17 +103,17 @@ const trackAddToCart = (item: any) => {
   }
 }
 
-export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.RefObject<HTMLDivElement> }) {
+export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.RefObject<HTMLDivElement> }) {
   const [selectedOfferId, setSelectedOfferId] = useState(3)
   const { addToCart } = useCart()
   const router = useRouter()
-  const isInView = useInView(testimonialsRef, { once: true })
   const [showStickyButton, setShowStickyButton] = useState(false)
+  const isInView = useInView(testimonialsRef, { once: true }) // Moved useInView hook to top level
 
   const selectedOffer = offers.find((offer) => offer.id === selectedOfferId)
 
   useEffect(() => {
-    if (isInView) {
+    if (isInView && testimonialsRef?.current) {
       const handleScroll = () => {
         if (testimonialsRef.current) {
           const { top } = testimonialsRef.current.getBoundingClientRect()
@@ -135,7 +135,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
 
   return (
     <>
-      <div id="product-details" className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <div>
           <h1 className="text-3xl lg:text-4xl font-bold">Bio-Collagen Mask</h1>
           <div className="flex items-center gap-2 mt-2">
@@ -228,45 +228,47 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef: React.Ref
         <DermatologistTestimonial />
       </div>
 
-      {/* Barra Sticky Otimizada */}
-      <AnimatePresence>
-        {showStickyButton && (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ ease: "easeInOut", duration: 0.3 }}
-            className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm p-3 border-t z-50"
-          >
-            <div className="container mx-auto">
-              <div className="flex items-center justify-between gap-3 max-w-sm mx-auto">
-                {/* Botão ADD TO CART - Movido para a esquerda */}
-                <Button
-                  onClick={handleAddToCart}
-                  className="flex-shrink-0 h-12 bg-black hover:bg-gray-800 text-white text-base font-bold px-6 rounded-lg"
-                >
-                  ADD TO CART
-                </Button>
+      {/* Barra Sticky Otimizada - Só aparece se testimonialsRef existir */}
+      {testimonialsRef && (
+        <AnimatePresence>
+          {showStickyButton && (
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              transition={{ ease: "easeInOut", duration: 0.3 }}
+              className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm p-3 border-t z-50"
+            >
+              <div className="container mx-auto">
+                <div className="flex items-center justify-between gap-3 max-w-sm mx-auto">
+                  {/* Botão ADD TO CART - Movido para a esquerda */}
+                  <Button
+                    onClick={handleAddToCart}
+                    className="flex-shrink-0 h-12 bg-black hover:bg-gray-800 text-white text-base font-bold px-6 rounded-lg"
+                  >
+                    ADD TO CART
+                  </Button>
 
-                {/* Informações do produto - Movidas para a direita */}
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="text-right flex-shrink-0">
-                    <p className="font-bold text-sm leading-tight">{selectedOffer?.quantity}</p>
-                    <p className="font-bold text-lg leading-tight">{selectedOffer?.price}</p>
+                  {/* Informações do produto - Movidas para a direita */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-bold text-sm leading-tight">{selectedOffer?.quantity}</p>
+                      <p className="font-bold text-lg leading-tight">{selectedOffer?.price}</p>
+                    </div>
+                    <NextImage
+                      src={selectedOffer?.image || ""}
+                      alt="Selected offer"
+                      width={48}
+                      height={48}
+                      className="rounded-md flex-shrink-0"
+                    />
                   </div>
-                  <NextImage
-                    src={selectedOffer?.image || ""}
-                    alt="Selected offer"
-                    width={48}
-                    height={48}
-                    className="rounded-md flex-shrink-0"
-                  />
                 </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </>
   )
 }

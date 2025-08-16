@@ -9,6 +9,7 @@ import { CustomerReviews } from "@/components/customer-reviews"
 import { ProductAccordionFeatures } from "@/components/product-accordion-features"
 import { ProductFeatures } from "@/components/product-features"
 import { HeroBanner } from "@/components/hero-banner"
+import { ProductDetails } from "@/components/product-details"
 
 export default function HomePage() {
   const testimonialsRef = useRef(null)
@@ -26,6 +27,15 @@ export default function HomePage() {
         <ProductFeatures />
         <div id="features">
           <ProductAccordionFeatures />
+        </div>
+        <div id="product-details">
+          <div className="py-8">
+            <div className="container mx-auto px-4">
+              <div className="max-w-md mx-auto">
+                <ProductDetails testimonialsRef={testimonialsRef} />
+              </div>
+            </div>
+          </div>
         </div>
         <div id="customer-reviews">
           <CustomerReviews />
