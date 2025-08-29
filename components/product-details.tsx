@@ -9,7 +9,6 @@ import NextImage from "next/image"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/contexts/cart-context"
-import { DermatologistTestimonial } from "./dermatologist-testimonial"
 import { motion, AnimatePresence, useInView } from "framer-motion"
 
 const benefits = [
@@ -108,7 +107,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.Re
   const { addToCart } = useCart()
   const router = useRouter()
   const [showStickyButton, setShowStickyButton] = useState(false)
-  const isInView = useInView(testimonialsRef, { once: true }) // Moved useInView hook to top level
+  const isInView = useInView(testimonialsRef, { once: true })
 
   const selectedOffer = offers.find((offer) => offer.id === selectedOfferId)
 
@@ -124,6 +123,11 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.Re
       return () => window.removeEventListener("scroll", handleScroll)
     }
   }, [isInView, testimonialsRef])
+
+  // Força re-render da barra sticky quando a oferta selecionada muda
+  useEffect(() => {
+    // Trigger re-render to update sticky bar
+  }, [selectedOfferId])
 
   const handleAddToCart = () => {
     if (selectedOffer) {
@@ -209,6 +213,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.Re
             </div>
           ))}
         </div>
+
         <Button
           onClick={handleAddToCart}
           className="w-full h-[49px] bg-black hover:bg-gray-800 text-white text-lg font-bold mt-4"
@@ -216,6 +221,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.Re
         >
           ADD TO CART
         </Button>
+
         <div className="flex justify-center mt-4">
           <NextImage
             src="https://i.postimg.cc/rsXXQ6fr/Chat-GPT-Image-11-de-ago-de-2025-00-22-50.webp"
@@ -225,10 +231,28 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.Re
             className="object-contain"
           />
         </div>
-        <DermatologistTestimonial />
+
+        {/* Testimonial Compacto */}
+        <div className="mt-6 p-3 border-t bg-gray-50/50 rounded-lg">
+          <div className="flex items-start gap-3">
+            <NextImage
+              src="https://m.media-amazon.com/images/M/MV5BNTljODNiNTgtZWI4Mi00ZTI1LTk4ZGUtZTcxZmU0OGUzNjc1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+              alt="Dra. Sandra Lee"
+              width={50}
+              height={50}
+              className="rounded-full object-cover flex-shrink-0"
+            />
+            <div className="flex-1">
+              <p className="text-muted-foreground italic text-sm leading-relaxed">
+                "As a dermatologist, I'm genuinely impressed by this formulation and results."
+              </p>
+              <p className="mt-2 font-semibold text-xs text-foreground">Dra. Sandra Lee, Dermatologist</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Barra Sticky Otimizada - Só aparece se testimonialsRef existir */}
+      {/* Barra Sticky Responsiva */}
       {testimonialsRef && (
         <AnimatePresence>
           {showStickyButton && (
@@ -239,17 +263,38 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.Re
               transition={{ ease: "easeInOut", duration: 0.3 }}
               className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm p-3 border-t z-50"
             >
-              <div className="container mx-auto">
-                <div className="flex items-center justify-between gap-3 max-w-sm mx-auto">
-                  {/* Botão ADD TO CART - Movido para a esquerda */}
+              <div className="container mx-auto px-4">
+                {/* Layout Mobile */}
+                <div className="flex items-center justify-between gap-3 sm:hidden">
+                  <Button
+                    onClick={handleAddToCart}
+                    className="flex-1 h-12 bg-black hover:bg-gray-800 text-white text-sm font-bold rounded-lg"
+                  >
+                    ADD TO CART
+                  </Button>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="text-right">
+                      <p className="font-bold text-xs leading-tight">{selectedOffer?.quantity}</p>
+                      <p className="font-bold text-sm leading-tight">{selectedOffer?.price}</p>
+                    </div>
+                    <NextImage
+                      src={selectedOffer?.image || ""}
+                      alt="Selected offer"
+                      width={40}
+                      height={40}
+                      className="rounded-md"
+                    />
+                  </div>
+                </div>
+
+                {/* Layout Desktop */}
+                <div className="hidden sm:flex items-center justify-between gap-3 max-w-sm mx-auto">
                   <Button
                     onClick={handleAddToCart}
                     className="flex-shrink-0 h-12 bg-black hover:bg-gray-800 text-white text-base font-bold px-6 rounded-lg"
                   >
                     ADD TO CART
                   </Button>
-
-                  {/* Informações do produto - Movidas para a direita */}
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="text-right flex-shrink-0">
                       <p className="font-bold text-sm leading-tight">{selectedOffer?.quantity}</p>

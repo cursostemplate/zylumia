@@ -9,7 +9,7 @@ import { CustomerReviews } from "@/components/customer-reviews"
 import { ProductAccordionFeatures } from "@/components/product-accordion-features"
 import { ProductFeatures } from "@/components/product-features"
 import { HeroBanner } from "@/components/hero-banner"
-import { ProductDetails } from "@/components/product-details"
+import { StickyOfferBar } from "@/components/sticky-offer-bar"
 
 export default function HomePage() {
   const testimonialsRef = useRef(null)
@@ -28,15 +28,6 @@ export default function HomePage() {
         <div id="features">
           <ProductAccordionFeatures />
         </div>
-        <div id="product-details">
-          <div className="py-8">
-            <div className="container mx-auto px-4">
-              <div className="max-w-md mx-auto">
-                <ProductDetails testimonialsRef={testimonialsRef} />
-              </div>
-            </div>
-          </div>
-        </div>
         <div id="customer-reviews">
           <CustomerReviews />
         </div>
@@ -45,6 +36,9 @@ export default function HomePage() {
         </div>
       </main>
       <SiteFooter />
+
+      {/* Barra Sticky que monitora as ofertas do HeroBanner */}
+      <StickyOfferBar testimonialsRef={testimonialsRef} />
     </div>
   )
 }

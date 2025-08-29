@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import NextImage from "next/image"
 import { ChevronLeft, ChevronRight, Star, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -128,6 +128,14 @@ export function HeroBanner() {
   const router = useRouter()
 
   const selectedOffer = offers.find((offer) => offer.id === selectedOfferId)
+
+  // Notifica mudança de oferta para a barra sticky
+  useEffect(() => {
+    const event = new CustomEvent("offerSelected", {
+      detail: { offerId: selectedOfferId },
+    })
+    window.dispatchEvent(event)
+  }, [selectedOfferId])
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % bannerImages.length)
@@ -333,7 +341,7 @@ export function HeroBanner() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="relative">
                 <div className="flex items-center justify-center relative mb-6">
                   <Button
                     variant="ghost"
@@ -344,12 +352,12 @@ export function HeroBanner() {
                     <ChevronLeft className="h-5 w-5" />
                   </Button>
 
-                  <div className="w-[400px] h-[400px] relative">
+                  <div className="w-[374px] h-[374px] relative">
                     <NextImage
                       src={bannerImages[currentImageIndex].main}
                       alt={bannerImages[currentImageIndex].alt}
-                      width={400}
-                      height={400}
+                      width={374}
+                      height={374}
                       className="w-full h-full object-cover rounded-lg"
                       priority
                     />

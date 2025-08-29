@@ -1,4 +1,4 @@
-import NextImage from 'next/image'
+import NextImage from "next/image"
 
 export function DermatologistTestimonial() {
   return (
@@ -13,11 +13,12 @@ export function DermatologistTestimonial() {
         />
         <div>
           <p className="text-muted-foreground italic text-base leading-relaxed">
-            "As a dermatologist specializing in skin aging and barrier repair, I often see patients struggling with loss of elasticity, dehydration, and fine lines—especially as collagen production declines with age. I've reviewed the Anti-Wrinkle Collagen Mask, and <span className="font-bold text-foreground">I'm genuinely impressed</span> by its formulation and results."
+            "As a dermatologist specializing in skin aging and barrier repair, I often see patients struggling with loss
+            of elasticity, dehydration, and fine lines—especially as collagen production declines with age. I've
+            reviewed the Anti-Wrinkle Collagen Mask, and{" "}
+            <span className="font-bold text-foreground">I'm genuinely impressed</span> by its formulation and results."
           </p>
-          <p className="mt-4 font-semibold text-sm text-foreground">
-            Dra. Sandra Lee, Dermatologist
-          </p>
+          <p className="mt-4 font-semibold text-sm text-foreground">Dra. Sandra Lee, Dermatologist</p>
         </div>
       </div>
     </div>
