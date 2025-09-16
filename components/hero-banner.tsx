@@ -1,5 +1,7 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import type React from "react"
+
 import NextImage from "next/image"
 import { ChevronLeft, ChevronRight, Star, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -126,6 +128,8 @@ export function HeroBanner() {
   const [selectedOfferId, setSelectedOfferId] = useState(3)
   const { addToCart } = useCart()
   const router = useRouter()
+  const thumbnailScrollRef = useRef<HTMLDivElement>(null)
+  const desktopThumbnailScrollRef = useRef<HTMLDivElement>(null)
 
   const selectedOffer = offers.find((offer) => offer.id === selectedOfferId)
 
@@ -149,6 +153,19 @@ export function HeroBanner() {
     setCurrentImageIndex(index)
   }
 
+  const scrollThumbnails = (direction: "left" | "right", ref: React.RefObject<HTMLDivElement>) => {
+    if (ref.current) {
+      const scrollAmount = 150 // Quantidade de pixels para rolar
+      const currentScroll = ref.current.scrollLeft
+      const targetScroll = direction === "left" ? currentScroll - scrollAmount : currentScroll + scrollAmount
+
+      ref.current.scrollTo({
+        left: targetScroll,
+        behavior: "smooth",
+      })
+    }
+  }
+
   const handleAddToCart = () => {
     if (selectedOffer) {
       addToCart(selectedOffer)
@@ -159,7 +176,7 @@ export function HeroBanner() {
   return (
     <section className="bg-gradient-to-br from-pink-50 to-white py-8 lg:py-12">
       <div className="container mx-auto px-4">
-        {/* Layout Mobile - Centralizado */}
+        {/* Layout Mobile - Centralizado com novas dimensões */}
         <div className="lg:hidden">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold font-lora text-brand mb-4">
@@ -178,7 +195,8 @@ export function HeroBanner() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          {/* Container das imagens com dimensões específicas para mobile */}
+          <div className="mb-6">
             <div className="flex items-center justify-center relative mb-6">
               <Button
                 variant="ghost"
@@ -189,12 +207,12 @@ export function HeroBanner() {
                 <ChevronLeft className="h-5 w-5" />
               </Button>
 
-              <div className="w-[300px] h-[300px] relative">
+              <div className="w-[374px] h-[374px] relative">
                 <NextImage
                   src={bannerImages[currentImageIndex].main}
                   alt={bannerImages[currentImageIndex].alt}
-                  width={300}
-                  height={300}
+                  width={374}
+                  height={374}
                   className="w-full h-full object-cover rounded-lg"
                   priority
                 />
@@ -210,16 +228,51 @@ export function HeroBanner() {
               </Button>
             </div>
 
-            <div className="flex justify-center gap-2 mb-4">
-              {bannerImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => selectImage(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentImageIndex ? "bg-brand w-6" : "bg-gray-300"
-                  }`}
-                />
-              ))}
+            {/* Carrossel de Thumbnails Mobile */}
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md"
+                onClick={() => scrollThumbnails("left", thumbnailScrollRef)}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+
+              <div
+                ref={thumbnailScrollRef}
+                className="flex gap-3 overflow-x-auto pb-2 px-8 scrollbar-hide scroll-smooth"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                {bannerImages.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={() => selectImage(index)}
+                    className={`flex-shrink-0 w-[63px] h-[63px] rounded-lg overflow-hidden border-2 transition-all ${
+                      index === currentImageIndex
+                        ? "border-brand shadow-lg scale-105"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <NextImage
+                      src={image.thumb}
+                      alt={image.alt}
+                      width={63}
+                      height={63}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md"
+                onClick={() => scrollThumbnails("right", thumbnailScrollRef)}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
           </div>
 
@@ -251,19 +304,17 @@ export function HeroBanner() {
               </div>
 
               <div className="text-center my-2">
-                <p className="font-semibold text-muted-foreground tracking-widest text-xs uppercase">
-                  LIMITED TIME OFFER
-                </p>
+                <p className="font-bold text-lg uppercase tracking-widest text-brand">LIMITED TIME OFFER</p>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {offers.map((offer) => (
                   <div
                     key={offer.id}
                     className={cn(
-                      "border rounded-lg p-3 relative cursor-pointer transition-all flex items-center gap-3",
+                      "border rounded-lg p-3 relative cursor-pointer transition-all flex items-center gap-3 shadow-sm",
                       selectedOfferId === offer.id
-                        ? "border-brand border-[2px] bg-brand/5"
+                        ? "border-brand border-[2px] bg-brand/5 shadow-md"
                         : "border-gray-200 bg-gray-50 hover:border-gray-400",
                     )}
                     onClick={() => setSelectedOfferId(offer.id)}
@@ -305,21 +356,11 @@ export function HeroBanner() {
               >
                 ADD TO CART
               </Button>
-
-              <div className="flex justify-center mt-4">
-                <NextImage
-                  src="https://i.postimg.cc/rsXXQ6fr/Chat-GPT-Image-11-de-ago-de-2025-00-22-50.webp"
-                  alt="Secure payment methods"
-                  width={250}
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Layout Desktop - Imagens à Esquerda, Ofertas à Direita */}
+        {/* Layout Desktop - Reorganizado como antes: Imagens à esquerda, Ofertas à direita */}
         <div className="hidden lg:block">
           <div className="grid grid-cols-2 gap-12 items-start max-w-6xl mx-auto">
             {/* Imagens à Esquerda */}
@@ -373,39 +414,52 @@ export function HeroBanner() {
                   </Button>
                 </div>
 
-                <div className="flex justify-center gap-2 mb-4">
-                  {bannerImages.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => selectImage(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        index === currentImageIndex ? "bg-brand w-6" : "bg-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-center gap-3 overflow-x-auto pb-2">
-                {bannerImages.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => selectImage(index)}
-                    className={`flex-shrink-0 w-[63px] h-[63px] rounded-lg overflow-hidden border-2 transition-all ${
-                      index === currentImageIndex
-                        ? "border-brand shadow-lg scale-105"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
+                {/* Carrossel de Thumbnails Desktop */}
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md"
+                    onClick={() => scrollThumbnails("left", desktopThumbnailScrollRef)}
                   >
-                    <NextImage
-                      src={image.thumb}
-                      alt={image.alt}
-                      width={63}
-                      height={63}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+
+                  <div
+                    ref={desktopThumbnailScrollRef}
+                    className="flex gap-3 overflow-x-auto pb-2 px-8 scrollbar-hide scroll-smooth"
+                    style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                  >
+                    {bannerImages.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => selectImage(index)}
+                        className={`flex-shrink-0 w-[63px] h-[63px] rounded-lg overflow-hidden border-2 transition-all ${
+                          index === currentImageIndex
+                            ? "border-brand shadow-lg scale-105"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <NextImage
+                          src={image.thumb}
+                          alt={image.alt}
+                          width={63}
+                          height={63}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md"
+                    onClick={() => scrollThumbnails("right", desktopThumbnailScrollRef)}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -437,9 +491,7 @@ export function HeroBanner() {
               </div>
 
               <div className="text-center my-4">
-                <p className="font-semibold text-muted-foreground tracking-widest text-sm uppercase">
-                  LIMITED TIME OFFER
-                </p>
+                <p className="font-bold text-xl uppercase tracking-widest text-brand">LIMITED TIME OFFER</p>
               </div>
 
               <div className="space-y-3">
@@ -447,9 +499,9 @@ export function HeroBanner() {
                   <div
                     key={offer.id}
                     className={cn(
-                      "border rounded-lg p-4 relative cursor-pointer transition-all flex items-center gap-4",
+                      "border rounded-lg p-4 relative cursor-pointer transition-all flex items-center gap-4 shadow-sm",
                       selectedOfferId === offer.id
-                        ? "border-brand border-[3px] bg-brand/5"
+                        ? "border-brand border-[3px] bg-brand/5 shadow-md"
                         : "border-gray-200 bg-gray-50 hover:border-gray-400",
                     )}
                     onClick={() => setSelectedOfferId(offer.id)}
@@ -491,16 +543,6 @@ export function HeroBanner() {
               >
                 ADD TO CART
               </Button>
-
-              <div className="flex justify-center mt-4">
-                <NextImage
-                  src="https://i.postimg.cc/rsXXQ6fr/Chat-GPT-Image-11-de-ago-de-2025-00-22-50.webp"
-                  alt="Secure payment methods"
-                  width={300}
-                  height={50}
-                  className="object-contain"
-                />
-              </div>
             </div>
           </div>
         </div>

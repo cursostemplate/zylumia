@@ -202,7 +202,7 @@ export default function CartPage() {
                     {isFourMasksOffer ? (
                       <Button asChild className="w-full bg-[#0070ba] hover:bg-[#005ea6] text-white border-0">
                         <a href={fourMasksPaymentLink} className="flex items-center justify-center gap-2">
-                          <Lock className="h-4 w-4 text-black" />
+                          <Lock className="h-4 w-4 text-white" />
                           Secure Checkout
                         </a>
                       </Button>
@@ -217,23 +217,13 @@ export default function CartPage() {
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           ) : (
                             <>
-                              <Lock className="h-4 w-4 text-black" />
+                              <Lock className="h-4 w-4 text-white" />
                               Secure Checkout
                             </>
                           )}
                         </Button>
                       </form>
                     )}
-
-                    <div className="flex justify-center pt-2">
-                      <NextImage
-                        src="https://i.postimg.cc/rsXXQ6fr/Chat-GPT-Image-11-de-ago-de-2025-00-22-50.webp"
-                        alt="Secure payment methods"
-                        width={250}
-                        height={40}
-                        className="object-contain"
-                      />
-                    </div>
 
                     {/* Trust Badges */}
                     <div className="grid grid-cols-2 gap-2 pt-4 border-t">

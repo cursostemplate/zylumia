@@ -8,6 +8,7 @@ import { TestimonialsCarousel } from "@/components/testimonials-carousel"
 import { CustomerReviews } from "@/components/customer-reviews"
 import { ProductAccordionFeatures } from "@/components/product-accordion-features"
 import { ProductFeatures } from "@/components/product-features"
+import { ZylumiaHero } from "@/components/zylumia-hero"
 import { HeroBanner } from "@/components/hero-banner"
 import { StickyOfferBar } from "@/components/sticky-offer-bar"
 
@@ -18,8 +19,13 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen bg-background">
       <SiteHeader />
       <main className="flex-grow">
-        {/* Banner Principal com Layout Otimizado */}
-        <HeroBanner />
+        {/* Novo Hero com Vídeo */}
+        <ZylumiaHero />
+
+        {/* Seção de Produtos */}
+        <div id="product-details" className="scroll-mt-16">
+          <HeroBanner />
+        </div>
 
         <div id="reviews" ref={testimonialsRef}>
           <TestimonialsCarousel />

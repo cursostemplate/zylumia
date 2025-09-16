@@ -142,7 +142,7 @@ export function StickyOfferBar({ testimonialsRef }: { testimonialsRef?: React.Re
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ ease: "easeInOut", duration: 0.3 }}
-          className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm p-3 border-t z-50"
+          className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm p-3 border-t shadow-lg z-50"
         >
           <div className="container mx-auto px-4">
             {/* Layout Mobile */}
@@ -155,8 +155,8 @@ export function StickyOfferBar({ testimonialsRef }: { testimonialsRef?: React.Re
               </Button>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <div className="text-right">
-                  <p className="font-bold text-xs leading-tight">{selectedOffer?.quantity}</p>
-                  <p className="font-bold text-sm leading-tight">{selectedOffer?.price}</p>
+                  <p className="font-bold text-xs leading-tight text-black">{selectedOffer?.quantity}</p>
+                  <p className="font-bold text-sm leading-tight text-black">{selectedOffer?.price}</p>
                 </div>
                 <NextImage
                   src={selectedOffer?.image || ""}
@@ -178,8 +178,8 @@ export function StickyOfferBar({ testimonialsRef }: { testimonialsRef?: React.Re
               </Button>
               <div className="flex items-center gap-3 min-w-0">
                 <div className="text-right flex-shrink-0">
-                  <p className="font-bold text-sm leading-tight">{selectedOffer?.quantity}</p>
-                  <p className="font-bold text-lg leading-tight">{selectedOffer?.price}</p>
+                  <p className="font-bold text-sm leading-tight text-black">{selectedOffer?.quantity}</p>
+                  <p className="font-bold text-lg leading-tight text-black">{selectedOffer?.price}</p>
                 </div>
                 <NextImage
                   src={selectedOffer?.image || ""}
