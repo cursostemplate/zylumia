@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { SalesNotification } from "@/components/sales-notification"
 import { CartTestimonials } from "@/components/cart-testimonials"
 import { createCheckoutSession } from "@/app/actions/stripe"
-import { Loader2, X, Minus, Plus, Trash2, CheckCircle, Lock, Clock, Shield, Truck } from "lucide-react"
+import { Loader2, X, Minus, Plus, Trash2, Lock, Clock, Shield, Truck } from "lucide-react"
 import Link from "next/link"
 import Head from "next/head"
 
@@ -85,11 +85,11 @@ export default function CartPage() {
                 <div className="px-4 py-3 text-center">
                   <p className="text-sm font-medium text-gray-700 mb-2">Free shipping unlocked!</p>
 
-                  {/* Progress Bar */}
+                  {/* Progress Bar - VERDE */}
                   <div className="relative w-full bg-gray-200 rounded-full h-2 mb-1">
-                    <div className="absolute top-0 left-0 h-full bg-red-600 rounded-full w-full"></div>
-                    <div className="absolute -right-1 -top-1 w-4 h-4 bg-red-600 rounded-full border-2 border-white flex items-center justify-center">
-                      <CheckCircle className="w-2 h-2 text-white" />
+                    <div className="absolute top-0 left-0 h-full bg-green-600 rounded-full w-full"></div>
+                    <div className="absolute -right-1 -top-1 w-4 h-4 bg-green-600 rounded-full border-2 border-white flex items-center justify-center">
+                      <Truck className="w-2 h-2 text-white" />
                     </div>
                   </div>
 
@@ -162,11 +162,11 @@ export default function CartPage() {
                   <p className="text-sm text-pink-700 font-medium">88% of customers also bought this</p>
                 </div>
 
-                {/* Trust Badges - NOVA SEÇÃO */}
+                {/* Trust Badges - ÍCONES VERDES */}
                 <div className="px-4 py-4 bg-gray-50 border-t border-b">
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <Lock className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                      <Lock className="w-4 h-4 text-green-600 flex-shrink-0" />
                       <span className="text-sm font-medium text-gray-800">Secure Checkout</span>
                     </div>
 
@@ -181,7 +181,7 @@ export default function CartPage() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <Truck className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                      <Truck className="w-4 h-4 text-green-600 flex-shrink-0" />
                       <span className="text-sm font-medium text-gray-800">Free Shipping (3-5 business days)</span>
                     </div>
                   </div>
@@ -189,8 +189,8 @@ export default function CartPage() {
 
                 {/* Checkout Section */}
                 <div className="p-4 bg-white border-t">
-                  {/* Checkout Button - 344x50.5px */}
-                  <div className="w-[344px] mx-auto">
+                  {/* Checkout Button - CENTRALIZADO E AJUSTADO */}
+                  <div className="w-full max-w-[344px] mx-auto px-2">
                     {isFourMasksOffer ? (
                       <Button
                         asChild
@@ -216,14 +216,14 @@ export default function CartPage() {
                       </form>
                     )}
 
-                    {/* Payment Icons - 344x50.5px */}
+                    {/* Payment Icons - CENTRALIZADO E AJUSTADO */}
                     <div className="w-full h-[50.5px] mt-3 flex items-center justify-center">
                       <NextImage
                         src="/payment-icons.webp"
                         alt="Secure payment methods"
                         width={344}
                         height={50.5}
-                        className="object-contain"
+                        className="object-contain max-w-full"
                       />
                     </div>
                   </div>
