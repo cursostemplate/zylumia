@@ -1,9 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import NextImage from "next/image"
 import { AnimatePresence, motion } from "framer-motion"
-import { X } from "lucide-react"
+import { X, User } from "lucide-react"
 
 const salesData = [
   { name: "Jessica L.", location: "New York, NY", product: "4 Masks" },
@@ -16,6 +15,16 @@ const salesData = [
   { name: "Lauren K.", location: "San Diego, CA", product: "8 Masks" },
   { name: "Rachel G.", location: "Dallas, TX", product: "4 Masks" },
   { name: "Heather O.", location: "San Jose, CA", product: "16 Masks" },
+  { name: "Stephanie M.", location: "Austin, TX", product: "8 Masks" },
+  { name: "Nicole T.", location: "Jacksonville, FL", product: "12 Masks" },
+  { name: "Michelle K.", location: "Fort Worth, TX", product: "4 Masks" },
+  { name: "Kimberly R.", location: "Columbus, OH", product: "16 Masks" },
+  { name: "Lisa W.", location: "Charlotte, NC", product: "8 Masks" },
+  { name: "Amy S.", location: "San Francisco, CA", product: "24 Masks" },
+  { name: "Angela D.", location: "Indianapolis, IN", product: "12 Masks" },
+  { name: "Brenda L.", location: "Seattle, WA", product: "4 Masks" },
+  { name: "Emma C.", location: "Denver, CO", product: "16 Masks" },
+  { name: "Olivia H.", location: "Washington, DC", product: "8 Masks" },
 ]
 
 const productImageUrl = "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp"
@@ -57,19 +66,24 @@ export function SalesNotification() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ ease: "easeInOut" }}
-            className="bg-white rounded-lg shadow-2xl p-4 flex items-center gap-4 max-w-sm border"
+            className="bg-white rounded-xl shadow-2xl p-4 flex items-center gap-4 max-w-sm border border-gray-100"
           >
-            <NextImage src={productImageUrl} alt="Product Image" width={60} height={60} className="rounded-md" />
+            {/* User Icon */}
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <User className="w-6 h-6 text-gray-600" />
+            </div>
+
             <div className="flex-grow">
-              <p className="font-bold text-sm">{notification.name}</p>
-              <p className="text-xs text-muted-foreground">{notification.location}</p>
-              <p className="text-sm mt-1">
-                Just purchased <span className="font-semibold">{notification.product}</span>!
+              <p className="text-sm font-medium text-gray-900">
+                <span className="font-bold">{notification.name}</span> from {notification.location} just purchased{" "}
+                <span className="font-semibold text-brand">{notification.product}</span>!
               </p>
             </div>
+
             <button
               onClick={() => setIsVisible(false)}
-              className="self-start text-muted-foreground hover:text-foreground"
+              className="self-start text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Close notification"
             >
               <X size={16} />
             </button>

@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { SalesNotification } from "@/components/sales-notification"
 import { CartTestimonials } from "@/components/cart-testimonials"
 import { createCheckoutSession } from "@/app/actions/stripe"
-import { Loader2, X, Minus, Plus, Trash2, CheckCircle } from "lucide-react"
+import { Loader2, X, Minus, Plus, Trash2, CheckCircle, Lock, Clock, Shield, Truck } from "lucide-react"
 import Link from "next/link"
 import Head from "next/head"
 
@@ -160,6 +160,31 @@ export default function CartPage() {
                 {/* Social Proof */}
                 <div className="px-4 py-3 text-center bg-pink-50">
                   <p className="text-sm text-pink-700 font-medium">88% of customers also bought this</p>
+                </div>
+
+                {/* Trust Badges - NOVA SEÇÃO */}
+                <div className="px-4 py-4 bg-gray-50 border-t border-b">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Lock className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-800">Secure Checkout</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-800">30-Day Money Back Guarantee</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Shield className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-800">Encrypted SSL Payment</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Truck className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-800">Free Shipping (3-5 business days)</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Checkout Section */}
