@@ -1,5 +1,5 @@
 "use client"
-import { Star, Filter } from "lucide-react"
+import { Star, Filter, ChevronLeft, ChevronRight } from "lucide-react"
 import NextImage from "next/image"
 import { Button } from "@/components/ui/button"
 import SiteHeader from "@/components/site-header"
@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { useCart } from "@/contexts/cart-context"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import Link from "next/link"
 
 const products = [
   {
@@ -96,6 +97,27 @@ const products = [
   },
 ]
 
+const carouselProducts = [
+  {
+    id: "product-1",
+    name: "Hydrating Collagen Serum",
+    image: "https://ae-pic-a1.aliexpress-media.com/kf/S5af76759c1794d0d924c325a420aa3b7M.jpg_960x960q75.jpg_.avif",
+    href: "/skincare/product-1",
+  },
+  {
+    id: "product-2",
+    name: "Anti-Aging Night Cream",
+    image: "https://ae-pic-a1.aliexpress-media.com/kf/S638886bbc3cf4999975f5fdd5852ea45k.jpg_960x960q75.jpg_.avif",
+    href: "/skincare/product-2",
+  },
+  {
+    id: "product-3",
+    name: "Vitamin C Brightening Mask",
+    image: "https://ae-pic-a1.aliexpress-media.com/kf/Seaecc79b22174f5b9ddd62e67c74472a5.jpg_960x960q75.jpg_.avif",
+    href: "/skincare/product-3",
+  },
+]
+
 // Função para enviar evento para Google Analytics
 const trackAddToCart = (item: any) => {
   if (typeof window !== "undefined" && window.gtag) {
@@ -120,6 +142,7 @@ export default function SkincarePage() {
   const { addToCart } = useCart()
   const router = useRouter()
   const [sortBy, setSortBy] = useState("popular")
+  const [currentSlide, setCurrentSlide] = useState(0)
 
   const handleAddToCart = (product: any) => {
     addToCart(product)
@@ -146,6 +169,14 @@ export default function SkincarePage() {
         return b.reviewCount - a.reviewCount
     }
   })
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % carouselProducts.length)
+  }
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + carouselProducts.length) % carouselProducts.length)
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -233,36 +264,65 @@ export default function SkincarePage() {
           </div>
         </div>
 
-        {/* Benefits Section */}
+        {/* Carrossel de Produtos Especiais */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold font-lora text-brand mb-8">Why Choose Our Skincare?</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="p-6">
-                  <div className="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Star className="w-8 h-8 text-brand" />
+              <h2 className="text-3xl font-bold font-lora text-brand mb-8">Featured Products</h2>
+
+              {/* Carrossel */}
+              <div className="relative">
+                <div className="overflow-hidden rounded-lg">
+                  <div
+                    className="flex transition-transform duration-300 ease-in-out"
+                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  >
+                    {carouselProducts.map((product, index) => (
+                      <div key={product.id} className="w-full flex-shrink-0">
+                        <div className="relative aspect-square max-w-md mx-auto">
+                          <NextImage src={product.image} alt={product.name} fill className="object-cover rounded-lg" />
+                        </div>
+                        <div className="mt-4">
+                          <h3 className="text-xl font-semibold mb-4">{product.name}</h3>
+                          <Button asChild className="bg-brand hover:bg-brand/90 text-white">
+                            <Link href={product.href}>Add to Cart</Link>
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Premium Quality</h3>
-                  <p className="text-muted-foreground">
-                    Made with the finest Korean bio-collagen technology for maximum effectiveness
-                  </p>
                 </div>
-                <div className="p-6">
-                  <div className="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Star className="w-8 h-8 text-brand" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">Fast Results</h3>
-                  <p className="text-muted-foreground">
-                    Visible improvements in skin texture and radiance after just one use
-                  </p>
-                </div>
-                <div className="p-6">
-                  <div className="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Star className="w-8 h-8 text-brand" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">Trusted by Thousands</h3>
-                  <p className="text-muted-foreground">Over 5,000 satisfied customers with 4.6/5 star rating</p>
+
+                {/* Navigation Buttons */}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white"
+                  onClick={prevSlide}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white"
+                  onClick={nextSlide}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+
+                {/* Dots Indicator */}
+                <div className="flex justify-center gap-2 mt-6">
+                  {carouselProducts.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentSlide ? "bg-brand" : "bg-gray-300"
+                      }`}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
