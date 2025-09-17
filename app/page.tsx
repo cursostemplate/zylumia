@@ -19,27 +19,36 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen bg-background">
       <SiteHeader />
       <main className="flex-grow">
-        {/* Novo Hero com Vídeo */}
+        {/* Hero com Vídeo - Sem efeitos visuais */}
         <ZylumiaHero />
 
         {/* Seção de Produtos */}
-        <div id="product-details" className="scroll-mt-16">
+        <section id="product-details" className="scroll-mt-16">
+          <h2 className="sr-only">Product Details</h2>
           <HeroBanner />
-        </div>
+        </section>
 
-        <div id="reviews" ref={testimonialsRef}>
+        <section id="reviews" ref={testimonialsRef}>
+          <h2 className="sr-only">Customer Reviews</h2>
           <TestimonialsCarousel />
-        </div>
+        </section>
+
         <ProductFeatures />
-        <div id="features">
+
+        <section id="features">
+          <h2 className="sr-only">Product Features</h2>
           <ProductAccordionFeatures />
-        </div>
-        <div id="customer-reviews">
+        </section>
+
+        <section id="customer-reviews">
+          <h2 className="sr-only">Detailed Customer Reviews</h2>
           <CustomerReviews />
-        </div>
-        <div id="faq">
+        </section>
+
+        <section id="faq">
+          <h2 className="sr-only">Frequently Asked Questions</h2>
           <FaqSection />
-        </div>
+        </section>
       </main>
       <SiteFooter />
 

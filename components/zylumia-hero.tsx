@@ -20,9 +20,9 @@ export function ZylumiaHero() {
           Visible results after just one use. Trusted by 5,000+ customers worldwide.
           <br className="hidden md:block" />
           <span className="inline-flex items-center gap-2 mt-2 text-yellow-300">
-            <div className="flex">
+            <div className="flex" role="img" aria-label="5 star rating">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Star key={i} fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
               ))}
             </div>
             <span className="font-semibold">4.6/5 from 5,000+ reviews</span>
@@ -44,8 +44,8 @@ export function ZylumiaHero() {
       titleClassName="font-lora font-extrabold"
       subtitleClassName="font-medium"
       actionsClassName="mt-6 sm:mt-8 md:mt-10"
-      gradient={true}
-      blur={true}
+      gradient={false} // Removido o gradiente
+      blur={false} // Removido o blur
     />
   )
 }

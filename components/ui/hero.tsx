@@ -28,8 +28,8 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
   (
     {
       className,
-      gradient = true,
-      blur = true,
+      gradient = false, // Desabilitado por padrão
+      blur = false, // Desabilitado por padrão
       title,
       subtitle,
       actions,
@@ -60,73 +60,12 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
               playsInline
               className="absolute inset-0 w-full h-full object-cover"
               style={{ filter: "brightness(0.4)" }}
+              aria-label="Background video showcasing skincare transformation"
             >
               <source src={videoUrl} type="video/mp4" />
+              <track kind="captions" srcLang="en" label="English captions" />
             </video>
             <div className="absolute inset-0 bg-black/30" />
-          </div>
-        )}
-
-        {gradient && (
-          <div className="absolute top-0 isolate z-10 flex w-screen flex-1 items-start justify-center">
-            {blur && <div className="absolute top-0 z-50 h-48 w-screen bg-transparent opacity-10 backdrop-blur-md" />}
-
-            {/* Main glow */}
-            <div className="absolute inset-auto z-50 h-36 w-[28rem] -translate-y-[-30%] rounded-full bg-brand/60 opacity-80 blur-3xl" />
-
-            {/* Lamp effect */}
-            <motion.div
-              initial={{ width: "8rem" }}
-              viewport={{ once: true }}
-              transition={{ ease: "easeInOut", delay: 0.3, duration: 0.8 }}
-              whileInView={{ width: "16rem" }}
-              className="absolute top-0 z-30 h-36 -translate-y-[20%] rounded-full bg-brand/60 blur-2xl"
-            />
-
-            {/* Top line */}
-            <motion.div
-              initial={{ width: "15rem" }}
-              viewport={{ once: true }}
-              transition={{ ease: "easeInOut", delay: 0.3, duration: 0.8 }}
-              whileInView={{ width: "30rem" }}
-              className="absolute inset-auto z-50 h-0.5 -translate-y-[-10%] bg-brand/60"
-            />
-
-            {/* Left gradient cone */}
-            <motion.div
-              initial={{ opacity: 0.5, width: "15rem" }}
-              whileInView={{ opacity: 1, width: "30rem" }}
-              transition={{
-                delay: 0.3,
-                duration: 0.8,
-                ease: "easeInOut",
-              }}
-              style={{
-                backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
-              }}
-              className="absolute inset-auto right-1/2 h-56 overflow-visible w-[30rem] bg-gradient-conic from-brand/60 via-transparent to-transparent [--conic-position:from_70deg_at_center_top]"
-            >
-              <div className="absolute w-[100%] left-0 bg-background/20 h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
-              <div className="absolute w-40 h-[100%] left-0 bg-background/20 bottom-0 z-20 [mask-image:linear-gradient(to_right,white,transparent)]" />
-            </motion.div>
-
-            {/* Right gradient cone */}
-            <motion.div
-              initial={{ opacity: 0.5, width: "15rem" }}
-              whileInView={{ opacity: 1, width: "30rem" }}
-              transition={{
-                delay: 0.3,
-                duration: 0.8,
-                ease: "easeInOut",
-              }}
-              style={{
-                backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
-              }}
-              className="absolute inset-auto left-1/2 h-56 w-[30rem] bg-gradient-conic from-transparent via-transparent to-brand/60 [--conic-position:from_290deg_at_center_top]"
-            >
-              <div className="absolute w-40 h-[100%] right-0 bg-background/20 bottom-0 z-20 [mask-image:linear-gradient(to_left,white,transparent)]" />
-              <div className="absolute w-[100%] right-0 bg-background/20 h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
-            </motion.div>
           </div>
         )}
 
@@ -164,14 +103,16 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
                     variant={action.variant || "default"}
                     size="lg"
                     className={cn(
-                      "w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-2xl",
+                      "w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-2xl min-h-[48px] min-w-[48px]",
                       action.variant === "outline"
                         ? "border-2 border-white text-white bg-transparent hover:bg-white hover:text-brand backdrop-blur-sm"
                         : "bg-brand hover:bg-brand/90 text-white shadow-brand/25",
                     )}
                     asChild
                   >
-                    <Link href={action.href}>{action.label}</Link>
+                    <Link href={action.href} aria-label={`${action.label} - Navigate to ${action.href}`}>
+                      {action.label}
+                    </Link>
                   </Button>
                 ))}
               </div>
@@ -185,11 +126,14 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.5, duration: 0.8 }}
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50"
+          aria-label="Scroll down indicator"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
             className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center"
+            role="img"
+            aria-label="Scroll down"
           >
             <motion.div
               animate={{ y: [0, 12, 0] }}

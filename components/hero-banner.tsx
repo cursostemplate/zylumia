@@ -186,9 +186,9 @@ export function HeroBanner() {
             </h1>
 
             <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="flex text-yellow-400">
+              <div className="flex text-yellow-400" role="img" aria-label="5 star rating">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} fill="currentColor" className="w-5 h-5" />
+                  <Star key={i} fill="currentColor" className="w-5 h-5" aria-hidden="true" />
                 ))}
               </div>
               <span className="text-sm font-semibold">Rated 4.6 by 5000+ customers</span>
@@ -201,10 +201,11 @@ export function HeroBanner() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-0 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-md"
+                className="absolute left-0 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-md min-h-[48px] min-w-[48px]"
                 onClick={prevImage}
+                aria-label="Previous image"
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="h-5 w-5" aria-hidden="true" />
               </Button>
 
               <div className="w-[374px] h-[374px] relative">
@@ -221,10 +222,11 @@ export function HeroBanner() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-0 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-md"
+                className="absolute right-0 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-md min-h-[48px] min-w-[48px]"
                 onClick={nextImage}
+                aria-label="Next image"
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-5 w-5" aria-hidden="true" />
               </Button>
             </div>
 
@@ -233,26 +235,32 @@ export function HeroBanner() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md min-h-[48px] min-w-[48px]"
                 onClick={() => scrollThumbnails("left", thumbnailScrollRef)}
+                aria-label="Scroll thumbnails left"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
               </Button>
 
               <div
                 ref={thumbnailScrollRef}
                 className="flex gap-3 overflow-x-auto pb-2 px-8 scrollbar-hide scroll-smooth"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                role="tablist"
+                aria-label="Product image thumbnails"
               >
                 {bannerImages.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => selectImage(index)}
-                    className={`flex-shrink-0 w-[63px] h-[63px] rounded-lg overflow-hidden border-2 transition-all ${
+                    className={`flex-shrink-0 w-[63px] h-[63px] rounded-lg overflow-hidden border-2 transition-all min-h-[48px] min-w-[48px] ${
                       index === currentImageIndex
                         ? "border-brand shadow-lg scale-105"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
+                    role="tab"
+                    aria-selected={index === currentImageIndex}
+                    aria-label={`View ${image.alt}`}
                   >
                     <NextImage
                       src={image.thumb}
@@ -268,10 +276,11 @@ export function HeroBanner() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md min-h-[48px] min-w-[48px]"
                 onClick={() => scrollThumbnails("right", thumbnailScrollRef)}
+                aria-label="Scroll thumbnails right"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
               </Button>
             </div>
           </div>
@@ -279,11 +288,11 @@ export function HeroBanner() {
           <div className="max-w-md mx-auto">
             <div className="flex flex-col gap-4">
               <div>
-                <h1 className="text-2xl font-bold">Bio-Collagen Mask</h1>
+                <h2 className="text-2xl font-bold">Bio-Collagen Mask</h2>
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="flex text-green-500">
+                  <div className="flex text-green-500" role="img" aria-label="5 star rating">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} fill="currentColor" className="w-4 h-4" />
+                      <Star key={i} fill="currentColor" className="w-4 h-4" aria-hidden="true" />
                     ))}
                   </div>
                   <span className="text-sm text-muted-foreground">4.6/5 (5000+ reviews)</span>
@@ -293,7 +302,7 @@ export function HeroBanner() {
               <div className="space-y-2">
                 {benefits.map((benefit, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="w-4 h-4 text-pink-400 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-pink-400 flex-shrink-0" aria-hidden="true" />
                     <p className="text-sm">{benefit}</p>
                   </div>
                 ))}
@@ -307,17 +316,29 @@ export function HeroBanner() {
                 <p className="font-bold text-lg uppercase tracking-widest text-brand">LIMITED TIME OFFER</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3" role="radiogroup" aria-labelledby="offer-selection">
+                <h3 id="offer-selection" className="sr-only">
+                  Select your offer
+                </h3>
                 {offers.map((offer) => (
                   <div
                     key={offer.id}
                     className={cn(
-                      "border rounded-lg p-3 relative cursor-pointer transition-all flex items-center gap-3 shadow-sm",
+                      "border rounded-lg p-3 relative cursor-pointer transition-all flex items-center gap-3 shadow-sm min-h-[48px]",
                       selectedOfferId === offer.id
                         ? "border-brand border-[2px] bg-brand/5 shadow-md"
                         : "border-gray-200 bg-gray-50 hover:border-gray-400",
                     )}
                     onClick={() => setSelectedOfferId(offer.id)}
+                    role="radio"
+                    aria-checked={selectedOfferId === offer.id}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        setSelectedOfferId(offer.id)
+                      }
+                    }}
                   >
                     {offer.isPopular && (
                       <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-black text-white text-xs font-bold px-2 py-1 rounded-full uppercase">
@@ -352,7 +373,7 @@ export function HeroBanner() {
 
               <Button
                 onClick={handleAddToCart}
-                className="w-full h-12 bg-black hover:bg-gray-800 text-white text-base font-bold mt-4"
+                className="w-full h-12 bg-black hover:bg-gray-800 text-white text-base font-bold mt-4 min-h-[48px]"
               >
                 ADD TO CART
               </Button>
@@ -373,9 +394,9 @@ export function HeroBanner() {
                 </h1>
 
                 <div className="flex items-center gap-2 mb-6">
-                  <div className="flex text-yellow-400">
+                  <div className="flex text-yellow-400" role="img" aria-label="5 star rating">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} fill="currentColor" className="w-5 h-5" />
+                      <Star key={i} fill="currentColor" className="w-5 h-5" aria-hidden="true" />
                     ))}
                   </div>
                   <span className="text-sm font-semibold">Rated 4.6 by 5000+ customers</span>
@@ -387,10 +408,11 @@ export function HeroBanner() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute left-0 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-md"
+                    className="absolute left-0 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-md min-h-[48px] min-w-[48px]"
                     onClick={prevImage}
+                    aria-label="Previous image"
                   >
-                    <ChevronLeft className="h-5 w-5" />
+                    <ChevronLeft className="h-5 w-5" aria-hidden="true" />
                   </Button>
 
                   <div className="w-[374px] h-[374px] relative">
@@ -407,10 +429,11 @@ export function HeroBanner() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute right-0 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-md"
+                    className="absolute right-0 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-md min-h-[48px] min-w-[48px]"
                     onClick={nextImage}
+                    aria-label="Next image"
                   >
-                    <ChevronRight className="h-5 w-5" />
+                    <ChevronRight className="h-5 w-5" aria-hidden="true" />
                   </Button>
                 </div>
 
@@ -419,26 +442,32 @@ export function HeroBanner() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md min-h-[48px] min-w-[48px]"
                     onClick={() => scrollThumbnails("left", desktopThumbnailScrollRef)}
+                    aria-label="Scroll thumbnails left"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                   </Button>
 
                   <div
                     ref={desktopThumbnailScrollRef}
                     className="flex gap-3 overflow-x-auto pb-2 px-8 scrollbar-hide scroll-smooth"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                    role="tablist"
+                    aria-label="Product image thumbnails"
                   >
                     {bannerImages.map((image, index) => (
                       <button
                         key={index}
                         onClick={() => selectImage(index)}
-                        className={`flex-shrink-0 w-[63px] h-[63px] rounded-lg overflow-hidden border-2 transition-all ${
+                        className={`flex-shrink-0 w-[63px] h-[63px] rounded-lg overflow-hidden border-2 transition-all min-h-[48px] min-w-[48px] ${
                           index === currentImageIndex
                             ? "border-brand shadow-lg scale-105"
                             : "border-gray-200 hover:border-gray-300"
                         }`}
+                        role="tab"
+                        aria-selected={index === currentImageIndex}
+                        aria-label={`View ${image.alt}`}
                       >
                         <NextImage
                           src={image.thumb}
@@ -454,10 +483,11 @@ export function HeroBanner() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-md min-h-[48px] min-w-[48px]"
                     onClick={() => scrollThumbnails("right", desktopThumbnailScrollRef)}
+                    aria-label="Scroll thumbnails right"
                   >
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 </div>
               </div>
@@ -468,9 +498,9 @@ export function HeroBanner() {
               <div>
                 <h2 className="text-3xl font-bold">Bio-Collagen Mask</h2>
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="flex text-green-500">
+                  <div className="flex text-green-500" role="img" aria-label="5 star rating">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} fill="currentColor" className="w-5 h-5" />
+                      <Star key={i} fill="currentColor" className="w-5 h-5" aria-hidden="true" />
                     ))}
                   </div>
                   <span className="text-sm text-muted-foreground">4.6/5 (5000+ reviews)</span>
@@ -480,7 +510,7 @@ export function HeroBanner() {
               <div className="space-y-3">
                 {benefits.map((benefit, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-pink-400 flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-pink-400 flex-shrink-0" aria-hidden="true" />
                     <p>{benefit}</p>
                   </div>
                 ))}
@@ -494,17 +524,29 @@ export function HeroBanner() {
                 <p className="font-bold text-xl uppercase tracking-widest text-brand">LIMITED TIME OFFER</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3" role="radiogroup" aria-labelledby="offer-selection-desktop">
+                <h3 id="offer-selection-desktop" className="sr-only">
+                  Select your offer
+                </h3>
                 {offers.map((offer) => (
                   <div
                     key={offer.id}
                     className={cn(
-                      "border rounded-lg p-4 relative cursor-pointer transition-all flex items-center gap-4 shadow-sm",
+                      "border rounded-lg p-4 relative cursor-pointer transition-all flex items-center gap-4 shadow-sm min-h-[48px]",
                       selectedOfferId === offer.id
                         ? "border-brand border-[3px] bg-brand/5 shadow-md"
                         : "border-gray-200 bg-gray-50 hover:border-gray-400",
                     )}
                     onClick={() => setSelectedOfferId(offer.id)}
+                    role="radio"
+                    aria-checked={selectedOfferId === offer.id}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        setSelectedOfferId(offer.id)
+                      }
+                    }}
                   >
                     {offer.isPopular && (
                       <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-black text-white text-xs font-bold px-3 py-1 rounded-full uppercase">
@@ -539,7 +581,7 @@ export function HeroBanner() {
 
               <Button
                 onClick={handleAddToCart}
-                className="w-full h-[49px] bg-black hover:bg-gray-800 text-white text-lg font-bold mt-6"
+                className="w-full h-[49px] bg-black hover:bg-gray-800 text-white text-lg font-bold mt-6 min-h-[48px]"
               >
                 ADD TO CART
               </Button>

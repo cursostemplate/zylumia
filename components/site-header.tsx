@@ -40,31 +40,43 @@ export default function SiteHeader() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center">
           <div className="flex flex-1 items-center justify-start space-x-2">
-            <button onClick={() => setSidebarOpen(true)} className="p-2">
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Open menu</span>
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 min-h-[48px] min-w-[48px] flex items-center justify-center"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="h-6 w-6" aria-hidden="true" />
             </button>
-            <button onClick={() => setSearchOpen(true)} className="p-2">
-              <Search className="h-6 w-6" />
-              <span className="sr-only">Search</span>
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="p-2 min-h-[48px] min-w-[48px] flex items-center justify-center"
+              aria-label="Open search"
+            >
+              <Search className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
 
           <div className="flex flex-1 items-center justify-center">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2" aria-label="Zylumia homepage">
               <span className="font-lora text-2xl font-bold tracking-wider">ZYLUMIA</span>
             </Link>
           </div>
 
           <div className="flex flex-1 items-center justify-end space-x-4">
-            <Link href="/cart" className="relative p-2">
-              <ShoppingBag className="h-6 w-6" />
+            <Link
+              href="/cart"
+              className="relative p-2 min-h-[48px] min-w-[48px] flex items-center justify-center"
+              aria-label={`Shopping cart with ${totalItems} items`}
+            >
+              <ShoppingBag className="h-6 w-6" aria-hidden="true" />
               {totalItems > 0 && (
-                <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                <span
+                  className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground"
+                  aria-label={`${totalItems} items in cart`}
+                >
                   {totalItems}
                 </span>
               )}
-              <span className="sr-only">Shopping cart</span>
             </Link>
           </div>
         </div>
@@ -81,6 +93,7 @@ export default function SiteHeader() {
               transition={{ duration: 0.3 }}
               className="fixed inset-0 bg-black/50 z-50"
               onClick={() => setSidebarOpen(false)}
+              aria-hidden="true"
             />
             <motion.div
               initial={{ x: "-100%" }}
@@ -88,21 +101,30 @@ export default function SiteHeader() {
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="fixed top-0 left-0 h-full w-full max-w-xs bg-background z-50 p-6"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="sidebar-title"
             >
               <div className="flex justify-between items-center mb-8">
-                <h2 className="font-lora text-2xl font-bold">Menu</h2>
-                <button onClick={() => setSidebarOpen(false)}>
-                  <X className="h-6 w-6" />
+                <h2 id="sidebar-title" className="font-lora text-2xl font-bold">
+                  Menu
+                </h2>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="min-h-[48px] min-w-[48px] flex items-center justify-center"
+                  aria-label="Close menu"
+                >
+                  <X className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>
-              <nav>
+              <nav role="navigation" aria-label="Main navigation">
                 <ul className="space-y-4">
                   {navLinks.map((link) => (
                     <li key={link.name}>
                       <Link
                         href={link.href}
                         onClick={() => setSidebarOpen(false)}
-                        className="text-lg hover:text-brand transition-colors block"
+                        className="text-lg hover:text-brand transition-colors block py-2 min-h-[48px] flex items-center"
                       >
                         {link.name}
                       </Link>
@@ -124,6 +146,9 @@ export default function SiteHeader() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4"
             onClick={() => setSearchOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="search-title"
           >
             <motion.div
               initial={{ y: -50, opacity: 0 }}
@@ -133,8 +158,12 @@ export default function SiteHeader() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-4 border-b flex items-center gap-2">
-                <Search className="h-5 w-5 text-muted-foreground" />
+                <Search className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                <label htmlFor="search-input" className="sr-only">
+                  Search for products
+                </label>
                 <input
+                  id="search-input"
                   type="text"
                   placeholder="Search for products..."
                   value={searchQuery}
@@ -142,17 +171,25 @@ export default function SiteHeader() {
                   className="w-full bg-transparent focus:outline-none"
                   autoFocus
                 />
-                <button onClick={() => setSearchOpen(false)}>
-                  <X className="h-5 w-5" />
+                <button
+                  onClick={() => setSearchOpen(false)}
+                  className="min-h-[48px] min-w-[48px] flex items-center justify-center"
+                  aria-label="Close search"
+                >
+                  <X className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
               <div className="p-4 max-h-[60vh] overflow-y-auto">
                 {searchQuery &&
                   (filteredOffers.length > 0 ? (
-                    <ul className="space-y-2">
+                    <ul className="space-y-2" role="list">
                       {filteredOffers.map((offer) => (
                         <li key={offer.id} className="p-2 hover:bg-muted rounded-md">
-                          <Link href="/#product-details" onClick={() => setSearchOpen(false)}>
+                          <Link
+                            href="/#product-details"
+                            onClick={() => setSearchOpen(false)}
+                            className="block min-h-[48px] flex flex-col justify-center"
+                          >
                             <p className="font-semibold">{offer.quantity}</p>
                             <p className="text-sm text-muted-foreground">
                               {offer.supply} - {offer.price}
