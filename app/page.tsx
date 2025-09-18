@@ -4,7 +4,7 @@ import { useRef } from "react"
 import SiteHeader from "@/components/site-header"
 import { FaqSection } from "@/components/faq-section"
 import { SiteFooter } from "@/components/site-footer"
-import { TestimonialsCarousel } from "@/components/testimonials-carousel"
+import { AnimatedTestimonialsSection } from "@/components/animated-testimonials-carousel"
 import { CustomerReviews } from "@/components/customer-reviews"
 import { ProductAccordionFeatures } from "@/components/product-accordion-features"
 import { ProductFeatures } from "@/components/product-features"
@@ -30,7 +30,7 @@ export default function HomePage() {
 
         <section id="reviews" ref={testimonialsRef}>
           <h2 className="sr-only">Customer Reviews</h2>
-          <TestimonialsCarousel />
+          <AnimatedTestimonialsSection />
         </section>
 
         <ProductFeatures />
