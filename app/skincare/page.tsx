@@ -18,7 +18,7 @@ const products = [
     discount: "37%",
     rating: 5,
     reviewCount: 5000,
-    image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
+    image: "https://storage.googleapis.com/site-zylumia/M%C3%A1scara%20Facial%20Bio-Col%C3%A1gena%20Zylumia.png",
     description: "Premium Korean bio-collagen face mask for anti-aging and deep hydration.",
     quantity: "4 Masks",
     supply: "1 Month Supply",
@@ -35,7 +35,7 @@ const products = [
     discount: "56%",
     rating: 5,
     reviewCount: 3200,
-    image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
+    image: "https://storage.googleapis.com/site-zylumia/M%C3%A1scara%20Facial%20Bio-Col%C3%A1gena%20Zylumia.png",
     description: "Advanced anti-wrinkle formula with concentrated collagen peptides.",
     quantity: "8 Masks",
     supply: "2 Month Supply",
@@ -52,7 +52,7 @@ const products = [
     discount: "62%",
     rating: 5,
     reviewCount: 4800,
-    image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
+    image: "https://storage.googleapis.com/site-zylumia/M%C3%A1scara%20Facial%20Bio-Col%C3%A1gena%20Zylumia.png",
     description: "Most popular choice with maximum hydration and anti-aging benefits.",
     quantity: "12 Masks",
     supply: "3 Month Supply",
@@ -69,7 +69,7 @@ const products = [
     discount: "66%",
     rating: 5,
     reviewCount: 2900,
-    image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
+    image: "https://storage.googleapis.com/site-zylumia/M%C3%A1scara%20Facial%20Bio-Col%C3%A1gena%20Zylumia.png",
     description: "Luxury formula with free gift included for ultimate skincare experience.",
     quantity: "16 Masks",
     supply: "4 Month Supply",
@@ -86,7 +86,7 @@ const products = [
     discount: "70%",
     rating: 5,
     reviewCount: 1800,
-    image: "https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp",
+    image: "https://storage.googleapis.com/site-zylumia/M%C3%A1scara%20Facial%20Bio-Col%C3%A1gena%20Zylumia.png",
     description: "Ultimate 6-month supply for long-term skin transformation.",
     quantity: "24 Masks",
     supply: "6 Month Supply",
@@ -181,11 +181,50 @@ export default function SkincarePage() {
   return (
     <div className="flex flex-col min-h-screen">
       <SiteHeader />
+
+      {/* Hero Banner com Vídeo */}
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-black">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "brightness(0.4)" }}
+          aria-label="Background video showcasing skincare transformation"
+        >
+          <source
+            src="https://storage.googleapis.com/site-zylumia/a07465bbfc814d988daa8d1376c5c359.mp4"
+            type="video/mp4"
+          />
+          <track kind="captions" srcLang="en" label="English captions" />
+        </video>
+        <div className="absolute inset-0 bg-black/30" />
+
+        <div className="relative z-10 text-center text-white px-4">
+          <h1 className="text-4xl md:text-6xl font-bold font-lora mb-4">Transform Your Skin Today</h1>
+          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
+            Discover our premium Bio-Collagen masks with exclusive offers
+          </p>
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <div className="flex text-yellow-400">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} fill="currentColor" className="w-6 h-6" />
+              ))}
+            </div>
+            <span className="text-lg font-semibold">4.6/5 from 5,000+ customers</span>
+          </div>
+          <Button asChild size="lg" className="bg-brand hover:bg-brand/90 text-white px-8 py-4 text-lg font-semibold">
+            <Link href="#products">Shop Now</Link>
+          </Button>
+        </div>
+      </section>
+
       <main className="flex-grow bg-gray-50">
         {/* Header Section */}
-        <div className="bg-white border-b">
+        <div className="bg-white border-b" id="products">
           <div className="container mx-auto px-4 py-6">
-            <h1 className="text-3xl font-bold font-lora text-center mb-4">Skincare</h1>
+            <h2 className="text-3xl font-bold font-lora text-center mb-4">Skincare Collection</h2>
 
             {/* Filter and Sort Bar */}
             <div className="flex items-center justify-between">

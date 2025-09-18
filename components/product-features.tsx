@@ -35,9 +35,9 @@ const featuresData = [
 
 export function ProductFeatures() {
   return (
-    <section className="w-full py-12 md:py-16 bg-gray-50/50">
+    <section className="w-full py-8 md:py-16 bg-gray-50/50">
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+        <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8 md:mb-12">
           <h2 className="text-3xl font-bold font-lora tracking-tighter sm:text-4xl text-brand">
             Your Journey to Dream Skin
           </h2>
@@ -45,7 +45,7 @@ export function ProductFeatures() {
             Discover how our advanced collagen mask transforms your skin with every use
           </p>
         </div>
-        <div className="space-y-12 md:space-y-24">
+        <div className="space-y-8 md:space-y-24">
           {featuresData.map((feature, index) => (
             <div key={index} className="grid items-center gap-6 lg:grid-cols-2 lg:gap-12">
               <div className={`flex flex-col justify-center space-y-4 ${index % 2 !== 0 ? "lg:order-last" : ""}`}>
