@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import SiteHeader from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { useCart } from "@/contexts/cart-context"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
@@ -142,8 +141,7 @@ const trackAddToCart = (item: any) => {
 }
 
 export default function SkincarePage() {
-  const { addToCart } = useCart()
-  const router = useRouter()
+  const { addToCart, openCartDrawer } = useCart()
   const [sortBy, setSortBy] = useState("popular")
   const [currentVideoSlide, setCurrentVideoSlide] = useState(0)
   const [selectedVideo, setSelectedVideo] = useState<any>(null)
@@ -152,7 +150,7 @@ export default function SkincarePage() {
   const handleAddToCart = (product: any) => {
     addToCart(product)
     trackAddToCart(product)
-    router.push("/cart")
+    openCartDrawer()
   }
 
   const sortedProducts = [...products].sort((a, b) => {

@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import SiteHeader from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { useCart } from "@/contexts/cart-context"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 
 const productImages = [
@@ -66,8 +65,7 @@ const offers = [
 export default function Product2Page() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [selectedOfferId, setSelectedOfferId] = useState(202)
-  const { addToCart } = useCart()
-  const router = useRouter()
+  const { addToCart, openCartDrawer } = useCart()
 
   const selectedOffer = offers.find((offer) => offer.id === selectedOfferId)
 
@@ -82,7 +80,7 @@ export default function Product2Page() {
   const handleAddToCart = () => {
     if (selectedOffer) {
       addToCart(selectedOffer)
-      router.push("/cart")
+      openCartDrawer()
     }
   }
 

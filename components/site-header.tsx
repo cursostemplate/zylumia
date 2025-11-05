@@ -1,10 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Menu, Search, ShoppingBag, X } from "lucide-react"
+import { Menu, Search, ShoppingBag, X, User } from "lucide-react"
 import Link from "next/link"
 import { useCart } from "@/contexts/cart-context"
+import { useAuth } from "@/contexts/auth-context"
 import { AnimatePresence, motion } from "framer-motion"
+import { CartDrawer } from "@/components/cart-drawer"
+import { AuthModal } from "@/components/auth-modal"
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -25,10 +28,12 @@ const offers = [
 ]
 
 export default function SiteHeader() {
-  const { getCartTotalItems } = useCart()
+  const { getCartTotalItems, openCartDrawer } = useCart()
+  const { user, logout } = useAuth()
   const totalItems = getCartTotalItems()
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const [isSearchOpen, setSearchOpen] = useState(false)
+  const [isAuthOpen, setAuthOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
   const filteredOffers = offers.filter(
@@ -64,9 +69,40 @@ export default function SiteHeader() {
             </Link>
           </div>
 
-          <div className="flex flex-1 items-center justify-end space-x-4">
-            <Link
-              href="/cart"
+          <div className="flex flex-1 items-center justify-end space-x-2">
+            {user ? (
+              <div className="relative group">
+                <button
+                  className="p-2 min-h-[48px] min-w-[48px] flex items-center justify-center"
+                  aria-label="User account"
+                >
+                  <User className="h-6 w-6" aria-hidden="true" />
+                </button>
+                <div className="absolute right-0 mt-2 w-48 bg-background border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="p-3 border-b">
+                    <p className="font-semibold text-sm">{user.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAuthOpen(true)}
+                className="p-2 min-h-[48px] min-w-[48px] flex items-center justify-center"
+                aria-label="Sign in"
+              >
+                <User className="h-6 w-6" aria-hidden="true" />
+              </button>
+            )}
+
+            <button
+              onClick={openCartDrawer}
               className="relative p-2 min-h-[48px] min-w-[48px] flex items-center justify-center"
               aria-label={`Shopping cart with ${totalItems} items`}
             >
@@ -79,7 +115,7 @@ export default function SiteHeader() {
                   {totalItems}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
       </header>
@@ -208,6 +244,10 @@ export default function SiteHeader() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <CartDrawer />
+
+      <AuthModal isOpen={isAuthOpen} onClose={() => setAuthOpen(false)} />
     </>
   )
 }

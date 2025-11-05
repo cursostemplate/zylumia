@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Star, CheckCircle2 } from "lucide-react"
 import NextImage from "next/image"
 import { cn } from "@/lib/utils"
@@ -104,8 +103,7 @@ const trackAddToCart = (item: any) => {
 
 export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.RefObject<HTMLDivElement> }) {
   const [selectedOfferId, setSelectedOfferId] = useState(3)
-  const { addToCart } = useCart()
-  const router = useRouter()
+  const { addToCart, openCartDrawer } = useCart()
   const [showStickyButton, setShowStickyButton] = useState(false)
   const isInView = useInView(testimonialsRef, { once: true })
 
@@ -133,7 +131,7 @@ export function ProductDetails({ testimonialsRef }: { testimonialsRef?: React.Re
     if (selectedOffer) {
       addToCart(selectedOffer)
       trackAddToCart(selectedOffer)
-      router.push("/cart")
+      openCartDrawer()
     }
   }
 

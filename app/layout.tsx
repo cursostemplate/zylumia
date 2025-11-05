@@ -4,8 +4,11 @@ import "./globals.css"
 import "./fonts.css"
 import { cn } from "@/lib/utils"
 import { CartProvider } from "@/contexts/cart-context"
+import { AuthProvider } from "@/contexts/auth-context"
 import Script from "next/script"
 import { CountdownBanner } from "@/components/countdown-banner"
+import { EmailPopup } from "@/components/email-popup"
+import { CartDrawer } from "@/components/cart-drawer"
 
 export const metadata: Metadata = {
   title: "Zylumia - Premium Bio-Collagen Face Masks | Korean Skincare | Anti-Aging",
@@ -372,10 +375,14 @@ export default function RootLayout({
         />
       </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased")}>
-        <CartProvider>
-          <CountdownBanner />
-          {children}
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <CountdownBanner />
+            {children}
+            <EmailPopup />
+            <CartDrawer />
+          </CartProvider>
+        </AuthProvider>
 
         {/* Google Analytics Script */}
         <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-JHLXY58DJ0" />

@@ -2,7 +2,6 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import NextImage from "next/image"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/contexts/cart-context"
@@ -94,8 +93,7 @@ const trackAddToCart = (item: any) => {
 export function StickyOfferBar({ testimonialsRef }: { testimonialsRef?: React.RefObject<HTMLDivElement> }) {
   const [showStickyButton, setShowStickyButton] = useState(false)
   const [selectedOfferId, setSelectedOfferId] = useState(3) // Padrão: 12 Masks
-  const { addToCart } = useCart()
-  const router = useRouter()
+  const { addToCart, openCartDrawer } = useCart()
   const isInView = useInView(testimonialsRef, { once: true })
 
   const selectedOffer = offers.find((offer) => offer.id === selectedOfferId)
@@ -128,7 +126,7 @@ export function StickyOfferBar({ testimonialsRef }: { testimonialsRef?: React.Re
     if (selectedOffer) {
       addToCart(selectedOffer)
       trackAddToCart(selectedOffer)
-      router.push("/cart")
+      openCartDrawer()
     }
   }
 

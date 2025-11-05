@@ -26,15 +26,20 @@ interface CartContextType {
   updateQuantity: (itemId: number, quantity: number) => void
   clearCart: () => void
   getCartTotalItems: () => number
+  isCartDrawerOpen: boolean
+  openCartDrawer: () => void
+  closeCartDrawer: () => void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false)
 
   const addToCart = (item: Offer) => {
     setCartItems([{ ...item, quantityInCart: 1 }])
+    setIsCartDrawerOpen(true)
   }
 
   const removeFromCart = (itemId: number) => {
@@ -60,6 +65,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return cartItems.reduce((total, item) => total + item.quantityInCart, 0)
   }
 
+  const openCartDrawer = () => setIsCartDrawerOpen(true)
+  const closeCartDrawer = () => setIsCartDrawerOpen(false)
+
   return (
     <CartContext.Provider
       value={{
@@ -69,6 +77,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         updateQuantity,
         clearCart,
         getCartTotalItems,
+        isCartDrawerOpen,
+        openCartDrawer,
+        closeCartDrawer,
       }}
     >
       {children}

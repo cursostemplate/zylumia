@@ -6,7 +6,6 @@ import NextImage from "next/image"
 import { ChevronLeft, ChevronRight, Star, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/contexts/cart-context"
-import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 const bannerImages = [
@@ -112,7 +111,6 @@ export function HeroBanner() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [selectedOfferId, setSelectedOfferId] = useState(3)
   const { addToCart } = useCart()
-  const router = useRouter()
   const thumbnailScrollRef = useRef<HTMLDivElement>(null)
   const desktopThumbnailScrollRef = useRef<HTMLDivElement>(null)
 
@@ -154,7 +152,6 @@ export function HeroBanner() {
   const handleAddToCart = () => {
     if (selectedOffer) {
       addToCart(selectedOffer)
-      router.push("/cart")
     }
   }
 
