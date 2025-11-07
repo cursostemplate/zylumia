@@ -11,6 +11,7 @@ import { ProductFeatures } from "@/components/product-features"
 import { ZylumiaHero } from "@/components/zylumia-hero"
 import { HeroBanner } from "@/components/hero-banner"
 import { StickyOfferBar } from "@/components/sticky-offer-bar"
+import { VideoSection } from "@/components/video-section"
 
 export default function HomePage() {
   const testimonialsRef = useRef(null)
@@ -27,6 +28,8 @@ export default function HomePage() {
           <h2 className="sr-only">Product Details</h2>
           <HeroBanner />
         </section>
+
+        <VideoSection />
 
         <section id="reviews" ref={testimonialsRef}>
           <h2 className="sr-only">Customer Reviews</h2>
