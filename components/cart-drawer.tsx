@@ -7,9 +7,11 @@ import { useCart } from "@/contexts/cart-context"
 import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export function CartDrawer() {
   const { cartItems, updateQuantity, removeFromCart, isCartDrawerOpen, closeCartDrawer } = useCart()
+  const router = useRouter()
 
   const [timeLeft, setTimeLeft] = useState(15 * 60) // 15 minutes in seconds
 
@@ -204,8 +206,16 @@ export function CartDrawer() {
                   </div>
                 )}
 
-                <Button className="w-full py-6 text-lg font-semibold" asChild>
-                  <Link href="/cart">Proceed to Checkout</Link>
+                <Button
+                  className="w-full py-6 text-lg font-semibold"
+                  onClick={() => {
+                    closeCartDrawer()
+                    setTimeout(() => {
+                      router.push("/cart")
+                    }, 300)
+                  }}
+                >
+                  Proceed to Checkout
                 </Button>
 
                 <div className="flex justify-center pt-2">

@@ -2,7 +2,7 @@
 
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app"
 import { getAuth, type Auth } from "firebase/auth"
-import { getFirestore, type Firestore } from "firebase/firestore"
+import { getDatabase, type Database } from "firebase/database"
 
 const firebaseConfig = {
   apiKey: "AIzaSyA6UbPxktykBO7Le6oMSwNErJT-7GARGPY",
@@ -17,7 +17,7 @@ const firebaseConfig = {
 
 let app: FirebaseApp | null = null
 let authInstance: Auth | null = null
-let dbInstance: Firestore | null = null
+let dbInstance: Database | null = null
 
 export function getFirebaseApp(): FirebaseApp {
   if (typeof window === "undefined") {
@@ -44,14 +44,22 @@ export function getFirebaseAuth(): Auth {
   return authInstance
 }
 
-export function getFirebaseDb(): Firestore {
+export function getFirebaseDb(): Database {
   if (typeof window === "undefined") {
-    throw new Error("Firebase Firestore can only be used on the client side")
+    throw new Error("Firebase Database can only be used on the client side")
   }
 
   if (!dbInstance) {
-    const firebaseApp = getFirebaseApp()
-    dbInstance = getFirestore(firebaseApp)
+    try {
+      console.log("[v0] Initializing Realtime Database...")
+      const firebaseApp = getFirebaseApp()
+      console.log("[v0] Firebase app obtained:", !!firebaseApp)
+      dbInstance = getDatabase(firebaseApp)
+      console.log("[v0] Realtime Database initialized successfully:", !!dbInstance)
+    } catch (error) {
+      console.error("[v0] Error initializing Realtime Database:", error)
+      throw error
+    }
   }
 
   return dbInstance
