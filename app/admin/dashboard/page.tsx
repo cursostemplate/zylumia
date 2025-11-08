@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Package, DollarSign, Users, TrendingUp, LogOut, RefreshCw, Calendar, MapPin, Mail, Phone } from "lucide-react"
+import { Package, DollarSign, Users, TrendingUp, LogOut, Calendar, MapPin, Mail, Phone, UserCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   LineChart,
@@ -18,6 +18,8 @@ import {
   Pie,
   Cell,
 } from "recharts"
+import { getDatabase, ref, onValue, off } from "firebase/database"
+import { getFirebaseApp } from "@/lib/firebase"
 
 interface OrderData {
   id: string
@@ -41,11 +43,25 @@ interface OrderData {
   paypalOrderId?: string
 }
 
+interface UserData {
+  id: string
+  email: string
+  firstName?: string
+  lastName?: string
+  phone?: string
+  country?: string
+  timestamp: number
+  lastUpdated: number
+}
+
 export default function AdminDashboard() {
   const router = useRouter()
   const [orders, setOrders] = useState<OrderData[]>([])
+  const [users, setUsers] = useState<UserData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null)
+  const [activeTab, setActiveTab] = useState<"orders" | "users">("orders")
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
 
   useEffect(() => {
     // Check authentication
@@ -57,25 +73,43 @@ export default function AdminDashboard() {
       }
     }
 
-    fetchOrders()
-    // Auto refresh every 30 seconds
-    const interval = setInterval(fetchOrders, 30000)
-    return () => clearInterval(interval)
-  }, [router])
+    const app = getFirebaseApp()
+    const database = getDatabase(app)
 
-  const fetchOrders = async () => {
-    try {
-      const response = await fetch("/api/admin/orders")
-      if (response.ok) {
-        const data = await response.json()
-        setOrders(data.orders || [])
-      }
-    } catch (error) {
-      console.error("Error fetching orders:", error)
-    } finally {
+    // Listen to orders in real-time
+    const ordersRef = ref(database, "orders")
+    const unsubscribeOrders = onValue(ordersRef, (snapshot) => {
+      const data = snapshot.val()
+      const ordersArray = data
+        ? Object.entries(data).map(([id, order]) => ({
+            id,
+            ...(order as any),
+          }))
+        : []
+      setOrders(ordersArray)
+      setLastUpdate(new Date())
       setIsLoading(false)
+    })
+
+    // Listen to users in real-time
+    const usersRef = ref(database, "users")
+    const unsubscribeUsers = onValue(usersRef, (snapshot) => {
+      const data = snapshot.val()
+      const usersArray = data
+        ? Object.entries(data).map(([id, user]) => ({
+            id,
+            ...(user as any),
+          }))
+        : []
+      setUsers(usersArray)
+    })
+
+    // Cleanup listeners on unmount
+    return () => {
+      off(ordersRef)
+      off(usersRef)
     }
-  }
+  }, [router])
 
   const handleLogout = () => {
     localStorage.removeItem("zylumia_admin")
@@ -87,6 +121,7 @@ export default function AdminDashboard() {
   const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0)
   const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
   const uniqueCustomers = new Set(orders.map((o) => o.email)).size
+  const totalUsers = users.length
 
   // Chart data - Orders by day
   const ordersByDay = orders.reduce((acc: any, order) => {
@@ -139,10 +174,11 @@ export default function AdminDashboard() {
             <p className="text-sm text-gray-600">Admin Dashboard</p>
           </div>
           <div className="flex items-center gap-4">
-            <Button onClick={fetchOrders} variant="outline" size="sm" className="gap-2 bg-transparent">
-              <RefreshCw className="h-4 w-4" />
-              Refresh
-            </Button>
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+              <span>Live</span>
+              <span className="text-xs text-gray-400">Updated: {lastUpdate.toLocaleTimeString()}</span>
+            </div>
             <Button
               onClick={handleLogout}
               variant="outline"
@@ -164,7 +200,7 @@ export default function AdminDashboard() {
         ) : (
           <>
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm text-gray-600">Total Orders</p>
@@ -198,7 +234,16 @@ export default function AdminDashboard() {
                   <Users className="h-5 w-5 text-[#8c2a42]" />
                 </div>
                 <p className="text-3xl font-bold text-gray-900">{uniqueCustomers}</p>
-                <p className="text-xs text-gray-600 mt-1">Total customers</p>
+                <p className="text-xs text-gray-600 mt-1">With orders</p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm text-gray-600">Registered Users</p>
+                  <UserCircle className="h-5 w-5 text-[#8c2a42]" />
+                </div>
+                <p className="text-3xl font-bold text-gray-900">{totalUsers}</p>
+                <p className="text-xs text-gray-600 mt-1">Total users</p>
               </div>
             </div>
 
@@ -259,72 +304,150 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* Orders Table */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-6 border-b border-gray-200">
-                <h3 className="text-lg font-semibold">Recent Orders</h3>
-                <p className="text-sm text-gray-600 mt-1">All customer orders in real-time</p>
+              <div className="border-b border-gray-200">
+                <div className="flex">
+                  <button
+                    onClick={() => setActiveTab("orders")}
+                    className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors ${
+                      activeTab === "orders"
+                        ? "border-[#8c2a42] text-[#8c2a42]"
+                        : "border-transparent text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Orders ({totalOrders})
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("users")}
+                    className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors ${
+                      activeTab === "users"
+                        ? "border-[#8c2a42] text-[#8c2a42]"
+                        : "border-transparent text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Registered Users ({totalUsers})
+                  </button>
+                </div>
               </div>
 
-              {orders.length === 0 ? (
-                <div className="p-12 text-center text-gray-500">
-                  <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No orders yet</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Items</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {orders
-                        .sort((a, b) => b.timestamp - a.timestamp)
-                        .map((order) => (
-                          <tr key={order.id} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {new Date(order.timestamp).toLocaleDateString()}
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-900">
-                              <div>
-                                {order.firstName} {order.lastName}
-                              </div>
-                              <div className="text-xs text-gray-500">{order.email}</div>
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-900">
-                              <div>
-                                {order.city}, {order.state}
-                              </div>
-                              <div className="text-xs text-gray-500">{order.country}</div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {order.items?.length || 0} item(s)
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                              £{order.total.toFixed(2)}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              <Button
-                                onClick={() => setSelectedOrder(order)}
-                                size="sm"
-                                variant="outline"
-                                className="text-[#8c2a42] border-[#8c2a42] hover:bg-[#8c2a42] hover:text-white"
-                              >
-                                View Details
-                              </Button>
-                            </td>
+              {/* Orders Table */}
+              {activeTab === "orders" && (
+                <>
+                  {orders.length === 0 ? (
+                    <div className="p-12 text-center text-gray-500">
+                      <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>No orders yet</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Customer
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Location
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Items</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
                           </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {orders
+                            .sort((a, b) => b.timestamp - a.timestamp)
+                            .map((order) => (
+                              <tr key={order.id} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                  {new Date(order.timestamp).toLocaleDateString()}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-900">
+                                  <div>
+                                    {order.firstName} {order.lastName}
+                                  </div>
+                                  <div className="text-xs text-gray-500">{order.email}</div>
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-900">
+                                  <div>
+                                    {order.city}, {order.state}
+                                  </div>
+                                  <div className="text-xs text-gray-500">{order.country}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                  {order.items?.length || 0} item(s)
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                  £{order.total.toFixed(2)}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                  <Button
+                                    onClick={() => setSelectedOrder(order)}
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-[#8c2a42] border-[#8c2a42] hover:bg-[#8c2a42] hover:text-white"
+                                  >
+                                    View Details
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {activeTab === "users" && (
+                <>
+                  {users.length === 0 ? (
+                    <div className="p-12 text-center text-gray-500">
+                      <UserCircle className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>No registered users yet</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Registered Date
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Country</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Last Updated
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {users
+                            .sort((a, b) => b.timestamp - a.timestamp)
+                            .map((user) => (
+                              <tr key={user.id} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                  {new Date(user.timestamp).toLocaleDateString()}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-900">
+                                  {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : "-"}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-900">{user.email}</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">{user.phone || "-"}</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">{user.country || "-"}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {new Date(user.lastUpdated).toLocaleString()}
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </>

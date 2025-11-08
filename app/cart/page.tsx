@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useCart } from "@/contexts/cart-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -189,6 +189,42 @@ export default function CartPage() {
       "West Coast",
     ],
   }
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      // Only auto-save if at least email is filled
+      if (email && email.includes("@")) {
+        const customerData = {
+          email,
+          firstName,
+          lastName,
+          address,
+          apartment,
+          city,
+          state,
+          zipCode,
+          phone,
+          country,
+          trackingUpdates,
+          type: "customer_info",
+          savedAt: new Date().toISOString(),
+        }
+
+        // Save to Firebase automatically
+        fetch("/api/save-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(customerData),
+        }).catch((error) => {
+          console.error("Auto-save error:", error)
+        })
+      }
+    }, 2000) // Wait 2 seconds after user stops typing
+
+    return () => clearTimeout(timeoutId)
+  }, [email, firstName, lastName, address, apartment, city, state, zipCode, phone, country, trackingUpdates])
 
   if (cartItems.length === 0) {
     return (
