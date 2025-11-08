@@ -4,8 +4,7 @@ export async function POST(request: Request) {
   try {
     const orderData = await request.json()
 
-    const firebaseUrl =
-      process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "https://banco-de-dados-fba27-default-rtdb.firebaseio.com"
+    const firebaseUrl = "https://banco-de-dados-fba27.firebaseio.com"
 
     const dataToSave = {
       ...orderData,

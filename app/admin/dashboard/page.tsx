@@ -18,8 +18,6 @@ import {
   Pie,
   Cell,
 } from "recharts"
-import { getDatabase, ref, onValue, off } from "firebase/database"
-import { getFirebaseApp } from "@/lib/firebase"
 
 interface OrderData {
   id: string
@@ -63,6 +61,25 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"orders" | "users">("orders")
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
 
+  const fetchData = async () => {
+    try {
+      const response = await fetch("/api/admin/get-data")
+      const data = await response.json()
+
+      if (data.orders) {
+        setOrders(data.orders)
+      }
+      if (data.users) {
+        setUsers(data.users)
+      }
+      setLastUpdate(new Date())
+      setIsLoading(false)
+    } catch (error) {
+      console.error("[v0] Error fetching admin data:", error)
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     // Check authentication
     if (typeof window !== "undefined") {
@@ -73,42 +90,13 @@ export default function AdminDashboard() {
       }
     }
 
-    const app = getFirebaseApp()
-    const database = getDatabase(app)
+    // Initial fetch
+    fetchData()
 
-    // Listen to orders in real-time
-    const ordersRef = ref(database, "orders")
-    const unsubscribeOrders = onValue(ordersRef, (snapshot) => {
-      const data = snapshot.val()
-      const ordersArray = data
-        ? Object.entries(data).map(([id, order]) => ({
-            id,
-            ...(order as any),
-          }))
-        : []
-      setOrders(ordersArray)
-      setLastUpdate(new Date())
-      setIsLoading(false)
-    })
+    // Poll every 5 seconds for real-time updates
+    const interval = setInterval(fetchData, 5000)
 
-    // Listen to users in real-time
-    const usersRef = ref(database, "users")
-    const unsubscribeUsers = onValue(usersRef, (snapshot) => {
-      const data = snapshot.val()
-      const usersArray = data
-        ? Object.entries(data).map(([id, user]) => ({
-            id,
-            ...(user as any),
-          }))
-        : []
-      setUsers(usersArray)
-    })
-
-    // Cleanup listeners on unmount
-    return () => {
-      off(ordersRef)
-      off(usersRef)
-    }
+    return () => clearInterval(interval)
   }, [router])
 
   const handleLogout = () => {
@@ -118,7 +106,7 @@ export default function AdminDashboard() {
 
   // Calculate statistics
   const totalOrders = orders.length
-  const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0)
+  const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0) || 0
   const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
   const uniqueCustomers = new Set(orders.map((o) => o.email)).size
   const totalUsers = users.length
@@ -215,7 +203,7 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600">Total Revenue</p>
                   <DollarSign className="h-5 w-5 text-[#8c2a42]" />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">£{totalRevenue.toFixed(2)}</p>
+                <p className="text-3xl font-bold text-gray-900">£{(totalRevenue || 0).toFixed(2)}</p>
                 <p className="text-xs text-green-600 mt-1">All time</p>
               </div>
 
@@ -224,7 +212,7 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600">Avg Order Value</p>
                   <TrendingUp className="h-5 w-5 text-[#8c2a42]" />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">£{averageOrderValue.toFixed(2)}</p>
+                <p className="text-3xl font-bold text-gray-900">£{(averageOrderValue || 0).toFixed(2)}</p>
                 <p className="text-xs text-gray-600 mt-1">Per order</p>
               </div>
 
@@ -379,7 +367,7 @@ export default function AdminDashboard() {
                                   {order.items?.length || 0} item(s)
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                  £{order.total.toFixed(2)}
+                                  £{(order.total || 0).toFixed(2)}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                                   <Button
@@ -545,7 +533,7 @@ export default function AdminDashboard() {
                 <div className="bg-gray-50 rounded-lg p-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal:</span>
-                    <span>£{selectedOrder.subtotal.toFixed(2)}</span>
+                    <span>£{(selectedOrder.subtotal || 0).toFixed(2)}</span>
                   </div>
                   {selectedOrder.shippingProtection && (
                     <div className="flex justify-between text-sm">
@@ -559,7 +547,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="border-t border-gray-300 pt-2 flex justify-between font-bold">
                     <span>Total:</span>
-                    <span className="text-[#8c2a42]">£{selectedOrder.total.toFixed(2)}</span>
+                    <span className="text-[#8c2a42]">£{(selectedOrder.total || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
