@@ -192,22 +192,22 @@ export default function CartPage() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      // Only auto-save if at least email is filled
-      if (email && email.includes("@")) {
+      if (email && email.includes("@") && (firstName || lastName)) {
         const customerData = {
           email,
-          firstName,
-          lastName,
-          address,
-          apartment,
-          city,
-          state,
-          zipCode,
-          phone,
+          firstName: firstName || "",
+          lastName: lastName || "",
+          address: address || "",
+          apartment: apartment || "",
+          city: city || "",
+          state: state || "",
+          zipCode: zipCode || "",
+          phone: phone || "",
           country,
           trackingUpdates,
           type: "customer_info",
           savedAt: new Date().toISOString(),
+          timestamp: Date.now(),
         }
 
         // Save to Firebase automatically
@@ -218,10 +218,10 @@ export default function CartPage() {
           },
           body: JSON.stringify(customerData),
         }).catch((error) => {
-          console.error("Auto-save error:", error)
+          console.error("[v0] Auto-save error:", error)
         })
       }
-    }, 2000) // Wait 2 seconds after user stops typing
+    }, 2000)
 
     return () => clearTimeout(timeoutId)
   }, [email, firstName, lastName, address, apartment, city, state, zipCode, phone, country, trackingUpdates])
@@ -240,7 +240,10 @@ export default function CartPage() {
   }
 
   const validateAndSaveOrder = async (paypalOrderId?: string) => {
+    console.log("[v0] Validating order data...")
+
     if (!email || !lastName || !address || !city || !state || !zipCode || !phone) {
+      console.log("[v0] Validation failed - missing required fields")
       toast({
         title: "Campos obrigatórios faltando",
         description: "Por favor, preencha todos os campos obrigatórios antes de continuar.",
@@ -251,10 +254,10 @@ export default function CartPage() {
 
     const orderData = {
       email,
-      firstName,
+      firstName: firstName || "",
       lastName,
       address,
-      apartment,
+      apartment: apartment || "",
       city,
       state,
       zipCode,
@@ -265,14 +268,31 @@ export default function CartPage() {
       cartItems: cartItems.map((item) => ({
         id: item.id,
         title: item.title,
+        subtitle: item.subtitle,
+        quantity: item.quantity,
+        supply: item.supply,
         price: item.price,
-        quantity: item.quantityInCart,
+        quantityInCart: item.quantityInCart,
+        image: item.image,
+      })),
+      items: cartItems.map((item) => ({
+        id: item.id,
+        quantity: item.title,
+        supply: item.supply,
+        price: item.price,
+        quantityInCart: item.quantityInCart,
         image: item.image,
       })),
       subtotal,
-      paypalOrderId,
+      total: subtotal,
+      shippingProtection: false,
+      paypalOrderId: paypalOrderId || "",
       status: paypalOrderId ? "completed" : "pending",
+      timestamp: Date.now(),
+      createdAt: new Date().toISOString(),
     }
+
+    console.log("[v0] Saving order data to Firebase...")
 
     try {
       const response = await fetch("/api/save-order", {
@@ -284,8 +304,10 @@ export default function CartPage() {
       })
 
       const result = await response.json()
+      console.log("[v0] Firebase save result:", result)
 
       if (!result.success) {
+        console.error("[v0] Failed to save order:", result.error)
         toast({
           title: "Erro ao salvar pedido",
           description: result.error || "Ocorreu um erro ao salvar seu pedido.",
@@ -294,12 +316,14 @@ export default function CartPage() {
         return false
       }
 
+      console.log("[v0] Order saved successfully with ID:", result.orderId)
       toast({
         title: "Pedido salvo!",
         description: "Seu pedido foi salvo com sucesso.",
       })
       return true
     } catch (error) {
+      console.error("[v0] Error saving order:", error)
       toast({
         title: "Erro ao salvar pedido",
         description: "Ocorreu um erro ao salvar seu pedido. Tente novamente.",
