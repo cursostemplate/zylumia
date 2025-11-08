@@ -206,20 +206,16 @@ export default function CartPage() {
           country,
           trackingUpdates,
           type: "customer_info",
-          savedAt: new Date().toISOString(),
           timestamp: Date.now(),
         }
 
-        // Save to Firebase automatically
         fetch("/api/save-order", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(customerData),
-        }).catch((error) => {
-          console.error("[v0] Auto-save error:", error)
-        })
+        }).catch(() => {})
       }
     }, 2000)
 
@@ -240,10 +236,7 @@ export default function CartPage() {
   }
 
   const validateAndSaveOrder = async (paypalOrderId?: string) => {
-    console.log("[v0] Validating order data...")
-
     if (!email || !lastName || !address || !city || !state || !zipCode || !phone) {
-      console.log("[v0] Validation failed - missing required fields")
       toast({
         title: "Campos obrigatórios faltando",
         description: "Por favor, preencha todos os campos obrigatórios antes de continuar.",
@@ -265,16 +258,6 @@ export default function CartPage() {
       country,
       trackingUpdates,
       saveInfo,
-      cartItems: cartItems.map((item) => ({
-        id: item.id,
-        title: item.title,
-        subtitle: item.subtitle,
-        quantity: item.quantity,
-        supply: item.supply,
-        price: item.price,
-        quantityInCart: item.quantityInCart,
-        image: item.image,
-      })),
       items: cartItems.map((item) => ({
         id: item.id,
         quantity: item.title,
@@ -289,10 +272,7 @@ export default function CartPage() {
       paypalOrderId: paypalOrderId || "",
       status: paypalOrderId ? "completed" : "pending",
       timestamp: Date.now(),
-      createdAt: new Date().toISOString(),
     }
-
-    console.log("[v0] Saving order data to Firebase...")
 
     try {
       const response = await fetch("/api/save-order", {
@@ -304,10 +284,8 @@ export default function CartPage() {
       })
 
       const result = await response.json()
-      console.log("[v0] Firebase save result:", result)
 
       if (!result.success) {
-        console.error("[v0] Failed to save order:", result.error)
         toast({
           title: "Erro ao salvar pedido",
           description: result.error || "Ocorreu um erro ao salvar seu pedido.",
@@ -316,14 +294,12 @@ export default function CartPage() {
         return false
       }
 
-      console.log("[v0] Order saved successfully with ID:", result.orderId)
       toast({
         title: "Pedido salvo!",
         description: "Seu pedido foi salvo com sucesso.",
       })
       return true
     } catch (error) {
-      console.error("[v0] Error saving order:", error)
       toast({
         title: "Erro ao salvar pedido",
         description: "Ocorreu um erro ao salvar seu pedido. Tente novamente.",
@@ -349,7 +325,7 @@ export default function CartPage() {
         phone,
         country,
         type: "customer_info",
-        savedAt: new Date().toISOString(),
+        timestamp: Date.now(),
       }
 
       try {
