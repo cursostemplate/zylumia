@@ -14,6 +14,7 @@ function VideoPlayer({ src, index }: { src: string; index: number }) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [hasMetadata, setHasMetadata] = useState(false)
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -27,21 +28,34 @@ function VideoPlayer({ src, index }: { src: string; index: number }) {
   }
 
   return (
-    <div className="relative w-full group">
+    <div className="relative w-full group bg-[#f5f5f5] rounded-lg overflow-hidden">
       <video
         ref={videoRef}
         src={src}
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         controlsList="nodownload"
         onContextMenu={(e) => e.preventDefault()}
-        onLoadedMetadata={() => setIsLoaded(true)}
+        onLoadedMetadata={() => {
+          setIsLoaded(true)
+          setHasMetadata(true)
+          if (videoRef.current) {
+            videoRef.current.currentTime = 0.1
+          }
+        }}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
-        className="w-full rounded-lg shadow-lg bg-gray-100"
+        className="w-full rounded-lg shadow-lg object-cover"
         style={{ aspectRatio: "130.95 / 233.38" }}
+        poster={`${src}#t=0.1`}
       />
+
+      {!hasMetadata && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[#f5f5f5]">
+          <div className="w-12 h-12 border-4 border-[#8c2a42] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
 
       <button
         onClick={togglePlay}

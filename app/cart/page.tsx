@@ -1,6 +1,6 @@
 "use client"
 
-import { useTransition } from "react"
+import { useTransition, useState, useEffect } from "react"
 import { useCart } from "@/contexts/cart-context"
 import NextImage from "next/image"
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,27 @@ import Head from "next/head"
 export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity } = useCart()
   const [isPending, startTransition] = useTransition()
+  const [shippingProtection, setShippingProtection] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(15 * 60)
+
+  useEffect(() => {
+    if (cartItems.length === 0) return
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 0) return 15 * 60 // Reset to 15 minutes
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [cartItems.length])
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+  }
 
   const subtotal = cartItems.reduce((acc, item) => {
     const price = Number.parseFloat(item.price.replace("£", ""))
@@ -23,7 +44,8 @@ export default function CartPage() {
   }, 0)
 
   const shipping = 0 // Frete grátis
-  const total = subtotal + shipping
+  const shippingProtectionCost = 5
+  const total = subtotal + shipping + (shippingProtection ? shippingProtectionCost : 0)
 
   const handleCheckout = () => {
     startTransition(async () => {
@@ -79,6 +101,16 @@ export default function CartPage() {
                       <X className="h-5 w-5" />
                     </Link>
                   </Button>
+                </div>
+
+                <div className="px-4 py-3 bg-red-50 border-b border-red-100">
+                  <div className="flex items-center justify-center gap-2">
+                    <Clock className="w-4 h-4 text-red-600" />
+                    <p className="text-sm font-medium text-red-700">
+                      Estoque limitado! Carrinho reservado para{" "}
+                      <span className="font-bold">{formatTime(timeLeft)}</span>
+                    </p>
+                  </div>
                 </div>
 
                 {/* Free Shipping Unlocked */}
@@ -162,6 +194,61 @@ export default function CartPage() {
                   <p className="text-sm text-pink-700 font-medium">88% of customers also bought this</p>
                 </div>
 
+                <div className="px-4 py-4 space-y-3 border-t">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-700">Subtotal</span>
+                    <span className="text-sm font-semibold">£{subtotal.toFixed(2)}</span>
+                  </div>
+
+                  {/* Shipping Protection Option */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-2 flex-1">
+                        <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900">Proteção de envio</p>
+                          <p className="text-xs text-gray-600 mt-0.5">
+                            Proteja seu pedido contra danos, perdas ou roubo durante o transporte
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-sm font-semibold text-gray-900">$5.00</span>
+                        <button
+                          onClick={() => setShippingProtection(!shippingProtection)}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                            shippingProtection ? "bg-green-600" : "bg-gray-300"
+                          }`}
+                          aria-label="Toggle shipping protection"
+                        >
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                              shippingProtection ? "translate-x-6" : "translate-x-1"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-700">Shipping</span>
+                    <span className="font-semibold text-green-600">FREE</span>
+                  </div>
+
+                  {shippingProtection && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-700">Shipping Protection</span>
+                      <span className="font-semibold">$5.00</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center pt-2 border-t">
+                    <span className="text-base font-semibold text-gray-900">Total</span>
+                    <span className="text-lg font-bold text-gray-900">£{total.toFixed(2)}</span>
+                  </div>
+                </div>
+
                 {/* Trust Badges - ÍCONES VERDES */}
                 <div className="px-4 py-4 bg-gray-50 border-t border-b">
                   <div className="space-y-3">
@@ -216,10 +303,9 @@ export default function CartPage() {
                       </form>
                     )}
 
-                    {/* Payment Icons - CENTRALIZADO E AJUSTADO */}
                     <div className="w-full h-[50.5px] mt-3 flex items-center justify-center">
                       <NextImage
-                        src="/payment-icons.webp"
+                        src="https://zylumia.com/payment-icons.webp"
                         alt="Secure payment methods"
                         width={344}
                         height={50.5}

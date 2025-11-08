@@ -3,7 +3,7 @@
 import { createContext, useState, useContext, useEffect, type ReactNode } from "react"
 import { signInWithEmail, signUpWithEmail, signOutUser, getErrorMessage } from "@/lib/firebase-auth-service"
 import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { getFirebaseDb } from "@/lib/firebase"
 
 interface User {
   id: string
@@ -51,8 +51,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(getErrorMessage(error))
       }
 
-      if (firebaseUser && db) {
+      if (firebaseUser) {
         try {
+          const db = getFirebaseDb()
           const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
           if (userDoc.exists()) {
             const userData = userDoc.data()

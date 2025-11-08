@@ -56,6 +56,3 @@ export function getFirebaseDb(): Firestore {
 
   return dbInstance
 }
-
-export const auth = typeof window !== "undefined" ? getFirebaseAuth() : null
-export const db = typeof window !== "undefined" ? getFirebaseDb() : null
