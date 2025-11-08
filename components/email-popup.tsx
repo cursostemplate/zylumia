@@ -7,22 +7,24 @@ import { X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { subscribeEmail } from "@/lib/firebase-service"
 
 export function EmailPopup() {
   const [isOpen, setIsOpen] = useState(false)
   const [email, setEmail] = useState("")
+  const [name, setName] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
     // Check if user has already seen the popup
     const hasSeenPopup = localStorage.getItem("emailPopupSeen")
 
     if (!hasSeenPopup) {
-      // Show popup after 7 seconds (7000ms)
       const timer = setTimeout(() => {
         setIsOpen(true)
-      }, 7000)
+      }, 4000)
 
       return () => clearTimeout(timer)
     }
@@ -31,21 +33,23 @@ export function EmailPopup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setErrorMessage("")
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const result = await subscribeEmail(email, name, "popup")
 
-    // Store email in localStorage (in production, send to your backend)
-    localStorage.setItem("subscribedEmail", email)
-    localStorage.setItem("emailPopupSeen", "true")
+    if (result.success) {
+      localStorage.setItem("emailPopupSeen", "true")
+      setIsSuccess(true)
 
-    setIsSuccess(true)
+      // Close popup after 2 seconds
+      setTimeout(() => {
+        setIsOpen(false)
+      }, 2000)
+    } else {
+      setErrorMessage(result.message)
+    }
+
     setIsSubmitting(false)
-
-    // Close popup after 2 seconds
-    setTimeout(() => {
-      setIsOpen(false)
-    }, 2000)
   }
 
   const handleClose = () => {
@@ -100,6 +104,21 @@ export function EmailPopup() {
 
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
+                      <label htmlFor="name-input" className="sr-only">
+                        Your name
+                      </label>
+                      <input
+                        id="name-input"
+                        type="text"
+                        placeholder="Enter your name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                      />
+                    </div>
+
+                    <div>
                       <label htmlFor="email-input" className="sr-only">
                         Email address
                       </label>
@@ -113,6 +132,8 @@ export function EmailPopup() {
                         className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
                       />
                     </div>
+
+                    {errorMessage && <p className="text-sm text-destructive text-center">{errorMessage}</p>}
 
                     <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>
                       {isSubmitting ? "Subscribing..." : "Get My Discount"}

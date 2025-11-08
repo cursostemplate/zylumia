@@ -1,6 +1,9 @@
 "use client"
 
 import { createContext, useState, useContext, useEffect, type ReactNode } from "react"
+import { signInWithEmail, signUpWithEmail, signOutUser, getErrorMessage } from "@/lib/firebase-auth-service"
+import { doc, getDoc } from "firebase/firestore"
+import { db } from "@/lib/firebase"
 
 interface User {
   id: string
@@ -20,50 +23,102 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    // Check if user is logged in (from localStorage)
-    const storedUser = localStorage.getItem("user")
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("zylumia_user")
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser))
+        } catch (error) {
+          console.error("Error parsing saved user:", error)
+          localStorage.removeItem("zylumia_user")
+        }
+      }
     }
-    setIsLoading(false)
   }, [])
 
   const login = async (email: string, password: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    setIsLoading(true)
+    try {
+      const { user: firebaseUser, error } = await signInWithEmail(email, password)
 
-    // In production, validate credentials with your backend
-    const mockUser = {
-      id: "1",
-      name: email.split("@")[0],
-      email,
+      if (error) {
+        if (error === "auth/user-not-found" || error === "auth/invalid-credential") {
+          throw new Error("USER_NOT_FOUND")
+        }
+        throw new Error(getErrorMessage(error))
+      }
+
+      if (firebaseUser && db) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
+          if (userDoc.exists()) {
+            const userData = userDoc.data()
+            const user = {
+              id: firebaseUser.uid,
+              name: userData.name || firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "User",
+              email: firebaseUser.email || "",
+            }
+            setUser(user)
+            localStorage.setItem("zylumia_user", JSON.stringify(user))
+            setIsLoading(false)
+            return
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error)
+        }
+
+        // Fallback
+        const user = {
+          id: firebaseUser.uid,
+          name: firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "User",
+          email: firebaseUser.email || "",
+        }
+        setUser(user)
+        localStorage.setItem("zylumia_user", JSON.stringify(user))
+      }
+    } finally {
+      setIsLoading(false)
     }
-
-    setUser(mockUser)
-    localStorage.setItem("user", JSON.stringify(mockUser))
   }
 
   const register = async (name: string, email: string, password: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    setIsLoading(true)
+    try {
+      const { user: firebaseUser, error } = await signUpWithEmail(email, password, name)
 
-    // In production, create user in your backend
-    const newUser = {
-      id: Date.now().toString(),
-      name,
-      email,
+      if (error) {
+        throw new Error(getErrorMessage(error))
+      }
+
+      if (firebaseUser) {
+        const user = {
+          id: firebaseUser.uid,
+          name: name,
+          email: firebaseUser.email || email,
+        }
+        setUser(user)
+        localStorage.setItem("zylumia_user", JSON.stringify(user))
+      }
+    } finally {
+      setIsLoading(false)
     }
-
-    setUser(newUser)
-    localStorage.setItem("user", JSON.stringify(newUser))
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem("user")
+  const logout = async () => {
+    setIsLoading(true)
+    try {
+      const { error } = await signOutUser()
+      if (error) {
+        console.error("Error signing out:", error)
+      }
+      setUser(null)
+      localStorage.removeItem("zylumia_user")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>{children}</AuthContext.Provider>

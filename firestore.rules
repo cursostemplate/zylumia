@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================
+    // USUÁRIOS — Perfis de usuário
+    // ===============================
+    match /users/{userId} {
+      // Qualquer usuário autenticado pode ler perfis
+      allow read: if request.auth != null;
+      
+      // Apenas o próprio usuário pode criar/atualizar seu perfil
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      
+      // Apenas admins podem deletar
+      allow delete: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // ===============================
+    // SUBSCRIBERS — Inscrições de email
+    // ===============================
+    match /subscribers/{subscriberId} {
+      // Qualquer um pode criar uma inscrição (newsletter)
+      allow create: if true;
+      
+      // Apenas admins podem ler/atualizar/deletar
+      allow read, update, delete: if request.auth != null 
+        && request.auth.token.admin == true;
+    }
+
+    // ===============================
+    // CUPONS — Sistema de descontos
+    // ===============================
+    match /coupons/{couponId} {
+      // Qualquer um pode ler cupons (para validação)
+      allow read: if true;
+      
+      // Apenas admins podem criar/atualizar/deletar cupons
+      allow create, update, delete: if request.auth != null 
+        && request.auth.token.admin == true;
+    }
+
+    // ===============================
+    // USO DE CUPONS — Rastreamento
+    // ===============================
+    match /coupon_usage/{usageId} {
+      // Usuários autenticados podem criar registros de uso
+      allow create: if request.auth != null;
+      
+      // Usuários podem ler seus próprios registros
+      allow read: if request.auth != null 
+        && request.auth.uid == resource.data.userId;
+      
+      // Apenas admins podem atualizar/deletar
+      allow update, delete: if request.auth != null 
+        && request.auth.token.admin == true;
+    }
+
+    // ===============================
+    // PRODUTOS — Catálogo de produtos
+    // ===============================
+    match /products/{productId} {
+      // Qualquer um pode ver os produtos
+      allow read: if true;
+
+      // Somente administradores podem criar, editar ou deletar
+      allow create, update, delete: if request.auth != null
+        && request.auth.token.admin == true;
+    }
+
+    // ===============================
+    // CARRINHO E PEDIDOS
+    // ===============================
+    match /users/{userId}/cart/{cartId} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == userId;
+    }
+
+    match /users/{userId}/orders/{orderId} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == userId;
+    }
+
+    // ===============================
+    // BLOQUEAR TODO O RESTO
+    // ===============================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -21,6 +21,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
   const [password, setPassword] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
+  const [showRegisterPrompt, setShowRegisterPrompt] = useState(false)
 
   const { login, register } = useAuth()
 
@@ -28,20 +29,31 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
     e.preventDefault()
     setError("")
     setIsSubmitting(true)
+    setShowRegisterPrompt(false)
 
     try {
       if (mode === "login") {
         await login(email, password)
+        onClose()
+        // Reset form
+        setName("")
+        setEmail("")
+        setPassword("")
       } else {
         await register(name, email, password)
+        onClose()
+        // Reset form
+        setName("")
+        setEmail("")
+        setPassword("")
       }
-      onClose()
-      // Reset form
-      setName("")
-      setEmail("")
-      setPassword("")
-    } catch (err) {
-      setError("An error occurred. Please try again.")
+    } catch (err: any) {
+      if (err.message === "USER_NOT_FOUND") {
+        setShowRegisterPrompt(true)
+        setError("Account not found. Would you like to create one?")
+      } else {
+        setError(err.message || "An error occurred. Please try again.")
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -49,6 +61,13 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
 
   const toggleMode = () => {
     setMode(mode === "login" ? "register" : "login")
+    setError("")
+    setShowRegisterPrompt(false)
+  }
+
+  const handleRegisterPrompt = () => {
+    setMode("register")
+    setShowRegisterPrompt(false)
     setError("")
   }
 
@@ -131,7 +150,21 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
                 />
               </div>
 
-              {error && <p className="text-sm text-destructive text-center">{error}</p>}
+              {error && (
+                <div className="space-y-2">
+                  <p className="text-sm text-destructive text-center">{error}</p>
+                  {showRegisterPrompt && (
+                    <Button
+                      type="button"
+                      onClick={handleRegisterPrompt}
+                      variant="outline"
+                      className="w-full bg-transparent"
+                    >
+                      Create Account
+                    </Button>
+                  )}
+                </div>
+              )}
 
               <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>
                 {isSubmitting

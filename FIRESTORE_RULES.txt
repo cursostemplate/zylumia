@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================
+    // SUBSCRIBERS — Newsletter emails (PERMITE CRIAÇÃO SEM AUTH)
+    // ===============================
+    match /subscribers/{subscriberId} {
+      allow create: if true;
+      allow read, update, delete: if false; // Apenas admins podem ler/modificar via console
+    }
+
+    // ===============================
+    // USERS — Perfis de usuário
+    // ===============================
+    match /users/{userId} {
+      // Usuários autenticados podem ler qualquer perfil
+      allow read: if request.auth != null;
+      
+      // Apenas o próprio usuário pode criar/atualizar seu perfil
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      
+      // Ninguém pode deletar via app (apenas admin via console)
+      allow delete: if false;
+    }
+
+    // ===============================
+    // CUPONS — Sistema de descontos (PERMITE LEITURA PARA VALIDAÇÃO)
+    // ===============================
+    match /coupons/{couponId} {
+      allow read: if true;
+      
+      // Apenas admins podem criar/atualizar/deletar (via console)
+      allow create, update, delete: if false;
+    }
+
+    // ===============================
+    // USO DE CUPONS — Rastreamento (PERMITE CRIAÇÃO)
+    // ===============================
+    match /coupon_usage/{usageId} {
+      allow create: if true;
+      
+      // Leitura apenas para o próprio usuário se autenticado
+      allow read: if request.auth != null 
+        && request.auth.uid == resource.data.userId;
+      
+      // Nenhuma atualização ou deleção permitida
+      allow update, delete: if false;
+    }
+
+    // ===============================
+    // BLOQUEAR TODO O RESTO
+    // ===============================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,3 +1,7 @@
+"use client"
+
+import type React from "react"
+
 import { PolicyModal } from "@/components/policy-modal"
 import { PrivacyPolicyContent } from "@/components/policies/privacy-policy"
 import { ShippingPolicyContent } from "@/components/policies/shipping-policy"
@@ -6,8 +10,30 @@ import { TermsConditionsContent } from "@/components/policies/terms-conditions"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import NextImage from "next/image"
+import { useState } from "react"
+import { subscribeEmail } from "@/lib/firebase-service"
 
 export function SiteFooter() {
+  const [email, setEmail] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [message, setMessage] = useState("")
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setMessage("")
+
+    const result = await subscribeEmail(email, "", "footer")
+
+    setMessage(result.message)
+    setIsSubmitting(false)
+
+    if (result.success) {
+      setEmail("")
+      setTimeout(() => setMessage(""), 3000)
+    }
+  }
+
   return (
     <footer className="bg-background border-t">
       <div className="container mx-auto px-6 py-12">
@@ -49,12 +75,29 @@ export function SiteFooter() {
             <h3 className="font-lora text-xl font-bold">Subscribe to our emails</h3>
             <p className="mt-4 text-muted-foreground">Join our email list for exclusive offers and the latest news.</p>
 
-            {/* Layout Unificado - Email e Payment Icons sempre em coluna */}
-            <form className="mt-4 flex flex-col gap-2">
-              <Input type="email" placeholder="Email" className="flex-grow" />
-              <Button type="submit" className="bg-brand hover:bg-brand/90 text-brand-foreground">
-                Sign up
+            <form onSubmit={handleSubscribe} className="mt-4 flex flex-col gap-2">
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="flex-grow"
+              />
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-brand hover:bg-brand/90 text-brand-foreground"
+              >
+                {isSubmitting ? "Subscribing..." : "Sign up"}
               </Button>
+              {message && (
+                <p
+                  className={`text-sm ${message.includes("success") || message.includes("Successfully") ? "text-green-600" : "text-destructive"}`}
+                >
+                  {message}
+                </p>
+              )}
             </form>
 
             {/* Payment Icons abaixo do botão - mesma largura */}
