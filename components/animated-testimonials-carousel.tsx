@@ -1,149 +1,54 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, ArrowRight, Star } from "lucide-react"
+import { useState } from "react"
+import { Star, ChevronLeft, ChevronRight } from "lucide-react"
 import NextImage from "next/image"
+import { Button } from "@/components/ui/button"
 
 const testimonials = [
   {
     name: "ESMALTE SYMONE",
     quote:
-      "I used to avoid anything with collagen because I have acne-prone skin, but this mask completely changed my mind. It really helped reduce redness and made my breakouts heal much faster. I'm honestly impressed with the results.",
+      "Eu tinha medo de experimentar qualquer coisa com colágeno por causa da minha pele propensa a acne, mas este produto realmente reduziu a vermelhidade e ajudou minhas cicatrizarem mais rápido.",
     image: "https://storage.googleapis.com/site-zylumia/ChatGPT%20Image%2011%20de%20set.%20de%202025%2C%2021_00_23.png",
   },
   {
     name: "ELIF S.",
     quote:
-      "My skin looked tired and dull from work stress. After using this mask a few times, I noticed it felt firmer, smoother, and more refreshed. It's like a full reset for my face — I feel confident without makeup again!",
+      "Minha pele estava muito cansada por causa do trabalho. Mas após usar essa máscara algumas vezes, ela ficou mais viçosa e firme. É como um reset para o rosto!",
     image: "https://storage.googleapis.com/site-zylumia/ChatGPT%20Image%2011%20de%20set.%20de%202025%2C%2021_36_12.png",
   },
   {
     name: "KIRSTEN C.",
     quote:
-      "I started noticing smile lines and wanted something gentle to smooth them out. This collagen mask really helped — my skin feels firmer and more elastic. It's not an overnight miracle, but with regular use, the difference is undeniable.",
+      "Comecei a notar linhas de sorriso e queria algo suave para amenizá-las. Esta máscara de colágeno realmente ajudou — minha pele está mais firme e elástica.",
+    image: "https://storage.googleapis.com/site-zylumia/ChatGPT%20Image%2011%20de%20set.%20de%202025%2C%2021_36_12.png",
+  },
+  {
+    name: "VANESSA JOHNSON",
+    quote:
+      "Mal tenho tempo para cuidados com a pele, mas esta máscara de colágeno se tornou minha preferida antes de dormir. Deixa minha pele renovada e radiante — mesmo depois de noites sem dormir!",
+    image: "https://storage.googleapis.com/site-zylumia/ChatGPT%20Image%2011%20de%20set.%20de%202025%2C%2021_00_23.png",
+  },
+  {
+    name: "MARIANA T.",
+    quote:
+      "Minha pele estava seca e sem aquele brilho saudável. Após alguns usos desta máscara, notei textura mais suave, poros menores e uma tez mais brilhante.",
     image: "https://storage.googleapis.com/site-zylumia/ChatGPT%20Image%2011%20de%20set.%20de%202025%2C%2021_36_12.png",
   },
 ]
 
-type Testimonial = {
-  quote: string
-  name: string
-  image: string
-}
-
-const AnimatedTestimonialsCarousel = ({
-  testimonials,
-  autoplay = true,
-}: {
-  testimonials: Testimonial[]
-  autoplay?: boolean
-}) => {
-  const [active, setActive] = useState(0)
-
-  const handleNext = React.useCallback(() => {
-    setActive((prev) => (prev + 1) % testimonials.length)
-  }, [testimonials.length])
+export function AnimatedTestimonialsSection() {
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   const handlePrev = () => {
-    setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))
   }
 
-  useEffect(() => {
-    if (!autoplay) return
-    const interval = setInterval(handleNext, 5000)
-    return () => clearInterval(interval)
-  }, [autoplay, handleNext])
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
+  }
 
-  const isActive = (index: number) => index === active
-
-  const randomRotate = () => `${Math.floor(Math.random() * 16) - 8}deg`
-
-  return (
-    <div className="mx-auto max-w-sm px-4 py-20 font-sans antialiased md:max-w-4xl md:px-8 lg:px-12">
-      <div className="relative grid grid-cols-1 gap-y-12 md:grid-cols-2 md:gap-x-20">
-        {/* Image Section */}
-        <div className="flex items-center justify-center">
-          <div className="relative h-80 w-full max-w-xs">
-            <AnimatePresence>
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={testimonial.image}
-                  initial={{ opacity: 0, scale: 0.9, y: 50, rotate: randomRotate() }}
-                  animate={{
-                    opacity: isActive(index) ? 1 : 0.5,
-                    scale: isActive(index) ? 1 : 0.9,
-                    y: isActive(index) ? 0 : 20,
-                    zIndex: isActive(index) ? testimonials.length : testimonials.length - Math.abs(index - active),
-                    rotate: isActive(index) ? "0deg" : randomRotate(),
-                  }}
-                  exit={{ opacity: 0, scale: 0.9, y: -50 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="absolute inset-0 origin-bottom"
-                  style={{ perspective: "1000px" }}
-                >
-                  <NextImage
-                    src={testimonial.image}
-                    alt={`Testimonial from ${testimonial.name}`}
-                    width={500}
-                    height={500}
-                    draggable={false}
-                    className="h-full w-full rounded-3xl object-cover shadow-2xl"
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Text and Controls Section */}
-        <div className="flex flex-col justify-center py-4">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex flex-col justify-between"
-            >
-              <div>
-                <h3 className="text-2xl font-bold text-brand font-lora">Bio-Collagen Mask</h3>
-                <div className="flex text-yellow-400 text-2xl mt-2 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} fill="currentColor" className="w-6 h-6" />
-                  ))}
-                </div>
-                <p className="text-sm text-muted-foreground mb-4 uppercase tracking-wider font-semibold">
-                  – {testimonials[active].name}
-                </p>
-                <motion.p className="text-lg text-muted-foreground italic">"{testimonials[active].quote}"</motion.p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-          <div className="flex gap-4 pt-12">
-            <button
-              onClick={handlePrev}
-              aria-label="Previous testimonial"
-              className="group flex h-10 w-10 items-center justify-center rounded-full bg-brand/10 transition-colors hover:bg-brand/20 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
-            >
-              <ArrowLeft className="h-5 w-5 text-brand transition-transform duration-300 group-hover:-translate-x-1" />
-            </button>
-            <button
-              onClick={handleNext}
-              aria-label="Next testimonial"
-              className="group flex h-10 w-10 items-center justify-center rounded-full bg-brand/10 transition-colors hover:bg-brand/20 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
-            >
-              <ArrowRight className="h-5 w-5 text-brand transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export function AnimatedTestimonialsSection() {
   return (
     <section className="w-full py-12 md:py-16 bg-pink-50/30 dark:bg-brand/10">
       <div className="container px-4 md:px-6">
@@ -157,7 +62,67 @@ export function AnimatedTestimonialsSection() {
             </p>
           </div>
         </div>
-        <AnimatedTestimonialsCarousel testimonials={testimonials} />
+
+        <div className="relative max-w-md mx-auto">
+          <div className="overflow-hidden">
+            <div
+              className="flex transition-transform duration-300 ease-in-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {testimonials.map((testimonial, idx) => (
+                <div key={idx} className="flex-shrink-0 w-full flex flex-col items-center text-center px-4">
+                  <div className="w-full max-w-[280px] mb-4 mx-auto">
+                    <NextImage
+                      src={testimonial.image}
+                      alt={`Testimonial from ${testimonial.name}`}
+                      width={280}
+                      height={497}
+                      className="w-full h-auto rounded-2xl object-cover shadow-lg"
+                      style={{ aspectRatio: "130.95/233.38" }}
+                    />
+                  </div>
+                  <div className="flex text-yellow-400 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} fill="currentColor" className="w-5 h-5" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-foreground leading-relaxed mb-4 max-w-[280px]">"{testimonial.quote}"</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-foreground">– {testimonial.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-lg"
+            onClick={handlePrev}
+          >
+            <ChevronLeft className="h-6 w-6 text-brand" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-lg"
+            onClick={handleNext}
+          >
+            <ChevronRight className="h-6 w-6 text-brand" />
+          </Button>
+
+          <div className="flex justify-center gap-2 mt-6">
+            {testimonials.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={`h-2 rounded-full transition-all ${
+                  idx === currentIndex ? "w-8 bg-brand" : "w-2 bg-gray-300"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )
