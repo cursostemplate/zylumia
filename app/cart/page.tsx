@@ -204,10 +204,7 @@ export default function CartPage() {
   }
 
   const validateAndSaveOrder = async (paypalOrderId?: string) => {
-    console.log("[v0] Validating order data...")
-
     if (!email || !lastName || !address || !city || !state || !zipCode || !phone) {
-      console.log("[v0] Validation failed - missing required fields")
       toast({
         title: "Campos obrigatórios faltando",
         description: "Por favor, preencha todos os campos obrigatórios antes de continuar.",
@@ -215,8 +212,6 @@ export default function CartPage() {
       })
       return false
     }
-
-    console.log("[v0] Validation passed, saving order via API...")
 
     const orderData = {
       email,
@@ -255,7 +250,6 @@ export default function CartPage() {
       const result = await response.json()
 
       if (!result.success) {
-        console.log("[v0] Failed to save order:", result.error)
         toast({
           title: "Erro ao salvar pedido",
           description: result.error || "Ocorreu um erro ao salvar seu pedido.",
@@ -264,10 +258,12 @@ export default function CartPage() {
         return false
       }
 
-      console.log("[v0] Order saved successfully! ID:", result.orderId)
+      toast({
+        title: "Pedido salvo!",
+        description: "Seu pedido foi salvo com sucesso.",
+      })
       return true
     } catch (error) {
-      console.error("[v0] Error calling save-order API:", error)
       toast({
         title: "Erro ao salvar pedido",
         description: "Ocorreu um erro ao salvar seu pedido. Tente novamente.",
@@ -281,8 +277,6 @@ export default function CartPage() {
     setSaveInfo(checked)
 
     if (checked && email && lastName && address && city && state && zipCode && phone) {
-      console.log("[v0] Saving customer info via API...")
-
       const customerData = {
         email,
         firstName,
@@ -310,14 +304,13 @@ export default function CartPage() {
         const result = await response.json()
 
         if (result.success) {
-          console.log("[v0] Customer info saved successfully!")
           toast({
             title: "Informações salvas",
             description: "Suas informações foram salvas para a próxima compra.",
           })
         }
       } catch (error) {
-        console.error("[v0] Error saving customer info:", error)
+        console.error("Error saving customer info:", error)
       }
     }
   }
@@ -349,10 +342,7 @@ export default function CartPage() {
                 type="email"
                 placeholder="E-mail"
                 value={email}
-                onChange={(e) => {
-                  console.log("[v0] Email changed:", e.target.value)
-                  setEmail(e.target.value)
-                }}
+                onChange={(e) => setEmail(e.target.value)}
                 className="mb-3"
               />
 
@@ -726,17 +716,13 @@ export default function CartPage() {
                   <PayPalButtons
                     style={{ layout: "vertical", label: "checkout" }}
                     onClick={async () => {
-                      console.log("[v0] PayPal button clicked, validating...")
                       const isValid = await validateAndSaveOrder()
                       if (!isValid) {
-                        console.log("[v0] Validation failed, preventing PayPal popup")
                         return false
                       }
-                      console.log("[v0] Validation passed, allowing PayPal popup")
                       return true
                     }}
                     createOrder={(data, actions) => {
-                      console.log("[v0] Creating PayPal order...")
                       return actions.order.create({
                         intent: "CAPTURE",
                         purchase_units: [
@@ -750,24 +736,24 @@ export default function CartPage() {
                       })
                     }}
                     onApprove={async (data, actions) => {
-                      console.log("[v0] PayPal payment approved!")
                       if (actions.order) {
                         const order = await actions.order.capture()
-                        console.log("[v0] Order captured:", order)
-                        console.log("[v0] Saving final order with PayPal ID:", order.id)
-
                         await validateAndSaveOrder(order.id)
-
-                        console.log("[v0] Redirecting to success page...")
                         window.location.href = "/checkout/success"
                       }
                     }}
                     onError={(err) => {
-                      console.error("[v0] PayPal error:", err)
+                      console.error("PayPal error:", err)
                       toast({
                         title: "Erro no pagamento",
                         description: "Ocorreu um erro ao processar seu pagamento. Tente novamente.",
                         variant: "destructive",
+                      })
+                    }}
+                    onCancel={(data) => {
+                      toast({
+                        title: "Pagamento cancelado",
+                        description: "Você cancelou o pagamento.",
                       })
                     }}
                   />
