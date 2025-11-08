@@ -1,336 +1,451 @@
 "use client"
 
-import { useTransition, useState, useEffect } from "react"
+import { useState } from "react"
 import { useCart } from "@/contexts/cart-context"
-import NextImage from "next/image"
 import { Button } from "@/components/ui/button"
-import SiteHeader from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
-import { SalesNotification } from "@/components/sales-notification"
-import { CartTestimonials } from "@/components/cart-testimonials"
-import { createCheckoutSession } from "@/app/actions/stripe"
-import { Loader2, X, Minus, Plus, Trash2, Lock, Clock, Shield, Truck } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
-import Head from "next/head"
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
+import Image from "next/image"
 
 export default function CartPage() {
-  const { cartItems, removeFromCart, updateQuantity } = useCart()
-  const [isPending, startTransition] = useTransition()
-  const [shippingProtection, setShippingProtection] = useState(false)
-  const [timeLeft, setTimeLeft] = useState(15 * 60)
-
-  useEffect(() => {
-    if (cartItems.length === 0) return
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 0) return 15 * 60 // Reset to 15 minutes
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [cartItems.length])
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }
+  const { cartItems } = useCart()
+  const [email, setEmail] = useState("")
+  const [country, setCountry] = useState("United States")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [address, setAddress] = useState("")
+  const [apartment, setApartment] = useState("")
+  const [city, setCity] = useState("")
+  const [state, setState] = useState("")
+  const [zipCode, setZipCode] = useState("")
+  const [phone, setPhone] = useState("")
+  const [trackingUpdates, setTrackingUpdates] = useState(false)
+  const [saveInfo, setSaveInfo] = useState(false)
 
   const subtotal = cartItems.reduce((acc, item) => {
     const price = Number.parseFloat(item.price.replace("£", ""))
     return acc + price * item.quantityInCart
   }, 0)
 
-  const shipping = 0 // Frete grátis
-  const shippingProtectionCost = 5
-  const total = subtotal + shipping + (shippingProtection ? shippingProtectionCost : 0)
+  const countries = [
+    "Australia",
+    "Canada",
+    "New Zealand",
+    "United Kingdom",
+    "United States",
+    "Austria",
+    "Belgium",
+    "Bulgaria",
+    "Croatia",
+    "Cyprus",
+    "Czech Republic",
+    "Denmark",
+    "Estonia",
+    "Finland",
+    "France",
+    "Germany",
+    "Greece",
+    "Hungary",
+    "Ireland",
+    "Italy",
+    "Latvia",
+    "Lithuania",
+    "Luxembourg",
+    "Malta",
+    "Netherlands",
+    "Poland",
+    "Portugal",
+    "Romania",
+    "Slovakia",
+    "Slovenia",
+    "Spain",
+    "Sweden",
+    "Albania",
+    "Andorra",
+    "Armenia",
+    "Azerbaijan",
+    "Belarus",
+    "Bosnia and Herzegovina",
+    "Georgia",
+    "Iceland",
+    "Kosovo",
+    "Liechtenstein",
+    "Moldova",
+    "Monaco",
+    "Montenegro",
+    "North Macedonia",
+    "Norway",
+    "Russia",
+    "San Marino",
+    "Serbia",
+    "Switzerland",
+    "Turkey",
+    "Ukraine",
+    "Vatican City",
+  ]
 
-  const handleCheckout = () => {
-    startTransition(async () => {
-      await createCheckoutSession(cartItems)
-    })
+  const statesByCountry: Record<string, string[]> = {
+    Australia: [
+      "Australian Capital Territory",
+      "New South Wales",
+      "Northern Territory",
+      "Queensland",
+      "South Australia",
+      "Tasmania",
+      "Victoria",
+      "Western Australia",
+    ],
+    "United States": [
+      "Alabama",
+      "Alaska",
+      "Arizona",
+      "Arkansas",
+      "California",
+      "Colorado",
+      "Connecticut",
+      "Delaware",
+      "Florida",
+      "Georgia",
+      "Hawaii",
+      "Idaho",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Kentucky",
+      "Louisiana",
+      "Maine",
+      "Maryland",
+      "Massachusetts",
+      "Michigan",
+      "Minnesota",
+      "Mississippi",
+      "Missouri",
+      "Montana",
+      "Nebraska",
+      "Nevada",
+      "New Hampshire",
+      "New Jersey",
+      "New Mexico",
+      "New York",
+      "North Carolina",
+      "North Dakota",
+      "Ohio",
+      "Oklahoma",
+      "Oregon",
+      "Pennsylvania",
+      "Rhode Island",
+      "South Carolina",
+      "South Dakota",
+      "Tennessee",
+      "Texas",
+      "Utah",
+      "Vermont",
+      "Virginia",
+      "Washington",
+      "West Virginia",
+      "Wisconsin",
+      "Wyoming",
+    ],
+    Canada: [
+      "Alberta",
+      "British Columbia",
+      "Manitoba",
+      "New Brunswick",
+      "Newfoundland and Labrador",
+      "Nova Scotia",
+      "Ontario",
+      "Prince Edward Island",
+      "Quebec",
+      "Saskatchewan",
+    ],
+    "United Kingdom": ["England", "Scotland", "Wales", "Northern Ireland"],
+    "New Zealand": [
+      "Auckland",
+      "Bay of Plenty",
+      "Canterbury",
+      "Gisborne",
+      "Hawke's Bay",
+      "Manawatu-Wanganui",
+      "Marlborough",
+      "Nelson",
+      "Northland",
+      "Otago",
+      "Southland",
+      "Taranaki",
+      "Tasman",
+      "Waikato",
+      "Wellington",
+      "West Coast",
+    ],
   }
 
-  // Verifica se a oferta específica de "4 Masks" (ID 1) está no carrinho
-  const isFourMasksOffer = cartItems.length === 1 && cartItems[0]?.id === 1
-  const fourMasksPaymentLink = "https://buy.stripe.com/7sYdR39I40oj7gf8Xde3e00"
-
-  const handleQuantityChange = (itemId: number, newQuantity: number) => {
-    if (newQuantity < 1) {
-      removeFromCart(itemId)
-    } else {
-      updateQuantity(itemId, newQuantity)
-    }
+  if (cartItems.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Your cart is empty.</p>
+          <Button asChild>
+            <Link href="/">Continue Shopping</Link>
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <>
-      <Head>
-        <title>Shopping Cart - Zylumia | Bio-Collagen Face Masks</title>
-        <meta
-          name="description"
-          content="Review your Bio-Collagen face mask order. Secure checkout with free shipping worldwide. 60-day money-back guarantee."
-        />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://zylumia.com/cart" />
-      </Head>
-
-      <div className="flex flex-col min-h-screen">
-        <SiteHeader />
-        <main className="flex-grow bg-gray-50">
-          {cartItems.length === 0 ? (
-            <div className="container mx-auto px-4 py-8">
-              <div className="text-center py-12">
-                <p className="text-muted-foreground mb-4">Your cart is empty.</p>
-                <Button asChild>
-                  <Link href="/">Continue Shopping</Link>
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="container mx-auto px-4 py-8">
-              {/* Layout Idêntico para Mobile e Desktop */}
-              <div className="bg-white max-w-md mx-auto">
-                {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b">
-                  <h1 className="text-lg font-semibold">Your Cart • {cartItems.length}</h1>
-                  <Button variant="ghost" size="icon" asChild>
-                    <Link href="/">
-                      <X className="h-5 w-5" />
-                    </Link>
-                  </Button>
-                </div>
-
-                <div className="px-4 py-3 bg-red-50 border-b border-red-100">
-                  <div className="flex items-center justify-center gap-2">
-                    <Clock className="w-4 h-4 text-red-600" />
-                    <p className="text-sm font-medium text-red-700">
-                      Estoque limitado! Carrinho reservado para{" "}
-                      <span className="font-bold">{formatTime(timeLeft)}</span>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Free Shipping Unlocked */}
-                <div className="px-4 py-3 text-center">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Free shipping unlocked!</p>
-
-                  {/* Progress Bar - VERDE */}
-                  <div className="relative w-full bg-gray-200 rounded-full h-2 mb-1">
-                    <div className="absolute top-0 left-0 h-full bg-green-600 rounded-full w-full"></div>
-                    <div className="absolute -right-1 -top-1 w-4 h-4 bg-green-600 rounded-full border-2 border-white flex items-center justify-center">
-                      <Truck className="w-2 h-2 text-white" />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end">
-                    <span className="text-xs text-gray-500">Free Shipping</span>
-                  </div>
-                </div>
-
-                {/* Cart Items */}
-                <div className="px-4 pb-4 space-y-4">
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                      <NextImage
-                        src={item.image}
-                        alt={item.quantity}
-                        width={60}
-                        height={60}
-                        className="rounded-md flex-shrink-0"
-                      />
-
-                      <div className="flex-grow min-w-0">
-                        <h3 className="font-medium text-sm text-gray-900 truncate">{item.quantity}</h3>
-                        <p className="text-xs text-gray-500">{item.supply}</p>
-
-                        {/* Quantity Controls */}
-                        <div className="flex items-center gap-2 mt-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-6 w-6 bg-transparent"
-                            onClick={() => handleQuantityChange(item.id, item.quantityInCart - 1)}
-                          >
-                            <Minus className="h-3 w-3" />
-                          </Button>
-                          <span className="text-sm font-medium w-8 text-center">{item.quantityInCart}</span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-6 w-6 bg-transparent"
-                            onClick={() => handleQuantityChange(item.id, item.quantityInCart + 1)}
-                          >
-                            <Plus className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="text-right flex-shrink-0">
-                        <div className="flex items-center gap-2">
-                          <div>
-                            <p className="text-xs text-gray-400 line-through">{item.originalPrice}</p>
-                            <p className="font-bold text-sm">{item.price}</p>
-                            <p className="text-xs text-red-600">(Save {item.save})</p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 text-gray-400"
-                            onClick={() => removeFromCart(item.id)}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Social Proof */}
-                <div className="px-4 py-3 text-center bg-pink-50">
-                  <p className="text-sm text-pink-700 font-medium">88% of customers also bought this</p>
-                </div>
-
-                <div className="px-4 py-4 space-y-3 border-t">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-700">Subtotal</span>
-                    <span className="text-sm font-semibold">£{subtotal.toFixed(2)}</span>
-                  </div>
-
-                  {/* Shipping Protection Option */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start gap-2 flex-1">
-                        <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900">Proteção de envio</p>
-                          <p className="text-xs text-gray-600 mt-0.5">
-                            Proteja seu pedido contra danos, perdas ou roubo durante o transporte
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-sm font-semibold text-gray-900">$5.00</span>
-                        <button
-                          onClick={() => setShippingProtection(!shippingProtection)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                            shippingProtection ? "bg-green-600" : "bg-gray-300"
-                          }`}
-                          aria-label="Toggle shipping protection"
-                        >
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              shippingProtection ? "translate-x-6" : "translate-x-1"
-                            }`}
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-700">Shipping</span>
-                    <span className="font-semibold text-green-600">FREE</span>
-                  </div>
-
-                  {shippingProtection && (
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-700">Shipping Protection</span>
-                      <span className="font-semibold">$5.00</span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between items-center pt-2 border-t">
-                    <span className="text-base font-semibold text-gray-900">Total</span>
-                    <span className="text-lg font-bold text-gray-900">£{total.toFixed(2)}</span>
-                  </div>
-                </div>
-
-                {/* Trust Badges - ÍCONES VERDES */}
-                <div className="px-4 py-4 bg-gray-50 border-t border-b">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Lock className="w-4 h-4 text-green-600 flex-shrink-0" />
-                      <span className="text-sm font-medium text-gray-800">Secure Checkout</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <Clock className="w-4 h-4 text-gray-600 flex-shrink-0" />
-                      <span className="text-sm font-medium text-gray-800">30-Day Money Back Guarantee</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <Shield className="w-4 h-4 text-gray-600 flex-shrink-0" />
-                      <span className="text-sm font-medium text-gray-800">Encrypted SSL Payment</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <Truck className="w-4 h-4 text-green-600 flex-shrink-0" />
-                      <span className="text-sm font-medium text-gray-800">Free Shipping (3-5 business days)</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Checkout Section */}
-                <div className="p-4 bg-white border-t">
-                  {/* Checkout Button - CENTRALIZADO E AJUSTADO */}
-                  <div className="w-full max-w-[344px] mx-auto px-2">
-                    {isFourMasksOffer ? (
-                      <Button
-                        asChild
-                        className="w-full h-[50.5px] bg-black hover:bg-gray-800 text-white font-semibold text-base rounded-lg"
-                      >
-                        <a href={fourMasksPaymentLink} className="flex items-center justify-center">
-                          Checkout • £{total.toFixed(2)}
-                        </a>
-                      </Button>
-                    ) : (
-                      <form action={handleCheckout} className="w-full">
-                        <Button
-                          type="submit"
-                          className="w-full h-[50.5px] bg-black hover:bg-gray-800 text-white font-semibold text-base rounded-lg"
-                          disabled={isPending}
-                        >
-                          {isPending ? (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          ) : (
-                            `Checkout • £${total.toFixed(2)}`
-                          )}
-                        </Button>
-                      </form>
-                    )}
-
-                    <div className="w-full h-[50.5px] mt-3 flex items-center justify-center">
-                      <NextImage
-                        src="https://zylumia.com/payment-icons.webp"
-                        alt="Secure payment methods"
-                        width={344}
-                        height={50.5}
-                        className="object-contain max-w-full"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Simplified Footer */}
-                  <div className="text-center mt-4 pt-4 border-t">
-                    <p className="text-xs text-muted-foreground">&copy; 2025 Zylumia.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Seção de Testimonials */}
-          <div className="hidden lg:block">
-            <CartTestimonials />
-          </div>
-        </main>
-        <SiteFooter />
-        <SalesNotification />
+    <div className="min-h-screen bg-white">
+      {/* Logo */}
+      <div className="border-b">
+        <div className="container mx-auto px-4 py-4">
+          <Link href="/" className="inline-block">
+            <h1 className="text-2xl font-bold text-[#8c2a42]">ZYLUMIA</h1>
+          </Link>
+        </div>
       </div>
-    </>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="lg:grid lg:grid-cols-2 lg:gap-12 max-w-7xl mx-auto">
+          {/* Left Column - Form */}
+          <div className="lg:pr-8">
+            {/* Contact Section */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">E-mail ou telefone</h2>
+                <Link href="/login" className="text-sm text-[#8c2a42] hover:underline">
+                  Entrar
+                </Link>
+              </div>
+
+              <Input
+                type="email"
+                placeholder="E-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mb-3"
+              />
+
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="tracking-updates"
+                  checked={trackingUpdates}
+                  onCheckedChange={(checked) => setTrackingUpdates(checked as boolean)}
+                />
+                <Label htmlFor="tracking-updates" className="text-sm cursor-pointer">
+                  Envie-me atualizações de rastreamento e do pedido em tempo real.
+                </Label>
+              </div>
+            </div>
+
+            {/* Delivery Section */}
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-4">Entrega</h2>
+
+              <div className="space-y-4">
+                {/* Country */}
+                <div>
+                  <Label htmlFor="country" className="text-sm text-gray-600 mb-1 block">
+                    País/Região
+                  </Label>
+                  <select
+                    id="country"
+                    value={country}
+                    onChange={(e) => {
+                      setCountry(e.target.value)
+                      setState("")
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c2a42]"
+                  >
+                    {countries.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Name Fields */}
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Primeiro nome (opcional)"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                  <Input placeholder="Sobrenome" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                </div>
+
+                {/* Address */}
+                <Input placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+
+                {/* Apartment */}
+                <Input
+                  placeholder="Apartamento, suíte, etc. (opcional)"
+                  value={apartment}
+                  onChange={(e) => setApartment(e.target.value)}
+                />
+
+                {/* City, State, ZIP */}
+                <div className="grid grid-cols-3 gap-4">
+                  <Input placeholder="Cidade" value={city} onChange={(e) => setCity(e.target.value)} />
+                  {statesByCountry[country] ? (
+                    <select
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c2a42]"
+                    >
+                      <option value="">Estado/territ...</option>
+                      {statesByCountry[country]?.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Input placeholder="Estado" value={state} onChange={(e) => setState(e.target.value)} />
+                  )}
+                  <Input placeholder="código postal" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
+                </div>
+
+                {/* Phone */}
+                <Input type="tel" placeholder="Telefone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              </div>
+
+              {/* Save Info */}
+              <div className="flex items-center gap-2 mt-4">
+                <Checkbox
+                  id="save-info"
+                  checked={saveInfo}
+                  onCheckedChange={(checked) => setSaveInfo(checked as boolean)}
+                />
+                <Label htmlFor="save-info" className="text-sm cursor-pointer">
+                  Guarde esta informação para a próxima vez.
+                </Label>
+              </div>
+            </div>
+
+            <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-green-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-sm font-medium text-green-800">Frete Grátis para todos os países!</p>
+              </div>
+            </div>
+
+            {/* PayPal Button */}
+            <div className="mb-6">
+              <PayPalScriptProvider
+                options={{
+                  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
+                  currency: "USD",
+                }}
+              >
+                <PayPalButtons
+                  style={{ layout: "vertical", label: "checkout" }}
+                  createOrder={(data, actions) => {
+                    return actions.order.create({
+                      intent: "CAPTURE",
+                      purchase_units: [
+                        {
+                          amount: {
+                            currency_code: "USD",
+                            value: subtotal.toFixed(2),
+                          },
+                        },
+                      ],
+                    })
+                  }}
+                  onApprove={async (data, actions) => {
+                    if (actions.order) {
+                      const order = await actions.order.capture()
+                      console.log("Order completed:", order)
+                      window.location.href = "/checkout/success"
+                    }
+                  }}
+                />
+              </PayPalScriptProvider>
+            </div>
+
+            {/* Footer Links */}
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500 border-t pt-6">
+              <Link href="/refund-policy" className="hover:text-[#8c2a42]">
+                Política de reembolso
+              </Link>
+              <Link href="/shipping" className="hover:text-[#8c2a42]">
+                Envio
+              </Link>
+              <Link href="/privacy" className="hover:text-[#8c2a42]">
+                Política de Privacidade
+              </Link>
+              <Link href="/terms" className="hover:text-[#8c2a42]">
+                Termos de serviço
+              </Link>
+              <Link href="/contact" className="hover:text-[#8c2a42]">
+                Contato
+              </Link>
+            </div>
+          </div>
+
+          <div className="hidden lg:block lg:pl-8 border-l">
+            <div className="sticky top-8">
+              <h2 className="text-lg font-semibold mb-6">Resumo do Pedido</h2>
+
+              {/* Product Items */}
+              <div className="space-y-4 mb-6">
+                {cartItems.map((item) => (
+                  <div key={item.id} className="flex gap-4">
+                    <div className="relative w-20 h-20 rounded-lg overflow-hidden border flex-shrink-0">
+                      <Image
+                        src="https://storage.googleapis.com/site-zylumia/product1.webp"
+                        alt={item.title}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute -top-2 -right-2 bg-gray-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                        {item.quantityInCart}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-sm">{item.title}</h3>
+                      <p className="text-xs text-gray-500">{item.subtitle}</p>
+                    </div>
+                    <div className="font-semibold">
+                      £{(Number.parseFloat(item.price.replace("£", "")) * item.quantityInCart).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Totals */}
+              <div className="border-t pt-4 space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Subtotal</span>
+                  <span className="font-medium">£{subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Envio</span>
+                  <span className="font-medium text-green-600">GRÁTIS</span>
+                </div>
+                <div className="flex justify-between text-lg font-bold border-t pt-3">
+                  <span>Total</span>
+                  <span>
+                    <span className="text-sm text-gray-500 mr-2">USD</span>£{subtotal.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
