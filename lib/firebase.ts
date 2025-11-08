@@ -7,7 +7,7 @@ import { getDatabase, type Database } from "firebase/database"
 const firebaseConfig = {
   apiKey: "AIzaSyA6UbPxktykBO7Le6oMSwNErJT-7GARGPY",
   authDomain: "banco-de-dados-fba27.firebaseapp.com",
-  databaseURL: "https://banco-de-dados-fba27-default-rtdb.firebaseio.com",
+  databaseURL: "https://banco-de-dados-fba27.firebaseio.com",
   projectId: "banco-de-dados-fba27",
   storageBucket: "banco-de-dados-fba27.firebasestorage.app",
   messagingSenderId: "993017209264",
