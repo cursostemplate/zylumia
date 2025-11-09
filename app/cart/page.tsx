@@ -1,8 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useCart } from "@/contexts/cart-context"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -190,51 +189,6 @@ export default function CartPage() {
     ],
   }
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (email && email.includes("@") && (firstName || lastName)) {
-        const customerData = {
-          email,
-          firstName: firstName || "",
-          lastName: lastName || "",
-          address: address || "",
-          apartment: apartment || "",
-          city: city || "",
-          state: state || "",
-          zipCode: zipCode || "",
-          phone: phone || "",
-          country,
-          trackingUpdates,
-          type: "customer_info",
-          timestamp: Date.now(),
-        }
-
-        fetch("/api/save-order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(customerData),
-        }).catch(() => {})
-      }
-    }, 2000)
-
-    return () => clearTimeout(timeoutId)
-  }, [email, firstName, lastName, address, apartment, city, state, zipCode, phone, country, trackingUpdates])
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-muted-foreground mb-4">Your cart is empty.</p>
-          <Button asChild>
-            <Link href="/">Continue Shopping</Link>
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
   const validateAndSaveOrder = async (paypalOrderId?: string) => {
     if (!email || !lastName || !address || !city || !state || !zipCode || !phone) {
       toast({
@@ -271,6 +225,7 @@ export default function CartPage() {
       shippingProtection: false,
       paypalOrderId: paypalOrderId || "",
       status: paypalOrderId ? "completed" : "pending",
+      type: "order",
       timestamp: Date.now(),
     }
 
@@ -294,10 +249,12 @@ export default function CartPage() {
         return false
       }
 
-      toast({
-        title: "Pedido salvo!",
-        description: "Seu pedido foi salvo com sucesso.",
-      })
+      if (paypalOrderId) {
+        toast({
+          title: "Pedido salvo!",
+          description: "Seu pedido foi salvo com sucesso.",
+        })
+      }
       return true
     } catch (error) {
       toast({
@@ -324,7 +281,7 @@ export default function CartPage() {
         zipCode,
         phone,
         country,
-        type: "customer_info",
+        type: "saved_info",
         timestamp: Date.now(),
       }
 

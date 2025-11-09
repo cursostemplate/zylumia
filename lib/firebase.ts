@@ -5,14 +5,14 @@ import { getAuth, type Auth } from "firebase/auth"
 import { getDatabase, type Database } from "firebase/database"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA6UbPxktykBO7Le6oMSwNErJT-7GARGPY",
-  authDomain: "banco-de-dados-fba27.firebaseapp.com",
-  databaseURL: "https://banco-de-dados-fba27.firebaseio.com",
-  projectId: "banco-de-dados-fba27",
-  storageBucket: "banco-de-dados-fba27.firebasestorage.app",
-  messagingSenderId: "993017209264",
-  appId: "1:993017209264:web:9fffd3d8224b4c33b0b675",
-  measurementId: "G-JJDMJ1DRXQ",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 }
 
 let app: FirebaseApp | null = null
