@@ -268,44 +268,6 @@ export default function CartPage() {
 
   const handleSaveInfo = async (checked: boolean) => {
     setSaveInfo(checked)
-
-    if (checked && email && lastName && address && city && state && zipCode && phone) {
-      const customerData = {
-        email,
-        firstName,
-        lastName,
-        address,
-        apartment,
-        city,
-        state,
-        zipCode,
-        phone,
-        country,
-        type: "saved_info",
-        timestamp: Date.now(),
-      }
-
-      try {
-        const response = await fetch("/api/save-order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(customerData),
-        })
-
-        const result = await response.json()
-
-        if (result.success) {
-          toast({
-            title: "Informações salvas",
-            description: "Suas informações foram salvas para a próxima compra.",
-          })
-        }
-      } catch (error) {
-        console.error("Error saving customer info:", error)
-      }
-    }
   }
 
   return (
