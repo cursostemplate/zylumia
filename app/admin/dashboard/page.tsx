@@ -63,7 +63,19 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/admin/get-data")
+      const response = await fetch(`/api/admin/get-data?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+        },
+      })
+
+      if (!response.ok) {
+        console.error("[v0] Failed to fetch data:", response.status)
+        return
+      }
+
       const data = await response.json()
 
       if (data.orders) {
@@ -93,8 +105,7 @@ export default function AdminDashboard() {
     // Initial fetch
     fetchData()
 
-    // Poll every 5 seconds for real-time updates
-    const interval = setInterval(fetchData, 5000)
+    const interval = setInterval(fetchData, 3000)
 
     return () => clearInterval(interval)
   }, [router])

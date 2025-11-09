@@ -35,11 +35,22 @@ export async function GET() {
         }))
       : []
 
-    return Response.json({
-      orders,
-      users,
-      timestamp: Date.now(),
-    })
+    return new Response(
+      JSON.stringify({
+        orders,
+        users,
+        timestamp: Date.now(),
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      },
+    )
   } catch (error: any) {
     console.error("Error fetching admin data:", error)
     return Response.json({ error: error.message }, { status: 500 })
