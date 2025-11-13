@@ -1,9 +1,6 @@
 "use client"
 
 import { createContext, useState, useContext, useEffect, type ReactNode } from "react"
-import { signInWithEmail, signUpWithEmail, signOutUser, getErrorMessage } from "@/lib/firebase-auth-service"
-import { doc, getDoc } from "firebase/firestore"
-import { getFirebaseDb } from "@/lib/firebase"
 
 interface User {
   id: string
@@ -32,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
           setUser(JSON.parse(savedUser))
         } catch (error) {
-          console.error("Error parsing saved user:", error)
+          console.error("[v0] Error parsing saved user:", error)
           localStorage.removeItem("zylumia_user")
         }
       }
@@ -42,44 +39,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      const { user: firebaseUser, error } = await signInWithEmail(email, password)
+      console.log("[v0] Attempting login via API...")
 
-      if (error) {
-        if (error === "auth/user-not-found" || error === "auth/invalid-credential") {
-          throw new Error("USER_NOT_FOUND")
-        }
-        throw new Error(getErrorMessage(error))
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+      console.log("[v0] Login API response:", data)
+
+      if (!data.success) {
+        throw new Error(data.error || "Login failed")
       }
 
-      if (firebaseUser) {
-        try {
-          const db = getFirebaseDb()
-          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
-          if (userDoc.exists()) {
-            const userData = userDoc.data()
-            const user = {
-              id: firebaseUser.uid,
-              name: userData.name || firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "User",
-              email: firebaseUser.email || "",
-            }
-            setUser(user)
-            localStorage.setItem("zylumia_user", JSON.stringify(user))
-            setIsLoading(false)
-            return
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error)
-        }
-
-        // Fallback
-        const user = {
-          id: firebaseUser.uid,
-          name: firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "User",
-          email: firebaseUser.email || "",
-        }
-        setUser(user)
-        localStorage.setItem("zylumia_user", JSON.stringify(user))
+      const user = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
       }
+
+      setUser(user)
+      localStorage.setItem("zylumia_user", JSON.stringify(user))
+      console.log("[v0] Login successful, user saved to state")
     } finally {
       setIsLoading(false)
     }
@@ -88,21 +71,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (name: string, email: string, password: string) => {
     setIsLoading(true)
     try {
-      const { user: firebaseUser, error } = await signUpWithEmail(email, password, name)
+      console.log("[v0] Attempting registration via API...")
 
-      if (error) {
-        throw new Error(getErrorMessage(error))
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await response.json()
+      console.log("[v0] Registration API response:", data)
+
+      if (!data.success) {
+        throw new Error(data.error || "Registration failed")
       }
 
-      if (firebaseUser) {
-        const user = {
-          id: firebaseUser.uid,
-          name: name,
-          email: firebaseUser.email || email,
-        }
-        setUser(user)
-        localStorage.setItem("zylumia_user", JSON.stringify(user))
+      const user = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
       }
+
+      setUser(user)
+      localStorage.setItem("zylumia_user", JSON.stringify(user))
+      console.log("[v0] Registration successful, user saved to state")
     } finally {
       setIsLoading(false)
     }
@@ -111,10 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     setIsLoading(true)
     try {
-      const { error } = await signOutUser()
-      if (error) {
-        console.error("Error signing out:", error)
-      }
+      console.log("[v0] Logging out user")
       setUser(null)
       localStorage.removeItem("zylumia_user")
     } finally {

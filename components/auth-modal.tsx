@@ -7,6 +7,7 @@ import { X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
+import { useToast } from "@/hooks/use-toast"
 
 interface AuthModalProps {
   isOpen: boolean
@@ -24,6 +25,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
   const [showRegisterPrompt, setShowRegisterPrompt] = useState(false)
 
   const { login, register } = useAuth()
+  const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,8 +34,15 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
     setShowRegisterPrompt(false)
 
     try {
+      console.log("[v0] Form submitted:", { mode, email, name })
+
       if (mode === "login") {
         await login(email, password)
+        toast({
+          title: "Login realizado com sucesso!",
+          description: `Bem-vindo de volta, ${email}`,
+          duration: 3000,
+        })
         onClose()
         // Reset form
         setName("")
@@ -41,6 +50,11 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
         setPassword("")
       } else {
         await register(name, email, password)
+        toast({
+          title: "Cadastro realizado com sucesso!",
+          description: `Sua conta foi criada. Bem-vindo, ${name}!`,
+          duration: 3000,
+        })
         onClose()
         // Reset form
         setName("")
@@ -48,12 +62,27 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login" }: AuthModalP
         setPassword("")
       }
     } catch (err: any) {
+      console.error("[v0] Auth error:", err)
+
       if (err.message === "USER_NOT_FOUND") {
         setShowRegisterPrompt(true)
-        setError("Account not found. Would you like to create one?")
+        setError("Conta não encontrada. Gostaria de criar uma?")
+      } else if (err.message === "This email is already registered") {
+        setError("Este email já está cadastrado. Faça login ou use outro email.")
+      } else if (err.message === "Password must be at least 6 characters") {
+        setError("A senha deve ter no mínimo 6 caracteres.")
+      } else if (err.message === "All fields are required") {
+        setError("Por favor, preencha todos os campos.")
       } else {
-        setError(err.message || "An error occurred. Please try again.")
+        setError(err.message || "Ocorreu um erro. Tente novamente.")
       }
+
+      toast({
+        title: "Erro",
+        description: err.message || "Ocorreu um erro. Tente novamente.",
+        variant: "destructive",
+        duration: 4000,
+      })
     } finally {
       setIsSubmitting(false)
     }

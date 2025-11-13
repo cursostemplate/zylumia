@@ -12,6 +12,7 @@ import { AuthModal } from "@/components/auth-modal"
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Skincare", href: "/skincare" },
+  { name: "Glow Journal", href: "/glow-journal" },
   { name: "Zylumia Essence", href: "/zylumia-essence" },
   { name: "Connected to You", href: "/connected-to-you" },
   { name: "Reviews", href: "/#reviews" },
