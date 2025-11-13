@@ -7,15 +7,16 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 export function EmailPopup() {
   const router = useRouter()
+  const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(false)
   const [showCouponPopup, setShowCouponPopup] = useState(false)
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -28,9 +29,12 @@ export function EmailPopup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    setErrorMessage("")
+
+    console.log("[v0] === POPUP SUBMIT STARTED ===")
+    console.log("[v0] Form data:", { email, name })
 
     try {
+      console.log("[v0] Calling /api/subscribe...")
       const response = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -41,9 +45,20 @@ export function EmailPopup() {
         }),
       })
 
+      console.log("[v0] Response received - Status:", response.status, "OK:", response.ok)
+
       const result = await response.json()
+      console.log("[v0] Response body:", JSON.stringify(result, null, 2))
 
       if (result.success) {
+        console.log("[v0] SUCCESS - Showing success toast")
+        toast({
+          title: "✅ Cadastro realizado com sucesso!",
+          description: `Bem-vindo ${name}! Seu cupom de desconto está pronto.`,
+          duration: 5000,
+        })
+
+        console.log("[v0] Tracking popup event...")
         await fetch("/api/track-event", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -54,21 +69,41 @@ export function EmailPopup() {
             action: "submitted",
             timestamp: Date.now(),
           }),
-        }).catch((err) => console.error("Failed to track popup:", err))
+        }).catch((err) => console.error("[v0] Failed to track popup:", err))
 
+        console.log("[v0] Closing first popup and showing coupon...")
         setIsOpen(false)
         setTimeout(() => {
           setShowCouponPopup(true)
         }, 300)
       } else {
-        setErrorMessage(result.message)
+        console.error("[v0] FAILED - API returned success=false")
+        console.error("[v0] Error message:", result.message)
+        toast({
+          title: "❌ Erro no cadastro",
+          description: result.message || "Ocorreu um erro. Por favor, tente novamente.",
+          variant: "destructive",
+          duration: 5000,
+        })
       }
     } catch (error) {
-      console.error("Error submitting popup:", error)
-      setErrorMessage("Failed to subscribe. Please try again.")
-    }
+      console.error("[v0] EXCEPTION - Error in handleSubmit:", error)
+      console.error("[v0] Error details:", {
+        name: error instanceof Error ? error.name : "Unknown",
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      })
 
-    setIsSubmitting(false)
+      toast({
+        title: "❌ Erro de conexão",
+        description: "Não foi possível completar o cadastro. Verifique sua conexão e tente novamente.",
+        variant: "destructive",
+        duration: 5000,
+      })
+    } finally {
+      setIsSubmitting(false)
+      console.log("[v0] === POPUP SUBMIT FINISHED ===")
+    }
   }
 
   const handleClose = () => {
@@ -190,8 +225,6 @@ export function EmailPopup() {
                       className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
-
-                  {errorMessage && <p className="text-sm text-destructive text-center">{errorMessage}</p>}
 
                   <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>
                     {isSubmitting ? "Subscribing..." : "Get My Discount"}

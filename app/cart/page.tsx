@@ -33,6 +33,9 @@ export default function CartPage() {
     return acc + price * item.quantityInCart
   }, 0)
 
+  // Convert GBP to USD (approximate rate: 1 GBP = 1.27 USD)
+  const subtotalUSD = subtotal * 1.27
+
   const originalPrice = subtotal / 0.3
   const savings = originalPrice - subtotal
 
@@ -190,6 +193,15 @@ export default function CartPage() {
   }
 
   const validateAndSaveOrder = async (paypalOrderId?: string) => {
+    if (cartItems.length === 0) {
+      toast({
+        title: "Carrinho vazio",
+        description: "Adicione produtos ao carrinho antes de continuar.",
+        variant: "destructive",
+      })
+      return false
+    }
+
     if (!email || !lastName || !address || !city || !state || !zipCode || !phone) {
       toast({
         title: "Campos obrigatórios faltando",
@@ -630,7 +642,7 @@ export default function CartPage() {
                 <div className="flex justify-between text-lg font-bold border-t pt-3">
                   <span>Total</span>
                   <span>
-                    <span className="text-sm text-gray-500 mr-2">GBP</span>£{subtotal.toFixed(2)}
+                    <span className="text-sm text-gray-500 mr-2">USD</span>${subtotalUSD.toFixed(2)}
                   </span>
                 </div>
 
@@ -678,13 +690,16 @@ export default function CartPage() {
                       return true
                     }}
                     createOrder={(data, actions) => {
+                      const orderTotal = Math.max(subtotalUSD, 0.01).toFixed(2)
+                      console.log("[v0] Creating PayPal order with amount:", orderTotal)
+
                       return actions.order.create({
                         intent: "CAPTURE",
                         purchase_units: [
                           {
                             amount: {
                               currency_code: "USD",
-                              value: subtotal.toFixed(2),
+                              value: orderTotal,
                             },
                           },
                         ],
