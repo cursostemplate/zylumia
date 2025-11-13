@@ -40,6 +40,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addToCart = (item: Offer) => {
     setCartItems([{ ...item, quantityInCart: 1 }])
     setIsCartDrawerOpen(true)
+
+    fetch("/api/track-event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventType: "add_to_cart",
+        productId: item.id,
+        productName: item.quantity,
+        price: item.price,
+        timestamp: Date.now(),
+      }),
+    }).catch((err) => console.error("Failed to track add to cart:", err))
   }
 
   const removeFromCart = (itemId: number) => {

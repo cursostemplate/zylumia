@@ -2,7 +2,20 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Package, DollarSign, Users, TrendingUp, LogOut, Calendar, MapPin, Mail, Phone, UserCircle } from "lucide-react"
+import {
+  Package,
+  DollarSign,
+  TrendingUp,
+  LogOut,
+  Calendar,
+  MapPin,
+  Mail,
+  Phone,
+  UserCircle,
+  ShoppingCart,
+  MousePointer,
+  CheckCircle2,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   LineChart,
@@ -39,6 +52,8 @@ interface OrderData {
   total: number
   timestamp: number
   paypalOrderId?: string
+  addedToCart?: boolean
+  purchaseCompleted?: boolean
 }
 
 interface UserData {
@@ -52,13 +67,38 @@ interface UserData {
   lastUpdated: number
 }
 
+interface SubscriberData {
+  id: string
+  email: string
+  name: string
+  source: string
+  subscribedAt: number
+  active: boolean
+}
+
+interface TrackingEvent {
+  id: string
+  eventType: string
+  timestamp: number
+  email?: string
+  name?: string
+  action?: string
+  productId?: number
+  productName?: string
+  price?: string
+  orderId?: string
+  total?: number
+}
+
 export default function AdminDashboard() {
   const router = useRouter()
   const [orders, setOrders] = useState<OrderData[]>([])
   const [users, setUsers] = useState<UserData[]>([])
+  const [subscribers, setSubscribers] = useState<SubscriberData[]>([])
+  const [trackingEvents, setTrackingEvents] = useState<TrackingEvent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null)
-  const [activeTab, setActiveTab] = useState<"orders" | "users">("orders")
+  const [activeTab, setActiveTab] = useState<"orders" | "users" | "subscribers" | "tracking">("orders")
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
 
   const fetchData = async () => {
@@ -84,6 +124,12 @@ export default function AdminDashboard() {
       if (data.users) {
         setUsers(data.users)
       }
+      if (data.subscribers) {
+        setSubscribers(data.subscribers)
+      }
+      if (data.trackingEvents) {
+        setTrackingEvents(data.trackingEvents)
+      }
       setLastUpdate(new Date())
       setIsLoading(false)
     } catch (error) {
@@ -93,7 +139,6 @@ export default function AdminDashboard() {
   }
 
   useEffect(() => {
-    // Check authentication
     if (typeof window !== "undefined") {
       const isAdmin = localStorage.getItem("zylumia_admin")
       if (isAdmin !== "true") {
@@ -102,7 +147,6 @@ export default function AdminDashboard() {
       }
     }
 
-    // Initial fetch
     fetchData()
 
     const interval = setInterval(fetchData, 3000)
@@ -121,6 +165,10 @@ export default function AdminDashboard() {
   const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
   const uniqueCustomers = new Set(orders.map((o) => o.email)).size
   const totalUsers = users.length
+  const totalSubscribers = subscribers.length
+  const addToCartEvents = trackingEvents.filter((e) => e.eventType === "add_to_cart").length
+  const purchaseEvents = trackingEvents.filter((e) => e.eventType === "purchase_completed").length
+  const popupInteractions = trackingEvents.filter((e) => e.eventType === "popup_interaction").length
 
   // Chart data - Orders by day
   const ordersByDay = orders.reduce((acc: any, order) => {
@@ -199,7 +247,7 @@ export default function AdminDashboard() {
         ) : (
           <>
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm text-gray-600">Total Orders</p>
@@ -229,20 +277,41 @@ export default function AdminDashboard() {
 
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-gray-600">Unique Customers</p>
-                  <Users className="h-5 w-5 text-[#8c2a42]" />
-                </div>
-                <p className="text-3xl font-bold text-gray-900">{uniqueCustomers}</p>
-                <p className="text-xs text-gray-600 mt-1">With orders</p>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-gray-600">Registered Users</p>
+                  <p className="text-sm text-gray-600">Popup Subscribers</p>
                   <UserCircle className="h-5 w-5 text-[#8c2a42]" />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">{totalUsers}</p>
-                <p className="text-xs text-gray-600 mt-1">Total users</p>
+                <p className="text-3xl font-bold text-gray-900">{totalSubscribers}</p>
+                <p className="text-xs text-gray-600 mt-1">Email signups</p>
+              </div>
+            </div>
+
+            {/* Tracking Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm p-6 border border-blue-200">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm text-blue-800 font-medium">Popup Interactions</p>
+                  <MousePointer className="h-5 w-5 text-blue-600" />
+                </div>
+                <p className="text-3xl font-bold text-blue-900">{popupInteractions}</p>
+                <p className="text-xs text-blue-700 mt-1">Total interactions</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-sm p-6 border border-purple-200">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm text-purple-800 font-medium">Add to Cart</p>
+                  <ShoppingCart className="h-5 w-5 text-purple-600" />
+                </div>
+                <p className="text-3xl font-bold text-purple-900">{addToCartEvents}</p>
+                <p className="text-xs text-purple-700 mt-1">Products added</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm p-6 border border-green-200">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm text-green-800 font-medium">Purchases Completed</p>
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                </div>
+                <p className="text-3xl font-bold text-green-900">{purchaseEvents}</p>
+                <p className="text-xs text-green-700 mt-1">Successful orders</p>
               </div>
             </div>
 
@@ -305,10 +374,10 @@ export default function AdminDashboard() {
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="border-b border-gray-200">
-                <div className="flex">
+                <div className="flex overflow-x-auto">
                   <button
                     onClick={() => setActiveTab("orders")}
-                    className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors ${
+                    className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
                       activeTab === "orders"
                         ? "border-[#8c2a42] text-[#8c2a42]"
                         : "border-transparent text-gray-600 hover:text-gray-900"
@@ -318,13 +387,33 @@ export default function AdminDashboard() {
                   </button>
                   <button
                     onClick={() => setActiveTab("users")}
-                    className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors ${
+                    className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
                       activeTab === "users"
                         ? "border-[#8c2a42] text-[#8c2a42]"
                         : "border-transparent text-gray-600 hover:text-gray-900"
                     }`}
                   >
-                    Registered Users ({totalUsers})
+                    Users ({totalUsers})
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("subscribers")}
+                    className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === "subscribers"
+                        ? "border-[#8c2a42] text-[#8c2a42]"
+                        : "border-transparent text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Popup Subscribers ({totalSubscribers})
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("tracking")}
+                    className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === "tracking"
+                        ? "border-[#8c2a42] text-[#8c2a42]"
+                        : "border-transparent text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Tracking Events ({trackingEvents.length})
                   </button>
                 </div>
               </div>
@@ -350,6 +439,7 @@ export default function AdminDashboard() {
                               Location
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Items</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
                           </tr>
@@ -377,6 +467,20 @@ export default function AdminDashboard() {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                   {order.items?.length || 0} item(s)
                                 </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                  <div className="flex gap-1">
+                                    {order.addedToCart && (
+                                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                        Cart
+                                      </span>
+                                    )}
+                                    {order.purchaseCompleted && (
+                                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Paid
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                                   £{(order.total || 0).toFixed(2)}
                                 </td>
@@ -387,7 +491,7 @@ export default function AdminDashboard() {
                                     variant="outline"
                                     className="text-[#8c2a42] border-[#8c2a42] hover:bg-[#8c2a42] hover:text-white"
                                   >
-                                    View Details
+                                    View
                                   </Button>
                                 </td>
                               </tr>
@@ -399,6 +503,7 @@ export default function AdminDashboard() {
                 </>
               )}
 
+              {/* Users Table */}
               {activeTab === "users" && (
                 <>
                   {users.length === 0 ? (
@@ -439,6 +544,131 @@ export default function AdminDashboard() {
                                 <td className="px-6 py-4 text-sm text-gray-900">{user.country || "-"}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                   {new Date(user.lastUpdated).toLocaleString()}
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Subscribers Table */}
+              {activeTab === "subscribers" && (
+                <>
+                  {subscribers.length === 0 ? (
+                    <div className="p-12 text-center text-gray-500">
+                      <Mail className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>No popup subscribers yet</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Subscribed Date
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Source</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {subscribers
+                            .sort((a, b) => b.subscribedAt - a.subscribedAt)
+                            .map((subscriber) => (
+                              <tr key={subscriber.id} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                  {new Date(subscriber.subscribedAt).toLocaleString()}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-900">{subscriber.name || "-"}</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">{subscriber.email}</td>
+                                <td className="px-6 py-4 text-sm">
+                                  <span
+                                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                      subscriber.source === "popup"
+                                        ? "bg-blue-100 text-blue-800"
+                                        : "bg-gray-100 text-gray-800"
+                                    }`}
+                                  >
+                                    {subscriber.source}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 text-sm">
+                                  <span
+                                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                      subscriber.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                                    }`}
+                                  >
+                                    {subscriber.active ? "Active" : "Inactive"}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Tracking Events Table */}
+              {activeTab === "tracking" && (
+                <>
+                  {trackingEvents.length === 0 ? (
+                    <div className="p-12 text-center text-gray-500">
+                      <MousePointer className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>No tracking events yet</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                              Event Type
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {trackingEvents
+                            .sort((a, b) => b.timestamp - a.timestamp)
+                            .map((event) => (
+                              <tr key={event.id} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                  {new Date(event.timestamp).toLocaleString()}
+                                </td>
+                                <td className="px-6 py-4 text-sm">
+                                  <span
+                                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                      event.eventType === "add_to_cart"
+                                        ? "bg-purple-100 text-purple-800"
+                                        : event.eventType === "purchase_completed"
+                                          ? "bg-green-100 text-green-800"
+                                          : event.eventType === "popup_interaction"
+                                            ? "bg-blue-100 text-blue-800"
+                                            : "bg-gray-100 text-gray-800"
+                                    }`}
+                                  >
+                                    {event.eventType.replace(/_/g, " ")}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-900">
+                                  {event.productName && <div>Product: {event.productName}</div>}
+                                  {event.price && <div>Price: £{event.price}</div>}
+                                  {event.action && <div>Action: {event.action}</div>}
+                                  {event.total && <div>Total: £{event.total}</div>}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-900">
+                                  {event.email && <div>{event.email}</div>}
+                                  {event.name && <div className="text-xs text-gray-500">{event.name}</div>}
+                                  {!event.email && !event.name && <span className="text-gray-400">-</span>}
                                 </td>
                               </tr>
                             ))}

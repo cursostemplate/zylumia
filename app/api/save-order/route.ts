@@ -8,6 +8,8 @@ export async function POST(request: Request) {
 
     const dataToSave = {
       ...orderData,
+      addedToCart: true, // Flag indicando que produto foi adicionado
+      purchaseCompleted: true, // Flag indicando compra finalizada
       createdAt: orderData.createdAt || new Date().toISOString(),
       timestamp: orderData.timestamp || Date.now(),
     }
@@ -54,6 +56,20 @@ export async function POST(request: Request) {
         body: JSON.stringify(userData),
       })
     }
+
+    await fetch(`${firebaseUrl}/tracking.json`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        eventType: "purchase_completed",
+        orderId: orderResult.name,
+        email: orderData.email,
+        total: orderData.total,
+        timestamp: Date.now(),
+      }),
+    })
 
     return NextResponse.json({ success: true, orderId: orderResult.name })
   } catch (error) {

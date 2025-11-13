@@ -20,6 +20,12 @@ export async function GET() {
 
     const usersData = await usersResponse.json()
 
+    const subscribersResponse = await fetch(`${databaseUrl}/subscribers.json`)
+    const subscribersData = subscribersResponse.ok ? await subscribersResponse.json() : null
+
+    const trackingResponse = await fetch(`${databaseUrl}/tracking.json`)
+    const trackingData = trackingResponse.ok ? await trackingResponse.json() : null
+
     // Convert to arrays
     const orders = ordersData
       ? Object.entries(ordersData).map(([id, order]) => ({
@@ -35,10 +41,26 @@ export async function GET() {
         }))
       : []
 
+    const subscribers = subscribersData
+      ? Object.entries(subscribersData).map(([id, subscriber]) => ({
+          id,
+          ...(subscriber as any),
+        }))
+      : []
+
+    const trackingEvents = trackingData
+      ? Object.entries(trackingData).map(([id, event]) => ({
+          id,
+          ...(event as any),
+        }))
+      : []
+
     return new Response(
       JSON.stringify({
         orders,
         users,
+        subscribers,
+        trackingEvents,
         timestamp: Date.now(),
       }),
       {
