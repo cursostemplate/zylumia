@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useCart } from "@/contexts/cart-context"
+import { useAuth } from "@/contexts/auth-context"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -9,11 +10,12 @@ import Link from "next/link"
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
 import Image from "next/image"
 import { PolicyModal } from "@/components/policy-modal"
-import { Truck, Shield, Leaf } from "lucide-react"
+import { Truck, Shield, Leaf } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
 
 export default function CartPage() {
   const { cartItems } = useCart()
+  const { user } = useAuth()
   const { toast } = useToast()
   const [email, setEmail] = useState("")
   const [country, setCountry] = useState("United States")
@@ -27,13 +29,59 @@ export default function CartPage() {
   const [phone, setPhone] = useState("")
   const [trackingUpdates, setTrackingUpdates] = useState(false)
   const [saveInfo, setSaveInfo] = useState(false)
+  const [shippingProtection, setShippingProtection] = useState(false)
+
+  useEffect(() => {
+    if (user?.id) {
+      loadShippingProtection()
+    }
+  }, [user?.id])
+
+  const loadShippingProtection = async () => {
+    if (!user?.id) return
+
+    try {
+      const response = await fetch("/api/cart/load", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id }),
+      })
+
+      const data = await response.json()
+      if (data.success && data.cart) {
+        setShippingProtection(data.cart.shippingProtection || false)
+      }
+    } catch (error) {
+      console.error("[v0] Error loading shipping protection:", error)
+    }
+  }
+
+  const handleShippingProtectionChange = async (checked: boolean) => {
+    setShippingProtection(checked)
+
+    if (user?.id) {
+      try {
+        await fetch("/api/cart/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.id,
+            cartItems,
+            shippingProtection: checked,
+          }),
+        })
+        console.log("[v0] Shipping protection saved")
+      } catch (error) {
+        console.error("[v0] Error saving shipping protection:", error)
+      }
+    }
+  }
 
   const subtotal = cartItems.reduce((acc, item) => {
     const price = Number.parseFloat(item.price.replace("£", ""))
     return acc + price * item.quantityInCart
   }, 0)
 
-  // Convert GBP to USD (approximate rate: 1 GBP = 1.27 USD)
   const subtotalUSD = subtotal * 1.27
 
   const originalPrice = subtotal / 0.3
@@ -234,7 +282,7 @@ export default function CartPage() {
       })),
       subtotal,
       total: subtotal,
-      shippingProtection: false,
+      shippingProtection,
       paypalOrderId: paypalOrderId || "",
       status: paypalOrderId ? "completed" : "pending",
       type: "order",
@@ -507,8 +555,8 @@ export default function CartPage() {
                   </ul>
                   <h3 className="font-semibold mt-4">Proteção de dados</h3>
                   <p>
-                    Implementamos medidas de segurança apropriadas para proteger suas informações pessoais contra acesso
-                    não autorizado, alteração, divulgação ou destruição.
+                    Implementamos medidas de segurança apropriadas para proteger suas informações pessoais contra
+                    acesso não autorizado, alteração, divulgação ou destruição.
                   </p>
                   <p className="mt-4">
                     Suas informações pessoais nunca serão vendidas ou compartilhadas com terceiros para fins de
@@ -541,9 +589,9 @@ export default function CartPage() {
                   </p>
                   <h3 className="font-semibold mt-4">Limitação de responsabilidade</h3>
                   <p>
-                    A Zylumia não será responsável por quaisquer danos indiretos, incidentais, especiais, consequenciais
-                    ou punitivos, incluindo, sem limitação, perda de lucros, dados, uso, boa vontade ou outras perdas
-                    intangíveis.
+                    A Zylumia não será responsável por quaisquer danos indiretos, incidentais, especiais,
+                    consequenciais ou punitivos, incluindo, sem limitação, perda de lucros, dados, uso, boa vontade ou
+                    outras perdas intangíveis.
                   </p>
                 </div>
               </PolicyModal>
@@ -669,6 +717,25 @@ export default function CartPage() {
                         Preço original: £{originalPrice.toFixed(2)} • Desconto de 70% aplicado
                       </p>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Shipping Protection Checkbox */}
+              <div className="mt-6 mb-4">
+                <div className="flex items-center gap-3 p-4 border rounded-lg">
+                  <Checkbox
+                    id="shipping-protection"
+                    checked={shippingProtection}
+                    onCheckedChange={handleShippingProtectionChange}
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="shipping-protection" className="font-medium cursor-pointer">
+                      Proteção de envio (+£2.99)
+                    </Label>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Proteja seu pedido contra perda, dano ou roubo durante o envio
+                    </p>
                   </div>
                 </div>
               </div>
@@ -852,8 +919,8 @@ export default function CartPage() {
                 <PolicyModal triggerText="Contato" title="Contato">
                   <div className="space-y-4">
                     <p>
-                      Se você tiver alguma dúvida sobre nossos produtos, pedidos ou políticas, nossa equipe de suporte
-                      ao cliente está aqui para ajudar!
+                      Se você tiver alguma dúvida sobre nossos produtos, pedidos ou políticas, nossa equipe de suporte ao
+                      cliente está aqui para ajudar!
                     </p>
                     <h3 className="font-semibold mt-4">Informações de contato:</h3>
                     <p>

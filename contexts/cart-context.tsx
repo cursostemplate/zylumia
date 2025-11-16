@@ -1,6 +1,7 @@
 "use client"
 
-import { createContext, useState, useContext, type ReactNode } from "react"
+import { createContext, useState, useContext, useEffect, type ReactNode } from "react"
+import { useAuth } from "./auth-context"
 
 export interface Offer {
   id: number
@@ -36,6 +37,60 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false)
+  const [shippingProtection, setShippingProtection] = useState(false)
+  const { user } = useAuth()
+
+  useEffect(() => {
+    if (user?.id) {
+      loadCartFromFirebase(user.id)
+    }
+  }, [user?.id])
+
+  useEffect(() => {
+    if (user?.id && cartItems.length > 0) {
+      saveCartToFirebase()
+    }
+  }, [cartItems, shippingProtection, user?.id])
+
+  const loadCartFromFirebase = async (userId: string) => {
+    try {
+      console.log("[v0] Loading cart from Firebase...")
+      const response = await fetch("/api/cart/load", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      })
+
+      const data = await response.json()
+      if (data.success && data.cart) {
+        console.log("[v0] Cart loaded:", data.cart.items?.length || 0, "items")
+        setCartItems(data.cart.items || [])
+        setShippingProtection(data.cart.shippingProtection || false)
+      }
+    } catch (error) {
+      console.error("[v0] Error loading cart:", error)
+    }
+  }
+
+  const saveCartToFirebase = async () => {
+    if (!user?.id) return
+
+    try {
+      console.log("[v0] Saving cart to Firebase...")
+      await fetch("/api/cart/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          cartItems,
+          shippingProtection,
+        }),
+      })
+      console.log("[v0] Cart saved successfully")
+    } catch (error) {
+      console.error("[v0] Error saving cart:", error)
+    }
+  }
 
   const addToCart = (item: Offer) => {
     setCartItems([{ ...item, quantityInCart: 1 }])
@@ -50,6 +105,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         productName: item.quantity,
         price: item.price,
         timestamp: Date.now(),
+        userId: user?.id || "guest",
       }),
     }).catch((err) => console.error("Failed to track add to cart:", err))
   }
