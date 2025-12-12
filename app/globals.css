@@ -4,123 +4,208 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: 30 33% 98%;
+    --foreground: 0 0% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 0 0% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 350 60% 72%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 30 25% 95%;
+    --secondary-foreground: 0 0% 12%;
+    --muted: 30 20% 94%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 350 60% 72%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --border: 30 15% 88%;
+    --input: 30 15% 88%;
+    --ring: 350 60% 72%;
     --radius: 0.5rem;
-    --sky-400: #38bdf8;
-    --sky-500: #0ea5e9;
+    --blush: 350 60% 85%;
+    --blush-dark: 350 45% 55%;
+    --cream: 40 40% 97%;
+    --gold: 42 75% 55%;
+    --charcoal: 0 0% 15%;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 0 0% 5%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
+    --primary: 350 60% 72%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 350 60% 72%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --sky-400: #38bdf8;
-    --sky-500: #0ea5e9;
+    --ring: 350 60% 72%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif tracking-tight;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
 }
 
-@font-face {
-  font-family: "Lora";
-  src: url("/fonts/Lora-VariableFont_wght.ttf") format("truetype-variations");
-  font-weight: 400 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Lora";
-  src: url("/fonts/Lora-Italic-VariableFont_wght.ttf") format("truetype-variations");
-  font-weight: 400 700;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "Libre Baskerville";
-  src: url("/fonts/LibreBaskerville-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Libre Baskerville";
-  src: url("/fonts/LibreBaskerville-Bold.ttf") format("truetype");
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Libre Baskerville";
-  src: url("/fonts/LibreBaskerville-Italic.ttf") format("truetype");
-  font-weight: normal;
-  font-style: italic;
-}
-
-/* Suporte para gradientes cônicos */
 @supports (background: conic-gradient(from 0deg, red, blue)) {
   .bg-gradient-conic {
     background: conic-gradient(var(--conic-position, from 0deg), var(--tw-gradient-stops));
   }
 }
 
-/* Fallback para navegadores que não suportam conic-gradient */
 @supports not (background: conic-gradient(from 0deg, red, blue)) {
   .bg-gradient-conic {
     background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
   }
 }
 
-/* Otimizações para mobile */
 @media (max-width: 640px) {
   video {
     object-position: center center;
   }
 }
 
-/* Melhorias de performance para vídeo */
 video {
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+.btn-elegant {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: all 0.3s ease;
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+}
+
+.btn-elegant:hover {
+  background-color: #333;
+}
+
+.btn-elegant-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  color: #1a1a1a;
+  border: 1px solid #1a1a1a;
+}
+
+.btn-elegant-outline:hover {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.btn-blush {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+  background-color: #ffb5c0;
+  color: #1a1a1a;
+  border: none;
+}
+
+.btn-blush:hover {
+  background-color: #ff9dab;
+}
+
+.section-elegant {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 768px) {
+  .section-elegant {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+}
+
+.heading-elegant {
+  font-family: var(--font-serif);
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+@media (min-width: 768px) {
+  .heading-elegant {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heading-elegant {
+    font-size: 3.75rem;
+  }
+}
+
+.subheading-elegant {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: hsl(var(--muted-foreground));
+}
+
+.card-elegant {
+  background-color: white;
+  border-radius: 0;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
+}
+
+.card-elegant:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
 }

@@ -35,20 +35,20 @@ export function SiteFooter() {
   }
 
   return (
-    <footer className="bg-background border-t">
-      <div className="container mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="bg-cream-100 border-t border-blush-200/50">
+      <div className="container mx-auto px-6 py-16 md:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           <div className="md:col-span-1">
-            <h3 className="font-lora text-2xl font-bold">Zylumia</h3>
-            <p className="mt-4 text-muted-foreground">
+            <h3 className="font-serif text-3xl font-semibold text-charcoal">Zylumia</h3>
+            <p className="mt-6 text-muted-foreground leading-relaxed">
               At Zylumia, we specialize in a single, high-performance skincare solution powered by advanced technology.
               Our expertly formulated mask is designed to nourish, hydrate, and restore confidence—helping you achieve
               luminous, healthy skin with every use.
             </p>
           </div>
           <div className="md:col-span-1">
-            <h3 className="font-lora text-xl font-bold">Quick links</h3>
-            <ul className="mt-4 space-y-2">
+            <h3 className="font-serif text-xl font-semibold text-charcoal">Quick links</h3>
+            <ul className="mt-6 space-y-3">
               <li>
                 <PolicyModal triggerText="Privacy policy" title="Privacy Policy">
                   <PrivacyPolicyContent />
@@ -72,22 +72,22 @@ export function SiteFooter() {
             </ul>
           </div>
           <div className="md:col-span-1">
-            <h3 className="font-lora text-xl font-bold">Subscribe to our emails</h3>
-            <p className="mt-4 text-muted-foreground">Join our email list for exclusive offers and the latest news.</p>
+            <h3 className="font-serif text-xl font-semibold text-charcoal">Subscribe to our emails</h3>
+            <p className="mt-6 text-muted-foreground">Join our email list for exclusive offers and the latest news.</p>
 
-            <form onSubmit={handleSubscribe} className="mt-4 flex flex-col gap-2">
+            <form onSubmit={handleSubscribe} className="mt-6 flex flex-col gap-3">
               <Input
                 type="email"
-                placeholder="Email"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="flex-grow"
+                className="flex-grow border-blush-200 focus:border-blush-400 focus:ring-blush-300 bg-white"
               />
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-brand hover:bg-brand/90 text-brand-foreground"
+                className="bg-charcoal hover:bg-charcoal-light text-white tracking-wider uppercase text-sm py-6"
               >
                 {isSubmitting ? "Subscribing..." : "Sign up"}
               </Button>
@@ -100,20 +100,20 @@ export function SiteFooter() {
               )}
             </form>
 
-            {/* Payment Icons abaixo do botão - mesma largura */}
-            <div className="mt-3">
+            {/* Payment Icons */}
+            <div className="mt-4">
               <NextImage
                 src="/payment-icons.webp"
                 alt="Secure payment methods"
                 width={200}
                 height={32}
-                className="object-contain w-full"
+                className="object-contain w-full opacity-70"
               />
             </div>
           </div>
         </div>
-        <div className="mt-12 border-t pt-8 text-center text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Zylumia. All rights reserved.</p>
+        <div className="mt-16 border-t border-blush-200/50 pt-8 text-center text-muted-foreground">
+          <p className="text-sm tracking-wide">&copy; {new Date().getFullYear()} Zylumia. All rights reserved.</p>
         </div>
       </div>
     </footer>

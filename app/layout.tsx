@@ -1,5 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { Inter, Cormorant_Garamond } from "next/font/google"
 import "./globals.css"
 import "./fonts.css"
 import { cn } from "@/lib/utils"
@@ -9,6 +10,19 @@ import Script from "next/script"
 import { CountdownBanner } from "@/components/countdown-banner"
 import { EmailPopup } from "@/components/email-popup"
 import { CartDrawer } from "@/components/cart-drawer"
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+})
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cormorant",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "Zylumia - Premium Bio-Collagen Face Masks | Korean Skincare | Anti-Aging",
@@ -115,7 +129,7 @@ export const metadata: Metadata = {
   verification: {
     google: "your-google-verification-code-here",
   },
-    generator: 'v0.app'
+  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -124,7 +138,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${cormorant.variable}`}>
       <head>
         {/* Favicon */}
         <link rel="icon" href="https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp" />
@@ -132,6 +146,8 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="https://i.postimg.cc/h4yJjv9M/Chat-GPT-Image-13-08-2025-01-38-26.webp" />
 
         {/* Preconnect for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://i.postimg.cc" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
 
@@ -374,7 +390,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={cn("min-h-screen bg-background font-sans antialiased")}>
+      <body className={cn("min-h-screen bg-background font-sans antialiased", inter.className)}>
         <AuthProvider>
           <CartProvider>
             <CountdownBanner />

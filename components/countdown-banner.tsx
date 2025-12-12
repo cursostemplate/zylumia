@@ -44,34 +44,40 @@ export function CountdownBanner() {
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="bg-black text-white overflow-hidden"
+          className="bg-gradient-to-r from-[#FFB5C0] via-[#FFCDD5] to-[#FFB5C0] text-charcoal overflow-hidden"
         >
-          <div className="container mx-auto px-4 h-16 flex items-center justify-center relative">
-            <div className="flex items-center gap-2 md:gap-4 text-center">
-              <p className="font-semibold text-sm uppercase tracking-wider">Summer Sale Ends In</p>
+          <div className="container mx-auto px-4 h-14 flex items-center justify-center relative">
+            <div className="flex items-center gap-3 md:gap-6 text-center">
+              <p className="font-serif text-sm md:text-base font-medium tracking-wide">Summer Sale Ends In</p>
               <div className="flex items-center gap-2">
-                <div className="flex flex-col items-center">
-                  <span className="font-mono text-lg font-bold">{String(timeLeft.hours).padStart(2, "0")}</span>
-                  <span className="text-xs text-gray-400">hour</span>
+                <div className="flex flex-col items-center bg-white/30 backdrop-blur-sm px-2 py-1 rounded">
+                  <span className="font-mono text-lg font-bold text-charcoal">
+                    {String(timeLeft.hours).padStart(2, "0")}
+                  </span>
+                  <span className="text-[10px] text-charcoal/70 uppercase tracking-wider">hours</span>
                 </div>
-                <span className="font-mono text-lg">:</span>
-                <div className="flex flex-col items-center">
-                  <span className="font-mono text-lg font-bold">{String(timeLeft.minutes).padStart(2, "0")}</span>
-                  <span className="text-xs text-gray-400">minute</span>
+                <span className="font-mono text-lg text-charcoal/60">:</span>
+                <div className="flex flex-col items-center bg-white/30 backdrop-blur-sm px-2 py-1 rounded">
+                  <span className="font-mono text-lg font-bold text-charcoal">
+                    {String(timeLeft.minutes).padStart(2, "0")}
+                  </span>
+                  <span className="text-[10px] text-charcoal/70 uppercase tracking-wider">mins</span>
                 </div>
-                <span className="font-mono text-lg">:</span>
-                <div className="flex flex-col items-center">
-                  <span className="font-mono text-lg font-bold">{String(timeLeft.seconds).padStart(2, "0")}</span>
-                  <span className="text-xs text-gray-400">second</span>
+                <span className="font-mono text-lg text-charcoal/60">:</span>
+                <div className="flex flex-col items-center bg-white/30 backdrop-blur-sm px-2 py-1 rounded">
+                  <span className="font-mono text-lg font-bold text-charcoal">
+                    {String(timeLeft.seconds).padStart(2, "0")}
+                  </span>
+                  <span className="text-[10px] text-charcoal/70 uppercase tracking-wider">secs</span>
                 </div>
               </div>
             </div>
             <button
               onClick={() => setIsVisible(false)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-white"
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-charcoal/60 hover:text-charcoal hover:bg-white/20 rounded-full transition-colors"
               aria-label="Close banner"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </motion.div>

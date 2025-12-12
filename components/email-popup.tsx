@@ -30,11 +30,7 @@ export function EmailPopup() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    console.log("[v0] === POPUP SUBMIT STARTED ===")
-    console.log("[v0] Form data:", { email, name })
-
     try {
-      console.log("[v0] Calling /api/subscribe...")
       const response = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -45,20 +41,15 @@ export function EmailPopup() {
         }),
       })
 
-      console.log("[v0] Response received - Status:", response.status, "OK:", response.ok)
-
       const result = await response.json()
-      console.log("[v0] Response body:", JSON.stringify(result, null, 2))
 
       if (result.success) {
-        console.log("[v0] SUCCESS - Showing success toast")
         toast({
-          title: "✅ Cadastro realizado com sucesso!",
+          title: "Cadastro realizado com sucesso!",
           description: `Bem-vindo ${name}! Seu cupom de desconto está pronto.`,
           duration: 5000,
         })
 
-        console.log("[v0] Tracking popup event...")
         await fetch("/api/track-event", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -69,40 +60,29 @@ export function EmailPopup() {
             action: "submitted",
             timestamp: Date.now(),
           }),
-        }).catch((err) => console.error("[v0] Failed to track popup:", err))
+        }).catch((err) => console.error("Failed to track popup:", err))
 
-        console.log("[v0] Closing first popup and showing coupon...")
         setIsOpen(false)
         setTimeout(() => {
           setShowCouponPopup(true)
         }, 300)
       } else {
-        console.error("[v0] FAILED - API returned success=false")
-        console.error("[v0] Error message:", result.message)
         toast({
-          title: "❌ Erro no cadastro",
+          title: "Erro no cadastro",
           description: result.message || "Ocorreu um erro. Por favor, tente novamente.",
           variant: "destructive",
           duration: 5000,
         })
       }
     } catch (error) {
-      console.error("[v0] EXCEPTION - Error in handleSubmit:", error)
-      console.error("[v0] Error details:", {
-        name: error instanceof Error ? error.name : "Unknown",
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      })
-
       toast({
-        title: "❌ Erro de conexão",
+        title: "Erro de conexão",
         description: "Não foi possível completar o cadastro. Verifique sua conexão e tente novamente.",
         variant: "destructive",
         duration: 5000,
       })
     } finally {
       setIsSubmitting(false)
-      console.log("[v0] === POPUP SUBMIT FINISHED ===")
     }
   }
 
@@ -152,48 +132,42 @@ export function EmailPopup() {
 
   return (
     <>
-      {/* Primeiro Popup - Email e Nome */}
+      {/* Primeiro Popup - Coleta de Nome e Email */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
             onClick={handleClose}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-background rounded-2xl shadow-2xl max-w-md w-full overflow-hidden relative"
+              className="bg-cream-100 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden relative"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-background/80 hover:bg-background transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
                 aria-label="Close popup"
               >
-                <X className="h-5 w-5" />
+                <X className="h-5 w-5 text-charcoal" />
               </button>
 
-              <div className="relative h-64 w-full">
-                <Image
-                  src="https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp"
-                  alt="Zylumia Bio-Collagen Mask"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
-              </div>
-
-              <div className="p-8 -mt-8 relative">
-                <h2 className="font-lora text-3xl font-bold mb-2 text-center">Get 70% Off</h2>
-                <p className="text-muted-foreground text-center mb-6">
-                  Subscribe to our newsletter and receive exclusive offers on premium skincare
-                </p>
+              <div className="p-10 pt-14">
+                <div className="text-center mb-8">
+                  <div className="inline-block bg-[#FFB5C0] text-charcoal px-5 py-1.5 rounded-full text-xs font-medium tracking-widest uppercase mb-5">
+                    Exclusive Offer
+                  </div>
+                  <h2 className="font-serif text-4xl font-semibold text-charcoal mb-3">Get 70% Off</h2>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Subscribe to our newsletter and receive exclusive offers on premium skincare
+                  </p>
+                </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
@@ -207,7 +181,7 @@ export function EmailPopup() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-5 py-4 rounded-xl border border-blush-200 bg-white focus:outline-none focus:ring-2 focus:ring-blush-300 focus:border-blush-400 transition-all text-charcoal placeholder:text-muted-foreground"
                     />
                   </div>
 
@@ -222,16 +196,20 @@ export function EmailPopup() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-5 py-4 rounded-xl border border-blush-200 bg-white focus:outline-none focus:ring-2 focus:ring-blush-300 focus:border-blush-400 transition-all text-charcoal placeholder:text-muted-foreground"
                     />
                   </div>
 
-                  <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>
+                  <Button
+                    type="submit"
+                    className="w-full py-6 text-sm font-medium tracking-widest uppercase bg-charcoal hover:bg-charcoal-light text-white rounded-xl transition-all"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? "Subscribing..." : "Get My Discount"}
                   </Button>
                 </form>
 
-                <p className="text-xs text-muted-foreground text-center mt-4">
+                <p className="text-xs text-muted-foreground text-center mt-6">
                   By subscribing, you agree to receive marketing emails from Zylumia
                 </p>
               </div>
@@ -240,14 +218,14 @@ export function EmailPopup() {
         )}
       </AnimatePresence>
 
-      {/* Segundo Popup - Cupom de Desconto */}
+      {/* Segundo Popup - Cupom de Desconto com imagem do produto */}
       <AnimatePresence>
         {showCouponPopup && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-charcoal/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
             onClick={handleCloseCoupon}
           >
             <motion.div
@@ -255,7 +233,7 @@ export function EmailPopup() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0, y: 50 }}
               transition={{ type: "spring", duration: 0.6 }}
-              className="bg-background rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden relative"
+              className="bg-cream-100 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden relative"
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -263,32 +241,32 @@ export function EmailPopup() {
                 className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 hover:bg-white transition-colors shadow-lg"
                 aria-label="Close coupon popup"
               >
-                <X className="h-5 w-5 text-gray-800" />
+                <X className="h-5 w-5 text-charcoal" />
               </button>
 
               {/* Imagem do Produto */}
-              <div className="relative h-80 w-full">
+              <div className="relative h-72 w-full bg-gradient-to-b from-blush-100 to-blush-50">
                 <Image
                   src="https://i.postimg.cc/4dGxBRhh/M-scara-Facial-Bio-Col-geno-1.webp"
                   alt="Zylumia Bio-Collagen Mask - Special Offer"
                   fill
-                  className="object-cover"
+                  className="object-contain p-4"
                   priority
                 />
               </div>
 
               {/* Conteúdo do Cupom */}
-              <div className="p-8 bg-gradient-to-b from-background to-gray-50">
+              <div className="p-8 bg-cream-100">
                 <div className="text-center mb-6">
-                  <div className="inline-block bg-[#8c2a42] text-white px-6 py-2 rounded-full mb-4">
-                    <span className="text-sm font-semibold">EXCLUSIVE OFFER</span>
+                  <div className="inline-block bg-[#FFB5C0] text-charcoal px-5 py-1.5 rounded-full mb-4">
+                    <span className="text-xs font-medium tracking-widest uppercase">Exclusive Offer</span>
                   </div>
-                  <h2 className="font-lora text-4xl font-bold mb-3 text-gray-900">70% OFF</h2>
-                  <p className="text-xl text-gray-700 mb-2">Your Exclusive Discount Code</p>
-                  <div className="bg-white border-2 border-dashed border-[#8c2a42] rounded-lg p-4 mb-4 inline-block">
-                    <p className="text-3xl font-bold text-[#8c2a42] tracking-wider">ZYLUMIA70</p>
+                  <h2 className="font-serif text-5xl font-semibold mb-3 text-charcoal">70% OFF</h2>
+                  <p className="text-lg text-muted-foreground mb-4">Your Exclusive Discount Code</p>
+                  <div className="bg-white border-2 border-dashed border-[#FFB5C0] rounded-xl p-4 mb-4 inline-block">
+                    <p className="text-3xl font-bold text-[#E89DA8] tracking-widest font-mono">ZYLUMIA70</p>
                   </div>
-                  <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-sm text-muted-foreground">
                     Use this code at checkout to get 70% off on your Bio-Collagen Mask!
                   </p>
                 </div>
@@ -296,13 +274,13 @@ export function EmailPopup() {
                 {/* Botão para Checkout */}
                 <Button
                   onClick={handleGoToCheckout}
-                  className="w-full py-6 text-lg font-semibold bg-black hover:bg-gray-800 text-white rounded-xl shadow-lg transition-all hover:shadow-xl"
+                  className="w-full py-6 text-sm font-medium tracking-widest uppercase bg-charcoal hover:bg-charcoal-light text-white rounded-xl shadow-lg transition-all hover:shadow-xl"
                 >
                   Claim My Discount Now
                 </Button>
 
-                <p className="text-xs text-gray-500 text-center mt-4">
-                  Limited time offer. Don't miss out on this amazing deal!
+                <p className="text-xs text-muted-foreground text-center mt-5">
+                  Limited time offer. Don&apos;t miss out on this amazing deal!
                 </p>
               </div>
             </motion.div>
